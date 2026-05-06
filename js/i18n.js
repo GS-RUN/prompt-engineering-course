@@ -314,10 +314,66 @@ const I18N = {
     localStorage.setItem('lang', lang);
     document.documentElement.lang = lang;
 
-    // Update all elements with data-i18n
+    // === 1) NAV MODULE TITLES (by position) ===
+    const modKeys = ['nav-mod1','nav-mod2','nav-mod3','nav-mod4','nav-mod5','nav-mod6',
+      'nav-mod7','nav-mod8','nav-mod9','nav-mod10','nav-mod11','nav-mod12','nav-mod13',
+      'nav-mod14','nav-mod15','nav-mod16','nav-mod17','nav-mod18','nav-mod19','nav-mod20',
+      'nav-mod21','nav-tools'];
+    document.querySelectorAll('.nav-module-title').forEach((el, i) => {
+      const key = modKeys[i];
+      if (!key) return;
+      if (!el.dataset.originalText) el.dataset.originalText = el.textContent;
+      el.textContent = lang === 'en' && this.translations.en?.[key]
+        ? this.translations.en[key] : el.dataset.originalText;
+    });
+
+    // === 2) NAV LINKS (by data-target → section number) ===
+    const map = this.getSectionMap();
+    document.querySelectorAll('.nav-link').forEach(el => {
+      const target = el.dataset.target;
+      if (!target) return;
+      const num = parseInt(target.replace('s',''));
+      const textKey = map[num];
+      if (!textKey) return;
+
+      // Store original Spanish HTML on first pass
+      if (!el.dataset.originalHtml) el.dataset.originalHtml = el.innerHTML;
+
+      if (lang === 'en' && this.translations.en?.[textKey]) {
+        const icon = el.querySelector('.nav-icon');
+        const check = el.querySelector('.nav-check');
+        const iconHtml = icon ? icon.outerHTML : '';
+        const checkHtml = check ? check.outerHTML : '';
+        el.innerHTML = iconHtml + ' ' + this.translations.en[textKey] + checkHtml;
+      } else {
+        el.innerHTML = el.dataset.originalHtml;
+      }
+    });
+
+    // === 3) SECTION TITLES (h2) & SUBTITLES (.subtitle) ===
+    document.querySelectorAll('section[id]').forEach(sec => {
+      const tkey = sec.id + '-title';
+      const stkey = sec.id + '-sub';
+      const h2 = sec.querySelector('h2');
+      const sub = sec.querySelector('.subtitle');
+
+      if (h2) {
+        if (!h2.dataset.originalText) h2.dataset.originalText = h2.textContent;
+        h2.textContent = lang === 'en' && this.translations.en?.[tkey]
+          ? this.translations.en[tkey] : h2.dataset.originalText;
+      }
+      if (sub) {
+        if (!sub.dataset.originalText) sub.dataset.originalText = sub.textContent;
+        sub.textContent = lang === 'en' && this.translations.en?.[stkey]
+          ? this.translations.en[stkey] : sub.dataset.originalText;
+      }
+    });
+
+    // === 4) DATA-I18N ELEMENTS ===
     document.querySelectorAll('[data-i18n]').forEach(el => {
       const key = el.dataset.i18n;
-      const text = this.translations[lang]?.[key];
+      if (!el.dataset.originalI18n) el.dataset.originalI18n = el.textContent;
+      const text = lang === 'en' ? this.translations.en?.[key] : el.dataset.originalI18n;
       if (text !== undefined) {
         if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
           el.placeholder = text;
@@ -327,62 +383,12 @@ const I18N = {
       }
     });
 
-    // Auto-translate navigation: module titles by position
-    const modTitles = document.querySelectorAll('.nav-module-title');
-    const modKeys = ['nav-mod1','nav-mod2','nav-mod3','nav-mod4','nav-mod5','nav-mod6',
-      'nav-mod7','nav-mod8','nav-mod9','nav-mod10','nav-mod11','nav-mod12','nav-mod13',
-      'nav-mod14','nav-mod15','nav-mod16','nav-mod17','nav-mod18','nav-mod19','nav-mod20',
-      'nav-mod21','nav-tools'];
-    modTitles.forEach((el, i) => {
-      const key = modKeys[i];
-      if (key && this.translations[lang]?.[key]) {
-        el.textContent = this.translations[lang][key];
-      }
-    });
-
-    // Auto-translate nav links: extract number from target (s1→1.1, s30→7.1, etc.)
-    document.querySelectorAll('.nav-link').forEach(el => {
-      const target = el.dataset.target;
-      const tkey = 'nav-' + target.replace('s','');
-      const parts = [];
-      // Build readable key: s1 → 1, s12 → 12, s30 → 30
-      const num = parseInt(target.replace('s',''));
-      // Map section number to module.section
-      const map = this.getSectionMap();
-      const textKey = map[num];
-      if (textKey && this.translations[lang]?.[textKey]) {
-        // Keep icon + translated text
-        const icon = el.querySelector('.nav-icon');
-        const check = el.querySelector('.nav-check');
-        const iconHtml = icon ? icon.outerHTML : '';
-        const checkHtml = check ? check.outerHTML : '';
-        el.innerHTML = iconHtml + ' ' + this.translations[lang][textKey] + checkHtml;
-      }
-    });
-
-    // Auto-translate section titles: h2 matching section id
-    document.querySelectorAll('section[id]').forEach(sec => {
-      const tkey = sec.id + '-title';
-      const stkey = sec.id + '-sub';
-      const h2 = sec.querySelector('h2');
-      const sub = sec.querySelector('.subtitle');
-
-      if (h2 && this.translations[lang]?.[tkey]) {
-        h2.innerHTML = this.translations[lang][tkey];
-      }
-      if (sub && this.translations[lang]?.[stkey]) {
-        sub.textContent = this.translations[lang][stkey];
-      }
-    });
-
-    // Update title
-    document.title = 'Prompt Engineering Master Course — Claude Opus 4.7 + DeepSeek V4 Pro';
-
-    // Update lang toggle buttons
+    // === 5) LANG TOGGLE BUTTONS ===
     document.querySelectorAll('.lang-btn').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.lang === lang);
-      btn.style.background = btn.dataset.lang === lang ? 'var(--accent)' : 'var(--glass)';
-      btn.style.color = btn.dataset.lang === lang ? '#000' : 'var(--text-dim)';
+      const active = btn.dataset.lang === lang;
+      btn.classList.toggle('active', active);
+      btn.style.background = active ? 'var(--accent)' : 'var(--glass)';
+      btn.style.color = active ? '#000' : 'var(--text-dim)';
     });
   },
 
