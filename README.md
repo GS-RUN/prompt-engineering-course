@@ -1,125 +1,204 @@
-# 🧠 Prompt Engineering Master Course
+# 🧠 Prompt Engineering Master Course — 2026 LLM Ecosystem
 
-A comprehensive, interactive web-based course on LLM prompt engineering covering the full **2026 model ecosystem** — frontier proprietary (Claude, GPT, Gemini, Grok), Chinese frontier (DeepSeek, Kimi, MiniMax, Qwen, GLM), open-weights (Llama, Qwen, Gemma, Mistral, DeepSeek, Phi), and local deployment (Ollama, llama.cpp, MLX, vLLM). Built as a single-page application with zero build step, zero dependencies (except a CDN polyfill), and full bilingual support (ES/EN).
+A comprehensive, open academic course on LLM prompt engineering covering the **full 2026 model ecosystem** — frontier proprietary (Claude, GPT, Gemini, Grok), Chinese frontier (DeepSeek, Kimi, MiniMax, Qwen, GLM), open-weights (Llama, Qwen, Gemma, Mistral, DeepSeek, Phi), and local deployment (Ollama, llama.cpp, MLX, vLLM).
+
+Vendor-agnostic by default. Cross-API translation tables for every technique. Bilingual ES + EN. Versioned content with changelog. Comparable in scope to Anthropic Academy, Google ML Crash Course, DeepLearning.AI Generative AI courses — without vendor lock-in.
 
 🔗 **Live demo:** [gs-run.github.io/prompt-engineering-course](https://gs-run.github.io/prompt-engineering-course/)
 
----
-
-## 📚 What's Inside
-
-| Module | Topics |
-|--------|--------|
-| **1. Fundamentals** | LLMs, Prompt Engineering, prompt anatomy, system roles, zero-shot vs few-shot |
-| **2. Essential Techniques** | Clarity, examples, role prompting, XML structure, Chain of Thought, output control |
-| **3. Advanced** | Thinking/Reasoning, prompt chaining, ReAct, long documents |
-| **4. Agents & Skills** | Agents, SKILL.md, sub-agents, CLAUDE.md/AGENTS.md, project roles, MCP, agent comparison |
-| **5. Claude Opus 4.7** | Effort levels, adaptive thinking, tool use, frontend design, code review |
-| **6. Frontier Models 2026** | Full comparison (Claude, GPT, Gemini, DeepSeek, Kimi, MiniMax, Qwen, GLM, Grok, Mistral), OpenCode, AGENTS.md config |
-| **7. Exercises** | 5 interactive exercises with real-time scoring (0-100%) |
-| **8. Diagrams** | 3 animated Canvas diagrams (prompt flow, agent architecture, skills vs sub-agents) |
-| **9. Production** | Structured outputs, prompt caching, evals, prompt injection defense, costs |
-| **10. Advanced Patterns** | System prompt design, multimodal, RAG, fine-tuning vs prompting, multi-turn |
-| **11. Real-World Cases** | Code review pipeline, customer support, data extraction, doc generation |
-| **12. LLM Ecosystem** | AI model types, online vs local, specializations, open source vs proprietary |
-| **13. Training** | Pre-training, post-training (RLHF/DPO), fine-tuning (SFT/LoRA/QLoRA), tools, datasets |
-| **14. Infrastructure** | Chunking + embeddings, vector DBs, frameworks, deployment, monitoring |
-| **15. AI by Industry** | Healthcare, finance, legal, gaming, media, education, retail |
-| **16. Benchmarks** | MMLU, HumanEval, MATH, GPQA, SWE-bench — 2026 model comparison |
-| **17. Safety & Ethics** | Hallucination, bias, red teaming, Anthropic ASL, EU AI Act |
-| **18. Multi-Agent** | Collaboration patterns, CrewAI/AutoGen/LangGraph, agent swarms |
-| **19. AI by Role** | Developer, designer, PM, executive — prompts & workflows |
-| **20. Future of AI** | What's cooking, timeline 2026-2030, AI + science + robotics |
-| **21. Quantization** | FP32→INT2, GPTQ/AWQ/GGUF/BitsAndBytes, quality vs size |
-
-### 🛠️ Interactive Tools
-
-- **Token Counter** — real-time token estimation
-- **Cost Calculator** — compare costs across 18 frontier and OSS models grouped by region (US / China / EU / Other) with caching
-- **Prompt Diff Comparator** — A/B test two prompts with 5-criteria scoring
-- **Prompt Simulator** — toggle 6 techniques and see how response quality changes
-- **12 Quizzes** — multiple choice with localStorage persistence
-- **4 Coding Exercises** — with real-time quality scoring
-- **Theme Toggle** — Dark (Carbón + Ámbar) / Light (Papel + Ámbar) with localStorage persistence
+📋 **Current version:** 2.2.1 (see [CHANGELOG](CHANGELOG.md))
 
 ---
 
-## 🚀 Quick Start
+## 📚 Course structure
 
-Clone and open — no install, no build, no server needed:
+The course is organised into **14 academic blocks** + an orientation block + workshop + capstone. Each block is a standalone HTML page (~7-67 KB) loaded on demand, opening with **front-matter** (icon, level, time estimate, learning objectives) and closing with **bibliographic references** + a **5-question knowledge check**.
+
+| #     | Block                                  | Level         | Time     |
+|-------|----------------------------------------|---------------|----------|
+| **0** | Orientation (setup, prerequisites)     | beginner      | 20 min   |
+| **I** | Foundations (LLM mechanics, ecosystem) | beginner      | 90 min   |
+| **II**| Prompt Engineering Core                | beginner      | 180 min  |
+| **III**| Advanced Reasoning + Tools            | intermediate  | 150 min  |
+| **IV**| Production Engineering                 | intermediate  | 200 min  |
+| **V** | Agents + Multi-agent                   | intermediate  | 180 min  |
+| **VI**| Infrastructure + RAG deep-dive         | intermediate  | 150 min  |
+| **VII**| Local Models + Quantization + Privacy | advanced      | 200 min  |
+| **VIII**| Cross-Model Patterns                 | advanced      | 60 min   |
+| **IX**| Benchmarks + Evaluation                | intermediate  | 90 min   |
+| **X** | Safety, Ethics, Regulation             | intermediate  | 90 min   |
+| **XI**| Applied Industry + Roles               | intermediate  | 200 min  |
+| **XII**| Future + Research Frontier            | reading       | 60 min   |
+| **XIII**| Practical Workshop (Bando B)         | all           | 180 min  |
+| **XIV**| Capstone Projects (4 end-to-end)      | capstone      | ~10h × 4 |
+
+**Total study time:** ~30 hours across 4-6 weeks at 2-3 hour sessions.
+
+### 🛠️ Interactive tools
+
+- **Token Counter** — real-time token estimation.
+- **Cost Calculator** — 18 frontier + OSS models grouped by region (US / China / EU), with caching scenarios.
+- **Prompt Diff Comparator** — A/B two prompts with 5-criteria scoring.
+- **Prompt Simulator** — toggle 6 techniques and see simulated response quality.
+- **5 Coding Exercises** with real-time scoring.
+- **92 quizzes total** — 22 inline formative + 70 end-of-block knowledge checks.
+- **Glossary** — 64 technical terms ES + EN with live filter, linked from every block.
+
+---
+
+## 🚀 Quick start
 
 ```bash
 git clone https://github.com/GS-RUN/prompt-engineering-course.git
 cd prompt-engineering-course
-open index.html   # or double-click index.html
+npx serve .
+# open http://localhost:3000
 ```
 
-To serve locally with hot reload (optional):
-```bash
-npx serve .
-```
+Or just open `index.html` directly in a browser — no build step, no dependencies.
 
 ---
 
-## 🏗️ Project Structure
+## 🏗️ Project structure
 
 ```
 prompt-engineering-course/
-├── index.html          # Main entry — 92 sections, 364 divs, 230 KB
+├── index.html                  # Landing (35 KB) — hero + 17 block cards + course philosophy
+├── modules/
+│   ├── 00-orientation.html     # Setup, prerequisites, environment
+│   ├── 01-foundations.html     # LLM mechanics + 2026 ecosystem
+│   ├── 02-prompt-core.html     # Anatomy, roles, clarity, examples, XML, CoT, output
+│   ├── 03-advanced-reasoning.html   # Thinking, tool use, multimodal
+│   ├── 04-production.html      # Structured outputs, caching, evals, security, costs
+│   ├── 05-agents.html          # Skills, sub-agents, MCP, multi-agent patterns
+│   ├── 06-infrastructure.html  # Chunking, vector DBs, deployment, monitoring
+│   ├── 07-local-quant.html     # GPTQ/AWQ/GGUF, fine-tuning, privacy
+│   ├── 08-cross-model.html     # Vendor-agnostic patterns, fallback, routing
+│   ├── 09-benchmarks.html      # MMLU/HumanEval/SWE-bench/ARC-AGI + eval design
+│   ├── 10-safety.html          # Hallucination, red teaming, EU AI Act
+│   ├── 11-industry.html        # Code review, support, extraction, by sector + role
+│   ├── 12-future.html          # Research frontiers, expected models, AI + science
+│   ├── 13-workshop.html        # Bando B: project, linter, library, evolution
+│   ├── 14-capstone.html        # 4 end-to-end project specs with rubrics
+│   ├── glossary.html           # 64 terms ES + EN, live filter
+│   └── tools.html              # Token counter, cost calc, prompt diff
 ├── css/
-│   └── style.css       # Glassmorphism dark theme, CSS variables, responsive
+│   ├── style.css               # Carbón + Ámbar palette, dark + light themes
+│   └── bando-b.css             # Workshop-specific styling
 ├── js/
-│   ├── app.js          # Router, scroll-spy, progress bar, theme controller
-│   ├── i18n.js         # ES/EN translation system (nav + titles + [data-i18n] generic)
-│   ├── exercises.js    # 4 interactive exercises with scoring engine
-│   ├── simulator.js    # Prompt simulator with 6 toggleable techniques
-│   ├── diagrams.js     # 3 animated Canvas diagrams
-│   ├── quiz.js         # 12 quizzes with localStorage persistence
-│   ├── token-tools.js  # Token counter + cost calculator
-│   └── prompt-diff.js  # A/B prompt comparator
-└── .gitignore
+│   ├── shared/
+│   │   ├── manifest.js         # Single source of truth (block list, objectives, sections)
+│   │   ├── sidebar.js          # Generates sidebar dynamically per page
+│   │   ├── landing.js          # Renders block grid on home page
+│   │   ├── references.js       # Per-block bibliography
+│   │   └── glossary-data.js    # 64 term definitions
+│   ├── app.js                  # Theme controller, defensive widget instantiation
+│   ├── i18n.js                 # ES + EN toggle (CSS-driven via lang-blocks)
+│   ├── quiz.js                 # 92 multiple-choice quizzes
+│   ├── exercises.js            # 5 interactive scoring exercises
+│   ├── simulator.js            # Technique-toggle prompt simulator
+│   ├── diagrams.js             # Animated Canvas diagrams
+│   ├── token-tools.js          # Token counter + cost calculator
+│   ├── prompt-diff.js          # A/B prompt comparator
+│   ├── linter.js               # Prompt linter (Bando B)
+│   ├── library.js              # Prompt library (Bando B)
+│   ├── evolution.js            # Prompt evolution tracker (Bando B)
+│   ├── project.js              # User project panel (Bando B)
+│   └── glossary.js             # In-text glossary popovers
+├── scripts/
+│   ├── split_modules.js        # One-shot: extract sections from index.legacy.html into modules/
+│   ├── add_knowledge_checks.js # One-shot: insert kc-NN anchors into all module pages
+│   └── wrap_lang_blocks.js     # One-shot: wrap section bodies in lang-block divs
+├── CHANGELOG.md
+├── README.md
+└── index.legacy.html           # v1 monolithic backup (will be removed in 2.3)
 ```
+
+### Architectural highlights
+
+- **Multi-page split:** initial landing 35 KB; each block 7-67 KB. Browser caches CSS/JS across pages.
+- **Single source of truth:** `js/shared/manifest.js` declares the block structure. The sidebar, landing, and split scripts all consume it.
+- **Bilingual via CSS:** every section body is wrapped in `<div class="lang-block" data-lang="es|en">`. The `<html>` element's `data-i18n-lang` attribute drives visibility. No JS replacement of textContent.
+- **Defensive JS instantiation:** widget engines are only constructed if their class is loaded on the current page (each module imports only the JS it needs).
+- **Versioned content:** every claim is dated 2026-01 to 2026-05. The "model + hardware version policy" in Block XIV instructs readers to substitute upward (e.g. Opus 4.7 → Opus 5+ when shipped).
 
 ---
 
 ## 🌐 Languages
 
-Click **ES** / **EN** in the sidebar to switch. Translations cover:
-- All navigation items (92 links)
-- All section titles and subtitles
-- Module category headers
-- Language preference saved to `localStorage`
+Click **ES** / **EN** in the sidebar to switch. Coverage:
 
-The i18n system is in `js/i18n.js` — add new translation keys there to extend coverage.
+- Every section body has parallel ES + EN content. Sections without an EN translation fall back to ES with a banner.
+- Sidebar, landing cards, glossary, knowledge checks, references — all bilingual.
+- Language preference saved to `localStorage` and applied via `<html data-i18n-lang="es|en">`.
+- Convention: prompt examples appear in the active language. The course flags honestly that production prompts often run 5-15% better in English on small open-weights models.
 
 ---
 
 ## 🎨 Design
 
-- **Dark theme** with warm gold/orange/gray palette
-- CSS-only animated background (gradient orbs, subtle grid)
-- Glassmorphism cards with backdrop blur
-- Responsive layout (sidebar collapses on mobile)
-- Smooth scroll-spy navigation with completion checkmarks
-- Animated progress bar at the top
+- **Carbón + Ámbar** palette (warm dark default, light theme available).
+- CSS-only animated background (gradient orbs, subtle grid).
+- Glassmorphism cards with backdrop blur.
+- Responsive: sidebar collapses to a horizontal bar on mobile.
+- Difficulty badges (beginner / intermediate / advanced / capstone / reference / reading).
+- Animated progress bar at the top.
 
 ---
 
 ## 📖 Sources
 
-Content compiled from official documentation:
-- [Anthropic Prompt Engineering Guide](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview)
-- [Anthropic Claude Code Docs](https://code.claude.com/docs/en/overview)
-- [OpenAI Prompt Engineering](https://platform.openai.com/docs/guides/prompt-engineering)
-- [Google Gemini Prompt Best Practices](https://ai.google.dev/gemini-api/docs/prompting-strategies)
-- [DeepSeek API Docs](https://platform.deepseek.com/api-docs/)
-- [Moonshot Kimi Open Platform](https://platform.moonshot.ai/)
-- [Alibaba Qwen / DashScope Docs](https://help.aliyun.com/zh/dashscope/)
-- [Zhipu BigModel / GLM Docs](https://open.bigmodel.cn/dev/api)
-- [Mistral La Plateforme Docs](https://docs.mistral.ai/)
-- [Meta Llama Cookbook](https://github.com/meta-llama/llama-cookbook)
+The course is researched and compiled from official documentation. Each block also has its own per-block bibliography in `js/shared/references.js` with direct links to papers, RFCs and official docs.
+
+**Primary sources** (provider documentation):
+
+- [Anthropic — Prompt Engineering Guide](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview)
+- [Anthropic — Claude Code Docs](https://code.claude.com/docs/en/overview)
+- [OpenAI — Prompt Engineering](https://platform.openai.com/docs/guides/prompt-engineering)
+- [Google — Gemini Prompt Best Practices](https://ai.google.dev/gemini-api/docs/prompting-strategies)
+- [DeepSeek — API Docs](https://platform.deepseek.com/api-docs/)
+- [Moonshot — Kimi Open Platform](https://platform.moonshot.ai/)
+- [Alibaba — Qwen / DashScope Docs](https://help.aliyun.com/zh/dashscope/)
+- [Zhipu — BigModel / GLM Docs](https://open.bigmodel.cn/dev/api)
+- [Mistral — La Plateforme Docs](https://docs.mistral.ai/)
+- [Meta — Llama Cookbook](https://github.com/meta-llama/llama-cookbook)
+- [Microsoft — Phi Cookbook](https://github.com/microsoft/PhiCookbook)
+- [Cohere — Documentation](https://docs.cohere.com/)
 - [OpenCode Docs](https://opencode.ai/docs)
-- [DAIR.AI Prompt Engineering Guide](https://www.promptingguide.ai/)
+- [DAIR.AI — Prompt Engineering Guide](https://www.promptingguide.ai/)
+
+**Foundational papers** (linked in per-block references):
+
+- Vaswani et al. — *Attention Is All You Need* (2017)
+- Brown et al. — *Language Models are Few-Shot Learners* (GPT-3, 2020)
+- Wei et al. — *Chain-of-Thought Prompting* (2022)
+- Yao et al. — *ReAct: Synergizing Reasoning and Acting* (2022)
+- Bai et al. — *Constitutional AI* (Anthropic, 2022)
+- Frantar et al. — *GPTQ* (2022); Lin et al. — *AWQ* (2023); Dettmers et al. — *QLoRA* (2023)
+- Hendrycks et al. — *MMLU* (2020); Chen et al. — *HumanEval* (2021); Rein et al. — *GPQA* (2023)
+- Greshake et al. — *Indirect Prompt Injection* (2023)
+
+---
+
+## 🤝 Contributing
+
+Pull requests welcome. The course is versioned (semver-ish): patch for fixes/typos, minor for new content, major for architectural changes.
+
+**Architecture contracts:**
+
+- Block structure → edit `js/shared/manifest.js`. Re-run `node scripts/split_modules.js` if changing legacy section ranges.
+- Knowledge checks → add to `js/quiz.js` with `section: "kc-NN"`.
+- Glossary terms → add to `js/shared/glossary-data.js`.
+- Per-block references → edit `js/shared/references.js`.
+- New module page → use the same shell as existing pages (`<head>` includes, `<body data-page-block="NN">`, `<nav id="sidebar">` populated by `sidebar.js`, `<main id="content">`, references section, knowledge-check anchor).
+
+**When to bump version:**
+
+- 2.2.1 → 2.2.2: typos, refactors, link fixes.
+- 2.2.x → 2.3.0: new section, new module, content rewrite.
+- 2.x.y → 3.0.0: architectural change (manifest schema, breaking URL changes).
+
+Always update `CHANGELOG.md` with the change. Version lives in `js/shared/manifest.js` and is shown in the sidebar foot + landing footer.
 
 ---
 
@@ -129,4 +208,4 @@ MIT — use it, modify it, share it.
 
 ---
 
-© 2026 **Alonso J. Núñez** · [GS·RUN](https://github.com/GS-RUN)
+© 2026 **Alonso J. Núñez** · [GS·RUN](https://github.com/GS-RUN) · [Source code](https://github.com/GS-RUN/prompt-engineering-course)
