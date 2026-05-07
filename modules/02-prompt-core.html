@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bloque II — Prompt Engineering Core — Prompt Engineering Master Course</title>
+<link rel="stylesheet" href="../css/style.css?v=8">
+<link rel="stylesheet" href="../css/bando-b.css?v=8">
+<script>
+  (function() {
+    try {
+      var t = localStorage.getItem('theme');
+      if (t !== 'dark' && t !== 'light') t = 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+    } catch(e) { document.documentElement.setAttribute('data-theme', 'dark'); }
+  })();
+</script>
+</head>
+<body data-page-block="02">
+
+<div class="bg-orb bg-orb-1"></div>
+<div class="bg-orb bg-orb-2"></div>
+<div class="bg-orb bg-orb-3"></div>
+<div class="bg-gradient"></div>
+<div class="bg-grid"></div>
+<div id="progress-bar"></div>
+
+<div id="app">
+<nav id="sidebar"></nav>
+
+<main id="content">
+
+<section class="module-front-matter" data-module-front>
+  <div class="module-meta">
+    <span class="module-icon">🎯</span>
+    <span class="module-level level-beginner">beginner</span>
+    <span class="module-time">⏱️ 180 min</span>
+  </div>
+  <h1 class="module-title">
+    <span class="lang-block" data-lang="es">Bloque II — Prompt Engineering Core</span>
+    <span class="lang-block" data-lang="en">Block II — Prompt Engineering Core</span>
+  </h1>
+  <div class="module-objectives">
+    <div class="lang-block" data-lang="es">
+      <h3>Objetivos de aprendizaje</h3>
+      <ul>
+        <li>Estructurar un prompt profesional con identidad, instrucciones, ejemplos, contexto e input.</li>
+        <li>Aplicar role prompting, few-shot, XML, Chain of Thought y control de formato.</li>
+        <li>Distinguir cuándo usar zero-shot vs few-shot vs CoT.</li>
+        <li>Tunear temperature, top_p, max_tokens y demás parámetros con criterio.</li>
+      </ul>
+    </div>
+    <div class="lang-block" data-lang="en">
+      <h3>Learning objectives</h3>
+      <ul>
+        <li>Structure a professional prompt with identity, instructions, examples, context and input.</li>
+        <li>Apply role prompting, few-shot, XML, Chain of Thought and output control.</li>
+        <li>Decide when to use zero-shot vs few-shot vs CoT.</li>
+        <li>Tune temperature, top_p, max_tokens and other parameters with judgment.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="s2">
+<h2>1.2 ¿Qué es Prompt Engineering?</h2>
+<p class="subtitle">La disciplina de diseñar instrucciones que obtienen resultados consistentes y de alta calidad de un LLM</p>
+<div class="lang-block" data-lang="es">
+
+<div class="card card-green">
+  <div class="card-title">🎯 No es solo "escribir prompts"</div>
+  <p>Es un <strong>proceso iterativo</strong>: definir criterios de éxito → crear prompt → evaluar → iterar. Como TDD pero para lenguaje natural. Anthropic recomienda definir <strong>evals</strong> (evaluaciones) antes de empezar a iterar prompts.</p>
+</div>
+
+<h3>El Ciclo de Prompt Engineering</h3>
+<p style="color:var(--text-dim);font-size:13px;">Ver diagrama animado completo en <a href="#" onclick="document.getElementById('s35').scrollIntoView({behavior:'smooth'});return false;" style="color:var(--accent);">Sección 8.1 →</a></p>
+
+<div class="tip"><strong>💡 Regla de Oro (Anthropic):</strong> Enséñale tu prompt a un colega sin contexto. Si él se confunde, Claude también.</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0;">
+  <div class="card"><div class="card-title">❌ Mal Prompt</div>
+    <pre><code>Write code for a login page</code></pre></div>
+  <div class="card card-green"><div class="card-title">✅ Buen Prompt</div>
+    <pre><code>Create a React login page with:
+- Email + password form
+- "Remember me" checkbox
+- Error handling (invalid creds)
+- Responsive design
+- Loading state on submit</code></pre></div>
+</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="card card-green">
+  <div class="card-title">🎯 It's not just "writing prompts"</div>
+  <p>It's an <strong>iterative process</strong>: define success criteria → create prompt → evaluate → iterate. Like TDD but for natural language. Anthropic recommends defining <strong>evals</strong> (evaluations) before iterating on prompts.</p>
+</div>
+
+<h3>The Prompt Engineering Cycle</h3>
+<p style="color:var(--text-dim);font-size:13px;">See the full animated diagram in <a href="#" onclick="document.getElementById('s35').scrollIntoView({behavior:'smooth'});return false;" style="color:var(--accent);">Section 8.1 →</a></p>
+
+<div class="tip"><strong>💡 Golden Rule (Anthropic):</strong> Show your prompt to a colleague with no context. If they get confused, Claude will too.</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0;">
+  <div class="card"><div class="card-title">❌ Bad Prompt</div>
+    <pre><code>Write code for a login page</code></pre></div>
+  <div class="card card-green"><div class="card-title">✅ Good Prompt</div>
+    <pre><code>Create a React login page with:
+- Email + password form
+- "Remember me" checkbox
+- Error handling (invalid creds)
+- Responsive design
+- Loading state on submit</code></pre></div>
+</div>
+
+</div>
+</section>
+
+<section id="s3">
+<h2>1.3 Anatomía de un Prompt</h2>
+<p class="subtitle">Las 5 secciones que componen un prompt profesional</p>
+<div class="lang-block" data-lang="es">
+
+<div class="card">
+<pre><code>&lt;!-- 1. IDENTITY — Quién eres --&gt;
+You are a senior code reviewer specializing in security.
+
+&lt;!-- 2. INSTRUCTIONS — Qué hacer (y NO hacer) --&gt;
+&lt;instructions&gt;
+1. Analyze code for OWASP Top 10 vulnerabilities
+2. Rate each finding: Critical / High / Medium / Low
+3. Suggest concrete fixes with code examples
+4. Do NOT comment on style or formatting
+&lt;/instructions&gt;
+
+&lt;!-- 3. EXAMPLES — 3-5 ejemplos input→output --&gt;
+&lt;examples&gt;
+&lt;example&gt;...&lt;/example&gt;
+&lt;/examples&gt;
+
+&lt;!-- 4. CONTEXT — Datos externos --&gt;
+&lt;context&gt;Project uses Node.js 20, Express 5, JWT auth&lt;/context&gt;
+
+&lt;!-- 5. INPUT — La tarea concreta --&gt;
+Review this authentication middleware for vulnerabilities:
+[paste code here]</code></pre>
+</div>
+
+<div class="table-wrap"><table>
+<tr><th>Sección</th><th>Prioridad</th><th>Propósito</th></tr>
+<tr><td><strong>Identity</strong></td><td>Alta</td><td>Rol, tono, expertise</td></tr>
+<tr><td><strong>Instructions</strong></td><td>Crítica</td><td>Pasos, reglas, restricciones</td></tr>
+<tr><td><strong>Examples</strong></td><td>Muy Alta</td><td>Patrón input→output (3-5)</td></tr>
+<tr><td><strong>Context</strong></td><td>Alta</td><td>Datos, docs, conocimiento externo</td></tr>
+<tr><td><strong>Input</strong></td><td>—</td><td>La pregunta/tarea concreta</td></tr>
+</table></div>
+
+<div class="tip"><strong>💡 Orden importa:</strong> Documentos largos ARRIBA, query al FINAL. Mejora hasta un 30% la calidad de respuesta.</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="card">
+<pre><code>&lt;!-- 1. IDENTITY — Who you are --&gt;
+You are a senior code reviewer specializing in security.
+
+&lt;!-- 2. INSTRUCTIONS — What to do (and what NOT to do) --&gt;
+&lt;instructions&gt;
+1. Analyze code for OWASP Top 10 vulnerabilities
+2. Rate each finding: Critical / High / Medium / Low
+3. Suggest concrete fixes with code examples
+4. Do NOT comment on style or formatting
+&lt;/instructions&gt;
+
+&lt;!-- 3. EXAMPLES — 3-5 input→output examples --&gt;
+&lt;examples&gt;
+&lt;example&gt;...&lt;/example&gt;
+&lt;/examples&gt;
+
+&lt;!-- 4. CONTEXT — External data --&gt;
+&lt;context&gt;Project uses Node.js 20, Express 5, JWT auth&lt;/context&gt;
+
+&lt;!-- 5. INPUT — The concrete task --&gt;
+Review this authentication middleware for vulnerabilities:
+[paste code here]</code></pre>
+</div>
+
+<div class="table-wrap"><table>
+<tr><th>Section</th><th>Priority</th><th>Purpose</th></tr>
+<tr><td><strong>Identity</strong></td><td>High</td><td>Role, tone, expertise</td></tr>
+<tr><td><strong>Instructions</strong></td><td>Critical</td><td>Steps, rules, constraints</td></tr>
+<tr><td><strong>Examples</strong></td><td>Very High</td><td>Input→output pattern (3-5)</td></tr>
+<tr><td><strong>Context</strong></td><td>High</td><td>Data, docs, external knowledge</td></tr>
+<tr><td><strong>Input</strong></td><td>—</td><td>The concrete question/task</td></tr>
+</table></div>
+
+<div class="tip"><strong>💡 Order matters:</strong> Long documents UP TOP, query at the END. Improves response quality by up to 30%.</div>
+
+</div>
+</section>
+
+<section id="s4">
+<h2>1.4 Roles del Sistema</h2>
+<p class="subtitle">La cadena de mando: system → user → assistant</p>
+<div class="lang-block" data-lang="es">
+
+<div class="compare">
+<div><h4><span class="badge badge-claude">Claude</span> System Prompt</h4>
+<pre><code>system="You are a Python expert.
+Reply only with code, no text."</code></pre></div>
+<div><h4><span class="badge badge-ds">DeepSeek</span> System Message</h4>
+<pre><code>messages=[
+  {"role":"system","content":"..."},
+  {"role":"user","content":"..."}
+]</code></pre></div>
+</div>
+
+<div class="table-wrap"><table>
+<tr><th>Rol</th><th>Quién lo pone</th><th>Prioridad</th></tr>
+<tr><td><code>system</code> / <code>developer</code></td><td>Desarrollador de la app</td><td>MÁXIMA — Anula al usuario</td></tr>
+<tr><td><code>user</code></td><td>Usuario final</td><td>Media</td></tr>
+<tr><td><code>assistant</code></td><td>El modelo (historial)</td><td>Solo referencia</td></tr>
+</table></div>
+
+<div class="tip"><strong>💡 Piensa en:</strong> system = definición de función. user = argumentos. El system prompt tiene prioridad absoluta.</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="compare">
+<div><h4><span class="badge badge-claude">Claude</span> System Prompt</h4>
+<pre><code>system="You are a Python expert.
+Reply only with code, no text."</code></pre></div>
+<div><h4><span class="badge badge-ds">DeepSeek</span> System Message</h4>
+<pre><code>messages=[
+  {"role":"system","content":"..."},
+  {"role":"user","content":"..."}
+]</code></pre></div>
+</div>
+
+<div class="table-wrap"><table>
+<tr><th>Role</th><th>Who sets it</th><th>Priority</th></tr>
+<tr><td><code>system</code> / <code>developer</code></td><td>App developer</td><td>HIGHEST — Overrides the user</td></tr>
+<tr><td><code>user</code></td><td>End user</td><td>Medium</td></tr>
+<tr><td><code>assistant</code></td><td>The model (history)</td><td>Reference only</td></tr>
+</table></div>
+
+<div class="tip"><strong>💡 Think of it as:</strong> system = function definition. user = arguments. The system prompt has absolute priority.</div>
+
+</div>
+</section>
+
+<section id="s5">
+<h2>1.5 Zero-shot vs Few-shot</h2>
+<div class="lang-block" data-lang="es">
+
+<div class="compare">
+<div><h4>Zero-shot</h4>
+<p>Sin ejemplos. El modelo infiere la tarea solo de las instrucciones.</p>
+<pre><code>Clasifica: "Qué producto tan malo" →</code></pre>
+<p style="font-size:12px;color:var(--text-muted);margin-top:8px;">Funciona para tareas simples. Para tareas complejas, la calidad varía mucho.</p>
+</div>
+<div><h4>Few-shot <span class="badge badge-claude">Recomendado</span></h4>
+<p>3-5 ejemplos. El modelo aprende el patrón en contexto.</p>
+<pre><code>"Me encanta" → Positivo
+"Qué horror" → Negativo
+"Está bien" → Neutral
+"Qué malo" →</code></pre>
+<p style="font-size:12px;color:var(--text-muted);margin-top:8px;">Mucho más fiable. Claude Opus 4.7 responde excepcionalmente bien.</p>
+</div>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">📊 Datos de Anthropic</div>
+<p>En benchmarks internos, pasar de zero-shot a 5-shot puede mejorar la accuracy en <strong>20-40 puntos porcentuales</strong> en tareas de clasificación y extracción.</p>
+</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="compare">
+<div><h4>Zero-shot</h4>
+<p>No examples. The model infers the task from instructions alone.</p>
+<pre><code>Classify: "What an awful product" →</code></pre>
+<p style="font-size:12px;color:var(--text-muted);margin-top:8px;">Works for simple tasks. For complex tasks, quality varies a lot.</p>
+</div>
+<div><h4>Few-shot <span class="badge badge-claude">Recommended</span></h4>
+<p>3-5 examples. The model learns the pattern in context.</p>
+<pre><code>"I love it" → Positive
+"How awful" → Negative
+"It's OK" → Neutral
+"What a bad one" →</code></pre>
+<p style="font-size:12px;color:var(--text-muted);margin-top:8px;">Far more reliable. Claude Opus 4.7 responds exceptionally well.</p>
+</div>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">📊 Anthropic Data</div>
+<p>In internal benchmarks, going from zero-shot to 5-shot can improve accuracy by <strong>20-40 percentage points</strong> on classification and extraction tasks.</p>
+</div>
+
+</div>
+</section>
+
+<section id="s6">
+<h2>2.1 Claridad y Precisión</h2>
+<p class="subtitle">El principio más importante. Claude Opus 4.7 es especialmente LITERAL.</p>
+<div class="lang-block" data-lang="es">
+
+<div class="card">
+<div class="card-title">📝 Ejemplo: Explicar el POR QUÉ</div>
+<pre><code>❌ "NUNCA uses puntos suspensivos en tu respuesta".
+
+✅ "Tu respuesta la leerá en voz alta un motor text-to-speech,
+   por lo que nunca uses puntos suspensivos — el motor no sabrá pronunciarlos".</code></pre>
+<p>El modelo es lo bastante inteligente para generalizar a partir de la explicación, en lugar de tratar la regla como un caso aislado.</p>
+</div>
+
+<h3>Checklist de Claridad</h3>
+<div class="table-wrap"><table>
+<tr><th>✅ Hacer</th><th>❌ Evitar</th></tr>
+<tr><td>Especificar formato de salida</td><td>Instrucciones vagas ("hazlo bien")</td></tr>
+<tr><td>Usar listas numeradas si el orden importa</td><td>Solo decir qué NO hacer</td></tr>
+<tr><td>Explicar el porqué</td><td>Asumir que el modelo "entenderá"</td></tr>
+<tr><td>Pedir "above and beyond" explícitamente</td><td>Esperar que infiera que quieres más</td></tr>
+</table></div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="card">
+<div class="card-title">📝 Example: Explain the WHY</div>
+<pre><code>❌ "NEVER use ellipses in your response"
+
+✅ "Your response will be read aloud by a text-to-speech engine,
+   so never use ellipses — the engine won't know how to pronounce them."</code></pre>
+<p>Claude is smart enough to generalize from the explanation.</p>
+</div>
+
+<h3>Clarity Checklist</h3>
+<div class="table-wrap"><table>
+<tr><th>✅ Do</th><th>❌ Avoid</th></tr>
+<tr><td>Specify output format</td><td>Vague instructions ("do it well")</td></tr>
+<tr><td>Use numbered lists if order matters</td><td>Only telling what NOT to do</td></tr>
+<tr><td>Explain the why</td><td>Assuming the model "will understand"</td></tr>
+<tr><td>Ask for "above and beyond" explicitly</td><td>Hoping it infers you want more</td></tr>
+</table></div>
+
+</div>
+</section>
+
+<section id="s7">
+<h2>2.2 Usar Ejemplos (Few-shot Prompting)</h2>
+<div class="lang-block" data-lang="es">
+
+<div class="card card-green">
+<div class="card-title">📋 Reglas para Buenos Ejemplos</div>
+<ul>
+  <li><strong>Relevantes:</strong> Reflejan tu caso de uso exacto</li>
+  <li><strong>Diversos:</strong> Cubren edge cases, no solo el happy path</li>
+  <li><strong>Estructurados:</strong> Envueltos en <code>&lt;example&gt;</code> tags</li>
+  <li><strong>Cantidad:</strong> 3-5 ejemplos (sweet spot según Anthropic)</li>
+</ul>
+</div>
+
+<pre><code>&lt;examples&gt;
+  &lt;example&gt;
+    &lt;input&gt;User reports: "App crashes when I upload a photo"&lt;/input&gt;
+    &lt;output&gt;
+      &lt;diagnosis&gt;Memory overflow on large images&lt;/diagnosis&gt;
+      &lt;fix&gt;Add image resize before upload (max 2048px)&lt;/fix&gt;
+      &lt;files&gt;src/utils/imageProcessor.ts, src/components/Upload.tsx&lt;/files&gt;
+    &lt;/output&gt;
+  &lt;/example&gt;
+  &lt;!-- 2-4 ejemplos más con diferentes escenarios --&gt;
+&lt;/examples&gt;</code></pre>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="card card-green">
+<div class="card-title">📋 Rules for Good Examples</div>
+<ul>
+  <li><strong>Relevant:</strong> Reflect your exact use case</li>
+  <li><strong>Diverse:</strong> Cover edge cases, not just the happy path</li>
+  <li><strong>Structured:</strong> Wrapped in <code>&lt;example&gt;</code> tags</li>
+  <li><strong>Quantity:</strong> 3-5 examples (Anthropic's sweet spot)</li>
+</ul>
+</div>
+
+<pre><code>&lt;examples&gt;
+  &lt;example&gt;
+    &lt;input&gt;User reports: "App crashes when I upload a photo"&lt;/input&gt;
+    &lt;output&gt;
+      &lt;diagnosis&gt;Memory overflow on large images&lt;/diagnosis&gt;
+      &lt;fix&gt;Add image resize before upload (max 2048px)&lt;/fix&gt;
+      &lt;files&gt;src/utils/imageProcessor.ts, src/components/Upload.tsx&lt;/files&gt;
+    &lt;/output&gt;
+  &lt;/example&gt;
+  &lt;!-- 2-4 more examples covering different scenarios --&gt;
+&lt;/examples&gt;</code></pre>
+
+</div>
+</section>
+
+<section id="s8">
+<h2>2.3 Role Prompting</h2>
+<div class="lang-block" data-lang="es">
+<p>Una sola frase definiendo el rol transforma completamente la calidad y el tono de las respuestas.</p>
+
+<div class="table-wrap"><table>
+<tr><th>Rol</th><th>Efecto en la respuesta</th></tr>
+<tr><td>"Eres un profesor de matemáticas"</td><td>Explicaciones paso a paso, ejemplos didácticos</td></tr>
+<tr><td>"Eres un revisor de código senior"</td><td>Crítico, encuentra bugs, sugiere mejoras concretas</td></tr>
+<tr><td>"Eres un abogado de propiedad intelectual"</td><td>Lenguaje legal preciso, cita jurisprudencia</td></tr>
+<tr><td>"You are a staff SRE at Google"</td><td>Enfoque en reliability, monitoring, incident response</td></tr>
+</table></div>
+
+</div>
+<div class="lang-block" data-lang="en">
+<p>A single sentence defining the role completely transforms the quality and tone of responses.</p>
+
+<div class="table-wrap"><table>
+<tr><th>Role</th><th>Effect on response</th></tr>
+<tr><td>"You are a math teacher"</td><td>Step-by-step explanations, didactic examples</td></tr>
+<tr><td>"You are a senior code reviewer"</td><td>Critical, finds bugs, suggests concrete fixes</td></tr>
+<tr><td>"You are an IP lawyer"</td><td>Precise legal language, cites case law</td></tr>
+<tr><td>"You are a staff SRE at Google"</td><td>Focus on reliability, monitoring, incident response</td></tr>
+</table></div>
+
+</div>
+</section>
+
+<section id="s9">
+<h2>2.4 Estructura XML</h2>
+<p class="subtitle">La técnica MÁS recomendada por Anthropic para prompts complejos</p>
+<div class="lang-block" data-lang="es">
+
+<div class="card card-accent">
+<div class="card-title">¿Por qué XML?</div>
+<ul>
+  <li>Separa instrucciones de contexto y ejemplos sin ambigüedad</li>
+  <li>Permite jerarquías anidadas (documentos dentro de documentos)</li>
+  <li>Claude Opus 4.7 está fine-tuned específicamente para XML</li>
+  <li>Facilita extraer secciones específicas de la respuesta</li>
+</ul>
+</div>
+
+<pre><code>&lt;task&gt;
+  &lt;instructions&gt;Analyze the documents and extract delivery dates.&lt;/instructions&gt;
+
+  &lt;documents&gt;
+    &lt;document index="1"&gt;
+      &lt;source&gt;contract.pdf&lt;/source&gt;
+      &lt;content&gt;{{CONTRACT_TEXT}}&lt;/content&gt;
+    &lt;/document&gt;
+    &lt;document index="2"&gt;
+      &lt;source&gt;addendum.docx&lt;/source&gt;
+      &lt;content&gt;{{ADDENDUM_TEXT}}&lt;/content&gt;
+    &lt;/document&gt;
+  &lt;/documents&gt;
+
+  &lt;format&gt;Respond in &lt;dates&gt;...&lt;/dates&gt; tags&lt;/format&gt;
+&lt;/task&gt;</code></pre>
+
+<div class="warn"><strong>⚠️ DeepSeek:</strong> También soporta XML pero con menos fine-tuning específico. Prioriza claridad sobre estructura XML compleja.</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="card card-accent">
+<div class="card-title">Why XML?</div>
+<ul>
+  <li>Separates instructions from context and examples without ambiguity</li>
+  <li>Allows nested hierarchies (documents within documents)</li>
+  <li>Claude Opus 4.7 is fine-tuned specifically for XML</li>
+  <li>Makes it easy to extract specific sections from the response</li>
+</ul>
+</div>
+
+<pre><code>&lt;task&gt;
+  &lt;instructions&gt;Analyze the documents and extract delivery dates.&lt;/instructions&gt;
+
+  &lt;documents&gt;
+    &lt;document index="1"&gt;
+      &lt;source&gt;contract.pdf&lt;/source&gt;
+      &lt;content&gt;{{CONTRACT_TEXT}}&lt;/content&gt;
+    &lt;/document&gt;
+    &lt;document index="2"&gt;
+      &lt;source&gt;addendum.docx&lt;/source&gt;
+      &lt;content&gt;{{ADDENDUM_TEXT}}&lt;/content&gt;
+    &lt;/document&gt;
+  &lt;/documents&gt;
+
+  &lt;format&gt;Respond in &lt;dates&gt;...&lt;/dates&gt; tags&lt;/format&gt;
+&lt;/task&gt;</code></pre>
+
+<div class="warn"><strong>⚠️ DeepSeek:</strong> Also supports XML but with less specific fine-tuning. Prioritize clarity over complex XML structure.</div>
+
+</div>
+</section>
+
+<section id="s10">
+<h2>2.5 Chain of Thought (CoT)</h2>
+<div class="lang-block" data-lang="es">
+
+<div class="compare">
+<div><h4>Sin CoT</h4>
+<pre><code>Q: Un tren sale a 80 km/h, otro a 100 km/h en dirección opuesta desde 360 km. ¿Cuándo se encuentran?
+
+A: 2 horas</code></pre></div>
+<div><h4>Con CoT</h4>
+<pre><code>Q: Un tren sale a 80 km/h...
+Resuelve paso a paso.
+
+A: Velocidad combinada = 80+100 = 180 km/h
+   Tiempo = distancia / velocidad
+   Tiempo = 360/180 = 2 horas
+   Se encuentran en 2 horas.</code></pre></div>
+</div>
+
+<h3>Variantes de CoT</h3>
+<div class="table-wrap"><table>
+<tr><th>Técnica</th><th>Descripción</th><th>Mejor para</th></tr>
+<tr><td>Zero-shot CoT</td><td>"Let's think step by step"</td><td>Tareas simples-moderadas</td></tr>
+<tr><td>Few-shot CoT</td><td>Ejemplos con razonamiento intermedio</td><td>Patrones complejos</td></tr>
+<tr><td>Self-Consistency</td><td>Ejecutar CoT 5+ veces, usar respuesta más común</td><td>Matemáticas, lógica</td></tr>
+<tr><td>Tree of Thoughts</td><td>Explorar múltiples ramas de razonamiento</td><td>Planificación creativa</td></tr>
+</table></div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="compare">
+<div><h4>Without CoT</h4>
+<pre><code>Q: One train leaves at 80 km/h, another at 100 km/h in the opposite direction from 360 km apart. When do they meet?
+
+A: 2 hours</code></pre></div>
+<div><h4>With CoT</h4>
+<pre><code>Q: One train leaves at 80 km/h...
+Solve step by step.
+
+A: Combined speed = 80+100 = 180 km/h
+   Time = distance / speed
+   Time = 360/180 = 2 hours
+   They meet in 2 hours.</code></pre></div>
+</div>
+
+<h3>CoT Variants</h3>
+<div class="table-wrap"><table>
+<tr><th>Technique</th><th>Description</th><th>Best for</th></tr>
+<tr><td>Zero-shot CoT</td><td>"Let's think step by step"</td><td>Simple-to-moderate tasks</td></tr>
+<tr><td>Few-shot CoT</td><td>Examples with intermediate reasoning</td><td>Complex patterns</td></tr>
+<tr><td>Self-Consistency</td><td>Run CoT 5+ times, use most common answer</td><td>Math, logic</td></tr>
+<tr><td>Tree of Thoughts</td><td>Explore multiple reasoning branches</td><td>Creative planning</td></tr>
+</table></div>
+
+</div>
+</section>
+
+<section id="s11">
+<h2>2.6 Control de Formato de Salida</h2>
+<div class="lang-block" data-lang="es">
+
+<div class="table-wrap"><table>
+<tr><th>Técnica</th><th>Ejemplo</th></tr>
+<tr><td>Decir qué hacer</td><td>"Responde con prosa fluida" en vez de "No uses markdown"</td></tr>
+<tr><td>Tags de formato</td><td>"Escribe la respuesta en &lt;json&gt;...&lt;/json&gt;"</td></tr>
+<tr><td>Matchear estilo</td><td>Si tu prompt no usa markdown, la respuesta usará menos</td></tr>
+<tr><td><span class="badge badge-claude">Claude</span> Structured Outputs</td><td>JSON Schema via <code>tool_use</code> — garantiza formato exacto</td></tr>
+<tr><td><span class="badge badge-ds">DeepSeek</span> JSON Mode</td><td><code>response_format: {"type": "json_object"}</code></td></tr>
+</table></div>
+
+<div class="card">
+<div class="card-title">📝 Control de Verbosidad (Opus 4.7)</div>
+<pre><code># Más conciso:
+"Da respuestas concisas y al grano. Omite contexto no esencial".
+
+# Más detallado:
+"Sé exhaustivo. Incluye edge cases, trade-offs y detalles de implementación".</code></pre>
+</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="table-wrap"><table>
+<tr><th>Technique</th><th>Example</th></tr>
+<tr><td>Say what to do</td><td>"Respond in flowing prose" instead of "Don't use markdown"</td></tr>
+<tr><td>Format tags</td><td>"Write the response in &lt;json&gt;...&lt;/json&gt;"</td></tr>
+<tr><td>Match the style</td><td>If your prompt uses no markdown, the response will use less</td></tr>
+<tr><td><span class="badge badge-claude">Claude</span> Structured Outputs</td><td>JSON Schema via <code>tool_use</code> — guarantees exact format</td></tr>
+<tr><td><span class="badge badge-ds">DeepSeek</span> JSON Mode</td><td><code>response_format: {"type": "json_object"}</code></td></tr>
+</table></div>
+
+<div class="card">
+<div class="card-title">📝 Verbosity Control (Opus 4.7)</div>
+<pre><code># More concise:
+"Provide concise, focused responses. Skip non-essential context."
+
+# More detailed:
+"Be thorough. Include edge cases, trade-offs, and implementation details."</code></pre>
+</div>
+
+</div>
+</section>
+
+<section id="s30">
+<h2>7.1 Ejercicio: Crear un Prompt Efectivo</h2>
+<p class="subtitle">Transforma un prompt vago en uno profesional</p>
+<div class="lang-block" data-lang="es">
+
+<div class="exercise-panel">
+<h4>🛠️ Prompt Original</h4>
+<pre><code>Write code for a login page</code></pre>
+
+<h4 style="color:var(--accent);margin-top:20px;">✅ Tu versión mejorada:</h4>
+<div class="editor-container">
+<textarea class="ex-editor" id="ex1-input" placeholder="Escribe tu prompt mejorado aquí. Incluye: tecnología, funcionalidades, diseño, restricciones..."></textarea>
+</div>
+<button class="btn btn-primary" id="ex1-check">🔍 Evaluar Prompt</button>
+<div class="ex-score">
+  <div class="ex-score-bar"><div class="ex-score-fill" id="ex1-score-bar" style="width:0%"></div></div>
+  <div class="ex-score-text" id="ex1-score-text">0%</div>
+</div>
+<div class="ex-output" id="ex1-output"></div>
+</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="exercise-panel">
+<h4>🛠️ Original Prompt</h4>
+<pre><code>Write code for a login page</code></pre>
+
+<h4 style="color:var(--accent);margin-top:20px;">✅ Your improved version:</h4>
+<div class="tip">Interactive exercise input is available in <strong>Spanish mode</strong>. Switch to ES to type your improved prompt and get a quality score from the linter.</div>
+</div>
+
+</div>
+</section>
+
+<section id="s31">
+<h2>7.2 Ejercicio: Zero-shot → Few-shot</h2>
+<div class="lang-block" data-lang="es">
+
+<div class="exercise-panel">
+<h4>🛠️ Prompt Zero-shot</h4>
+<pre><code>Classify: "The battery is terrible but the screen is beautiful"</code></pre>
+
+<h4 style="color:var(--accent);margin-top:20px;">✅ Convierte a Few-shot (3+ ejemplos):</h4>
+<div class="editor-container">
+<textarea class="ex-editor" id="ex2-input" placeholder="Escribe tu prompt con al menos 3 ejemplos de clasificación...&#10;&#10;Ej: "Great product" → Positive&#10;    "Worst ever" → Negative"></textarea>
+</div>
+<button class="btn btn-primary" id="ex2-check">🔍 Evaluar</button>
+<div class="ex-score">
+  <div class="ex-score-bar"><div class="ex-score-fill" id="ex2-score-bar" style="width:0%"></div></div>
+  <div class="ex-score-text" id="ex2-score-text">0%</div>
+</div>
+<div class="ex-output" id="ex2-output"></div>
+</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="exercise-panel">
+<h4>🛠️ Zero-shot Prompt</h4>
+<pre><code>Classify: "The battery is terrible but the screen is beautiful"</code></pre>
+
+<h4 style="color:var(--accent);margin-top:20px;">✅ Convert to Few-shot (3+ examples):</h4>
+<div class="tip">Interactive exercise input is available in <strong>Spanish mode</strong>. Switch to ES to type your few-shot prompt and get an evaluation.</div>
+</div>
+
+</div>
+</section>
+
+<section id="s32">
+<h2>7.3 Ejercicio: Chain of Thought</h2>
+<div class="lang-block" data-lang="es">
+
+<div class="exercise-panel">
+<h4>🛠️ Sin CoT</h4>
+<pre><code>Restaurant: 15 tables × 4 seats. Monday: lunch 75% (2 seatings),
+dinner 90% (1.5 seatings). How many people served?</code></pre>
+
+<h4 style="color:var(--accent);margin-top:20px;">✅ Añade CoT:</h4>
+<div class="editor-container">
+<textarea class="ex-editor" id="ex3-input" placeholder="Añade instrucciones para razonar paso a paso...&#10;&#10;Ej: 'Let's think step by step...'"></textarea>
+</div>
+<button class="btn btn-primary" id="ex3-check">🔍 Evaluar</button>
+<div class="ex-score">
+  <div class="ex-score-bar"><div class="ex-score-fill" id="ex3-score-bar" style="width:0%"></div></div>
+  <div class="ex-score-text" id="ex3-score-text">0%</div>
+</div>
+<div class="ex-output" id="ex3-output"></div>
+</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="exercise-panel">
+<h4>🛠️ Without CoT</h4>
+<pre><code>Restaurant: 15 tables × 4 seats. Monday: lunch 75% (2 seatings),
+dinner 90% (1.5 seatings). How many people served?</code></pre>
+
+<h4 style="color:var(--accent);margin-top:20px;">✅ Add CoT:</h4>
+<div class="tip">Interactive exercise input is available in <strong>Spanish mode</strong>. Switch to ES to type your CoT version and get an evaluation.</div>
+</div>
+
+</div>
+</section>
+
+<section id="s33">
+<h2>7.4 Simulador de Prompt Interactivo</h2>
+<p class="subtitle">Experimenta cómo cambia la respuesta al activar diferentes técnicas</p>
+<div class="lang-block" data-lang="es">
+
+<div class="sim-panel">
+<div class="sim-controls">
+  <div class="sim-control">
+    <label>Rol del Asistente</label>
+    <select id="sim-role">
+      <option value="">Sin rol definido</option>
+      <option value="senior">Senior Developer</option>
+      <option value="teacher">Profesor de Matemáticas</option>
+      <option value="sre">Site Reliability Engineer</option>
+      <option value="lawyer">Abogado Especializado</option>
+    </select>
+  </div>
+  <div class="sim-control">
+    <label>Tu Pregunta</label>
+    <input type="text" id="sim-query" value="¿Cómo implemento rate limiting en una API REST?" placeholder="Escribe tu pregunta...">
+  </div>
+</div>
+
+<label style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);font-weight:700;display:block;margin:12px 0 6px;">Técnicas Activas</label>
+<div class="sim-toggle-group">
+  <div class="sim-toggle" data-key="role">👤 Role Prompting</div>
+  <div class="sim-toggle" data-key="cot">🧠 Chain of Thought</div>
+  <div class="sim-toggle" data-key="xml">🏷️ XML Structure</div>
+  <div class="sim-toggle" data-key="fewshot">📋 Few-shot</div>
+  <div class="sim-toggle" data-key="thinking">⚡ Thinking Mode</div>
+  <div class="sim-toggle" data-key="parallel">🔄 Parallel Tools</div>
+</div>
+
+<button class="btn btn-primary" id="sim-run" style="margin-top:16px;">🚀 Simular Respuesta</button>
+<div id="sim-techs" style="font-size:12px;color:var(--text-dim);margin-top:8px;"></div>
+
+<div class="sim-output-panel" id="sim-output"></div>
+
+<div class="sim-stats">
+  <div class="sim-stat"><div class="sim-stat-val" id="sim-quality">0%</div><div class="sim-stat-label">Calidad</div></div>
+  <div class="sim-stat"><div class="sim-stat-val" id="sim-speed">0%</div><div class="sim-stat-label">Velocidad</div></div>
+  <div class="sim-stat"><div class="sim-stat-val" id="sim-cost">0%</div><div class="sim-stat-label">Coste</div></div>
+  <div class="sim-stat"><div class="sim-stat-val" id="sim-accuracy">0%</div><div class="sim-stat-label">Precisión</div></div>
+</div>
+</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="card">
+<div class="card-title">🚀 Interactive Prompt Simulator</div>
+<p>Toggle techniques (Role, CoT, XML, Few-shot, Thinking, Parallel Tools) and see how the simulated response changes — quality, speed, cost, accuracy.</p>
+<div class="tip">The interactive simulator runs in <strong>Spanish mode</strong>. Switch to ES to use the toggles and see live response changes.</div>
+</div>
+
+</div>
+</section>
+
+<section id="s34">
+<h2>7.5 Ejercicio: Combina Rol + XML + Ejemplos</h2>
+<div class="lang-block" data-lang="es">
+
+<div class="exercise-panel">
+<h4>🛠️ Prompt Simple</h4>
+<pre><code>Review this code for security issues</code></pre>
+
+<h4 style="color:var(--accent);margin-top:20px;">✅ Combina las 3 técnicas más poderosas:</h4>
+<div class="editor-container">
+<textarea class="ex-editor" id="ex4-input" placeholder="1. Define un ROL (eres un experto en...)
+2. Estructura con XML (&lt;instructions&gt;, &lt;context&gt;, &lt;format&gt;)
+3. Añade 2-3 EJEMPLOS de vulnerabilidades encontradas"></textarea>
+</div>
+<button class="btn btn-primary" id="ex4-check">🔍 Evaluar</button>
+<div class="ex-score">
+  <div class="ex-score-bar"><div class="ex-score-fill" id="ex4-score-bar" style="width:0%"></div></div>
+  <div class="ex-score-text" id="ex4-score-text">0%</div>
+</div>
+<div class="ex-output" id="ex4-output"></div>
+</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="exercise-panel">
+<h4>🛠️ Simple Prompt</h4>
+<pre><code>Review this code for security issues</code></pre>
+
+<h4 style="color:var(--accent);margin-top:20px;">✅ Combine the 3 most powerful techniques:</h4>
+<div class="tip">Interactive exercise input is available in <strong>Spanish mode</strong>. Switch to ES to combine Role + XML + Examples and get a score.</div>
+</div>
+
+</div>
+</section>
+
+<section id="s35">
+<h2>8.1 Flujo Completo de un Prompt</h2>
+<div class="lang-block" data-lang="es">
+<div class="diagram-canvas-wrap"><canvas id="diagram-prompt-flow"></canvas></div>
+<p style="text-align:center;color:var(--text-dim);font-size:13px;margin-top:12px;">
+  Diagrama animado: Human Input → System Prompt → Tool Definitions → LLM Processing → Response / Tool Call Loop → Output
+</p>
+
+</div>
+<div class="lang-block" data-lang="en">
+<div class="diagram-canvas-wrap"><canvas id="diagram-prompt-flow-en"></canvas></div>
+<p style="text-align:center;color:var(--text-dim);font-size:13px;margin-top:12px;">
+  Animated diagram: Human Input → System Prompt → Tool Definitions → LLM Processing → Response / Tool Call Loop → Output
+</p>
+<div class="tip">The animated diagram is rendered in the Spanish view. Switch to ES to see it live.</div>
+
+</div>
+</section>
+
+<section id="s36">
+<h2>8.2 Arquitectura de un Agente de Código</h2>
+<div class="lang-block" data-lang="es">
+<div class="diagram-canvas-wrap"><canvas id="diagram-agent-arch"></canvas></div>
+<p style="text-align:center;color:var(--text-dim);font-size:13px;margin-top:12px;">
+  Agente principal con tools orbitando y sub-agentes (Explore, Plan, Execute) conectados
+</p>
+
+</div>
+<div class="lang-block" data-lang="en">
+<div class="diagram-canvas-wrap"><canvas id="diagram-agent-arch-en"></canvas></div>
+<p style="text-align:center;color:var(--text-dim);font-size:13px;margin-top:12px;">
+  Main agent with orbiting tools and connected sub-agents (Explore, Plan, Execute)
+</p>
+<div class="tip">The animated diagram is rendered in the Spanish view. Switch to ES to see it live.</div>
+
+</div>
+</section>
+
+<section id="s37">
+<h2>8.3 Skills vs Sub-agentes vs Prompts</h2>
+<div class="lang-block" data-lang="es">
+<div class="diagram-canvas-wrap"><canvas id="diagram-skill-vs"></canvas></div>
+
+<div class="table-wrap" style="margin-top:20px;"><table>
+<tr><th></th><th>Prompt Directo</th><th>Skill</th><th>Sub-agente</th></tr>
+<tr><td><strong>Persistencia</strong></td><td>❌ Una vez</td><td>✅ Archivo .md</td><td>✅ Archivo</td></tr>
+<tr><td><strong>Reutilización</strong></td><td>❌ Copiar/pegar</td><td>✅ /nombre</td><td>✅ Automático</td></tr>
+<tr><td><strong>Aislamiento</strong></td><td>❌ Comparte</td><td>⚠️ Configurable</td><td>✅ Total</td></tr>
+<tr><td><strong>Mejor para</strong></td><td>Tareas únicas</td><td>Workflows repetibles</td><td>Paralelismo</td></tr>
+</table></div>
+
+<div class="tip"><strong>💡 Regla:</strong> Si copias las mismas instrucciones 3+ veces → Skill. Si puedes dividir la tarea en partes independientes → Sub-agentes.</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+<div class="diagram-canvas-wrap"><canvas id="diagram-skill-vs-en"></canvas></div>
+
+<div class="table-wrap" style="margin-top:20px;"><table>
+<tr><th></th><th>Direct Prompt</th><th>Skill</th><th>Sub-agent</th></tr>
+<tr><td><strong>Persistence</strong></td><td>❌ One-off</td><td>✅ .md file</td><td>✅ File</td></tr>
+<tr><td><strong>Reusability</strong></td><td>❌ Copy/paste</td><td>✅ /name</td><td>✅ Automatic</td></tr>
+<tr><td><strong>Isolation</strong></td><td>❌ Shared</td><td>⚠️ Configurable</td><td>✅ Total</td></tr>
+<tr><td><strong>Best for</strong></td><td>One-off tasks</td><td>Repeatable workflows</td><td>Parallelism</td></tr>
+</table></div>
+
+<div class="tip"><strong>💡 Rule:</strong> If you copy the same instructions 3+ times → Skill. If you can split the task into independent parts → Sub-agents. The animated diagram renders in the Spanish view.</div>
+
+</div>
+</section>
+
+
+
+<section class="module-references">
+  <h3 data-i18n="ref-header">Referencias</h3>
+  <p style="font-size:13px;color:var(--text-dim);" data-i18n="ref-intro">
+    Documentación oficial y papers consultados durante este módulo. Revísalos para profundizar.
+  </p>
+  <ul class="references-list" data-references="02"></ul>
+</section>
+
+</main>
+</div>
+
+<script src="../js/shared/manifest.js?v=8"></script>
+<script src="../js/shared/sidebar.js?v=8"></script>
+<script src="../js/shared/references.js?v=8"></script>
+<script src="../js/i18n.js?v=8"></script>
+<script src="../js/diagrams.js?v=8"></script>
+<script src="../js/exercises.js?v=8"></script>
+<script src="../js/simulator.js?v=8"></script>
+<script src="../js/quiz.js?v=8"></script>
+<script src="../js/glossary.js?v=8"></script>
+<script src="../js/app.js?v=8"></script>
+</body>
+</html>

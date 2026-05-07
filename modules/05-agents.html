@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bloque V — Agentes y Multi-agente — Prompt Engineering Master Course</title>
+<link rel="stylesheet" href="../css/style.css?v=8">
+<link rel="stylesheet" href="../css/bando-b.css?v=8">
+<script>
+  (function() {
+    try {
+      var t = localStorage.getItem('theme');
+      if (t !== 'dark' && t !== 'light') t = 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+    } catch(e) { document.documentElement.setAttribute('data-theme', 'dark'); }
+  })();
+</script>
+</head>
+<body data-page-block="05">
+
+<div class="bg-orb bg-orb-1"></div>
+<div class="bg-orb bg-orb-2"></div>
+<div class="bg-orb bg-orb-3"></div>
+<div class="bg-gradient"></div>
+<div class="bg-grid"></div>
+<div id="progress-bar"></div>
+
+<div id="app">
+<nav id="sidebar"></nav>
+
+<main id="content">
+
+<section class="module-front-matter" data-module-front>
+  <div class="module-meta">
+    <span class="module-icon">🤖</span>
+    <span class="module-level level-intermediate">intermediate</span>
+    <span class="module-time">⏱️ 180 min</span>
+  </div>
+  <h1 class="module-title">
+    <span class="lang-block" data-lang="es">Bloque V — Agentes y Multi-agente</span>
+    <span class="lang-block" data-lang="en">Block V — Agents + Multi-agent</span>
+  </h1>
+  <div class="module-objectives">
+    <div class="lang-block" data-lang="es">
+      <h3>Objetivos de aprendizaje</h3>
+      <ul>
+        <li>Distinguir chat, workflow y agente con criterios precisos.</li>
+        <li>Configurar Skills, sub-agentes y MCP en Claude Code / OpenCode / Codex.</li>
+        <li>Aplicar patrones multi-agente (debate, supervisor-worker, swarms).</li>
+        <li>Elegir framework adecuado: CrewAI, AutoGen, LangGraph.</li>
+      </ul>
+    </div>
+    <div class="lang-block" data-lang="en">
+      <h3>Learning objectives</h3>
+      <ul>
+        <li>Distinguish chat, workflow and agent with precise criteria.</li>
+        <li>Configure Skills, sub-agents and MCP in Claude Code / OpenCode / Codex.</li>
+        <li>Apply multi-agent patterns (debate, supervisor-worker, swarms).</li>
+        <li>Pick the right framework: CrewAI, AutoGen, LangGraph.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="s16">
+<h2>4.1 ¿Qué es un Agente AI?</h2>
+<p class="subtitle">Un sistema que usa un LLM para razonar, decidir acciones, ejecutar herramientas y adaptarse — autónomamente</p>
+<div class="lang-block" data-lang="es">
+
+<div class="card">
+<div class="card-title">🧠 Agente vs Chat vs Workflow</div>
+<div class="table-wrap"><table class="vs-table">
+<tr><td><strong>Chat simple</strong></td><td>Pregunta → Respuesta. Sin herramientas. Sin iteración.</td></tr>
+<tr><td><strong>Workflow</strong></td><td>Pipeline fija: paso 1 → 2 → 3. Determinista, predecible.</td></tr>
+<tr><td><strong>Agente</strong></td><td>El modelo DECIDE qué herramientas usar, en qué orden. Bucle autónomo: pensar → actuar → observar → repetir hasta completar.</td></tr>
+</table></div>
+</div>
+
+<h3>Herramientas del Ecosistema</h3>
+<div class="table-wrap"><table>
+<tr><th>Herramienta</th><th>Modelo base</th><th>Tipo</th></tr>
+<tr><td><strong>Claude Code</strong></td><td>Claude Opus 4.7</td><td>Agente nativo Anthropic</td></tr>
+<tr><td><strong>OpenCode</strong></td><td>Claude/GPT/DeepSeek</td><td>Agente open-source</td></tr>
+<tr><td><strong>OpenAI Codex</strong></td><td>GPT-5.5</td><td>Agente cloud+nativo</td></tr>
+<tr><td><strong>GitHub Copilot</strong></td><td>GPT-4.1 / Claude</td><td>Asistente IDE</td></tr>
+</table></div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="card">
+<div class="card-title">🧠 Agent vs Chat vs Workflow</div>
+<div class="table-wrap"><table class="vs-table">
+<tr><td><strong>Simple chat</strong></td><td>Question → Answer. No tools. No iteration.</td></tr>
+<tr><td><strong>Workflow</strong></td><td>Fixed pipeline: step 1 → 2 → 3. Deterministic, predictable.</td></tr>
+<tr><td><strong>Agent</strong></td><td>The model DECIDES which tools to use, in what order. Autonomous loop: think → act → observe → repeat until done.</td></tr>
+</table></div>
+</div>
+
+<h3>Ecosystem Tools</h3>
+<div class="table-wrap"><table>
+<tr><th>Tool</th><th>Base model</th><th>Type</th></tr>
+<tr><td><strong>Claude Code</strong></td><td>Claude Opus 4.7</td><td>Native Anthropic agent</td></tr>
+<tr><td><strong>OpenCode</strong></td><td>Claude/GPT/DeepSeek</td><td>Open-source agent</td></tr>
+<tr><td><strong>OpenAI Codex</strong></td><td>GPT-5.5</td><td>Cloud + native agent</td></tr>
+<tr><td><strong>GitHub Copilot</strong></td><td>GPT-4.1 / Claude</td><td>IDE assistant</td></tr>
+</table></div>
+
+</div>
+</section>
+
+<section id="s17">
+<h2>4.2 Skills en Claude Code</h2>
+<p class="subtitle">Archivos SKILL.md que extienden a Claude con capacidades reutilizables</p>
+<div class="lang-block" data-lang="es">
+
+<div class="card card-accent">
+<div class="card-title">📄 Anatomía de un SKILL.md</div>
+<pre><code>---
+name: deploy
+description: Deploy to production
+disable-model-invocation: true
+allowed-tools: Bash(git push *) Bash(npm run deploy)
+context: fork
+---
+
+# Deploy Procedure
+1. Run tests: `npm test`
+2. Build: `npm run build`
+3. Deploy to production
+4. Verify health check: `curl /health`</code></pre>
+</div>
+
+<h3>Frontmatter Clave</h3>
+<div class="table-wrap"><table>
+<tr><th>Campo</th><th>Descripción</th></tr>
+<tr><td><code>description</code></td><td>Qué hace y cuándo usarla. Claude usa esto para decidir si cargarla.</td></tr>
+<tr><td><code>disable-model-invocation</code></td><td>Si true, solo el usuario puede invocarla (útil para deploy, commit).</td></tr>
+<tr><td><code>context: fork</code></td><td>Ejecuta en sub-agente aislado sin historial de conversación.</td></tr>
+<tr><td><code>allowed-tools</code></td><td>Herramientas pre-aprobadas mientras la skill está activa.</td></tr>
+</table></div>
+
+<div class="tip"><strong>💡 Dynamic Context:</strong> <code>!`git diff HEAD`</code> ejecuta el comando y reemplaza la línea con su output antes de enviar el prompt a Claude.</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="card card-accent">
+<div class="card-title">📄 Anatomy of a SKILL.md</div>
+<pre><code>---
+name: deploy
+description: Deploy to production
+disable-model-invocation: true
+allowed-tools: Bash(git push *) Bash(npm run deploy)
+context: fork
+---
+
+# Deploy Procedure
+1. Run tests: `npm test`
+2. Build: `npm run build`
+3. Deploy to production
+4. Verify health check: `curl /health`</code></pre>
+</div>
+
+<h3>Key Frontmatter</h3>
+<div class="table-wrap"><table>
+<tr><th>Field</th><th>Description</th></tr>
+<tr><td><code>description</code></td><td>What it does and when to use it. Claude uses this to decide whether to load it.</td></tr>
+<tr><td><code>disable-model-invocation</code></td><td>If true, only the user can invoke it (useful for deploy, commit).</td></tr>
+<tr><td><code>context: fork</code></td><td>Runs in an isolated sub-agent without conversation history.</td></tr>
+<tr><td><code>allowed-tools</code></td><td>Pre-approved tools while the skill is active.</td></tr>
+</table></div>
+
+<div class="tip"><strong>💡 Dynamic Context:</strong> <code>!`git diff HEAD`</code> runs the command and replaces the line with its output before sending the prompt to Claude.</div>
+
+</div>
+</section>
+
+<section id="s18">
+<h2>4.3 Sub-agentes</h2>
+<div class="lang-block" data-lang="es">
+
+<div class="table-wrap"><table>
+<tr><th>Tipo</th><th>Herramientas</th><th>Uso ideal</th></tr>
+<tr><td><code>Explore</code></td><td>Read, Glob, Grep (solo lectura)</td><td>Explorar codebase, encontrar patrones</td></tr>
+<tr><td><code>Plan</code></td><td>Read, Glob, Grep, Write</td><td>Diseñar arquitectura, documentar</td></tr>
+<tr><td><code>general-purpose</code></td><td>Todas las herramientas</td><td>Implementación, edición, ejecución</td></tr>
+</table></div>
+
+<div class="card card-orange">
+<div class="card-title">🤖 Claude Opus 4.7 — Spawning</div>
+<p>Opus 4.7 tiende a spawnear MENOS sub-agentes por defecto. Para tareas paralelizables, indícalo:</p>
+<pre><code>Spawn multiple subagents in the same turn when fanning out
+across items or reading multiple files.</code></pre>
+</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="table-wrap"><table>
+<tr><th>Type</th><th>Tools</th><th>Ideal use</th></tr>
+<tr><td><code>Explore</code></td><td>Read, Glob, Grep (read-only)</td><td>Explore codebase, find patterns</td></tr>
+<tr><td><code>Plan</code></td><td>Read, Glob, Grep, Write</td><td>Design architecture, document</td></tr>
+<tr><td><code>general-purpose</code></td><td>All tools</td><td>Implementation, editing, execution</td></tr>
+</table></div>
+
+<div class="card card-orange">
+<div class="card-title">🤖 Claude Opus 4.7 — Spawning</div>
+<p>Opus 4.7 tends to spawn FEWER sub-agents by default. For parallelizable tasks, say so:</p>
+<pre><code>Spawn multiple subagents in the same turn when fanning out
+across items or reading multiple files.</code></pre>
+</div>
+
+</div>
+</section>
+
+<section id="s19">
+<h2>4.4 CLAUDE.md / AGENTS.md</h2>
+<div class="lang-block" data-lang="es">
+
+<div class="compare">
+<div><h4><span class="badge badge-claude">CLAUDE.md</span></h4>
+<pre><code># Project Rules
+- TypeScript strict mode
+- Prettier for formatting
+- Jest for testing
+- Never commit .env files
+- Branch naming: feat/*, fix/*</code></pre>
+<p style="font-size:12px;color:var(--text-muted)">Raíz del proyecto o <code>.claude/CLAUDE.md</code></p>
+</div>
+<div><h4><span class="badge badge-ds">AGENTS.md</span></h4>
+<pre><code># AGENTS.md - Workspace
+- Usa `memory/` para notas diarias
+- MEMORY.md para memoria largo plazo
+- NUNCA commitear secrets
+- Responde en español</code></pre>
+<p style="font-size:12px;color:var(--text-muted)">Raíz del workspace. Leído por OpenCode.</p>
+</div>
+</div>
+
+<div class="tip"><strong>💡 Diferencia clave:</strong> CLAUDE.md es leído por Claude Code directamente. AGENTS.md es leído por OpenCode y su contenido se inyecta en el system prompt. Mismo concepto, implementación diferente.</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="compare">
+<div><h4><span class="badge badge-claude">CLAUDE.md</span></h4>
+<pre><code># Project Rules
+- TypeScript strict mode
+- Prettier for formatting
+- Jest for testing
+- Never commit .env files
+- Branch naming: feat/*, fix/*</code></pre>
+<p style="font-size:12px;color:var(--text-muted)">Project root or <code>.claude/CLAUDE.md</code></p>
+</div>
+<div><h4><span class="badge badge-ds">AGENTS.md</span></h4>
+<pre><code># AGENTS.md - Workspace
+- Use `memory/` for daily notes
+- MEMORY.md for long-term memory
+- NEVER commit secrets
+- Reply in Spanish</code></pre>
+<p style="font-size:12px;color:var(--text-muted)">Workspace root. Read by OpenCode.</p>
+</div>
+</div>
+
+<div class="tip"><strong>💡 Key difference:</strong> CLAUDE.md is read by Claude Code directly. AGENTS.md is read by OpenCode and its content is injected into the system prompt. Same concept, different implementation.</div>
+
+</div>
+</section>
+
+<section id="s20">
+<h2>4.5 Roles en Proyectos con Agentes</h2>
+<div class="lang-block" data-lang="es">
+
+<h3>El Flujo de Trabajo con Agentes</h3>
+<div class="card card-green">
+<ol>
+  <li><strong>Setup:</strong> Creas <code>AGENTS.md</code> con reglas + <code>skills/</code> para tareas repetitivas</li>
+  <li><strong>Task:</strong> Describes la tarea en lenguaje natural (una o dos frases)</li>
+  <li><strong>Explore:</strong> El agente lee el codebase para entender contexto</li>
+  <li><strong>Plan:</strong> Propone una estrategia (revisas y ajustas)</li>
+  <li><strong>Execute:</strong> Implementa cambios, usando sub-agentes si paraleliza</li>
+  <li><strong>Verify:</strong> Ejecuta tests, linters, corrige errores</li>
+  <li><strong>Commit:</strong> Commit + mensaje descriptivo (si se lo pides)</li>
+</ol>
+</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<h3>The Agent Workflow</h3>
+<div class="card card-green">
+<ol>
+  <li><strong>Setup:</strong> Create <code>AGENTS.md</code> with rules + <code>skills/</code> for repetitive tasks</li>
+  <li><strong>Task:</strong> Describe the task in natural language (one or two sentences)</li>
+  <li><strong>Explore:</strong> The agent reads the codebase to understand context</li>
+  <li><strong>Plan:</strong> Proposes a strategy (you review and adjust)</li>
+  <li><strong>Execute:</strong> Implements changes, using sub-agents if it parallelizes</li>
+  <li><strong>Verify:</strong> Runs tests, linters, fixes errors</li>
+  <li><strong>Commit:</strong> Commit + descriptive message (if you ask for it)</li>
+</ol>
+</div>
+
+</div>
+</section>
+
+<section id="s21">
+<h2>4.6 MCP (Model Context Protocol)</h2>
+<div class="lang-block" data-lang="es">
+<p>Protocolo abierto de Anthropic para conectar agentes AI a fuentes de datos externas.</p>
+
+<div class="table-wrap"><table>
+<tr><th>Sin MCP</th><th>Con MCP</th></tr>
+<tr><td>Solo archivos locales + búsqueda web</td><td>Google Drive, Jira, Slack, PostgreSQL, APIs</td></tr>
+<tr><td>Contexto limitado al filesystem</td><td>Contexto ilimitado a cualquier data source</td></tr>
+<tr><td>No puede crear tickets, PRs, etc.</td><td>Automatización completa del workflow</td></tr>
+</table></div>
+
+</div>
+<div class="lang-block" data-lang="en">
+<p>Anthropic's open protocol to connect AI agents to external data sources.</p>
+
+<div class="table-wrap"><table>
+<tr><th>Without MCP</th><th>With MCP</th></tr>
+<tr><td>Local files + web search only</td><td>Google Drive, Jira, Slack, PostgreSQL, APIs</td></tr>
+<tr><td>Context limited to the filesystem</td><td>Unlimited context to any data source</td></tr>
+<tr><td>Cannot create tickets, PRs, etc.</td><td>End-to-end workflow automation</td></tr>
+</table></div>
+
+</div>
+</section>
+
+<section id="s92">
+<h2>4.7 Comparativa de Agentes de Código (2026)</h2>
+<p class="subtitle">El ecosistema de agentes AI para desarrollo — cuál elegir según tu stack y necesidades</p>
+<div class="lang-block" data-lang="es">
+
+<div class="table-wrap"><table>
+<tr><th>Agente</th><th>Tipo</th><th>Modelos</th><th>Precio</th><th>Skills</th><th>Sub-agentes</th><th>MCP</th><th>IDE</th></tr>
+<tr><td><strong>Claude Code</strong></td><td>Terminal + IDE + Desktop</td><td>Claude Opus/Sonnet/Haiku</td><td>$15-0.80 / 1M tok</td><td>✅ SKILL.md</td><td>✅ Explore, Plan, General</td><td>✅</td><td>VS Code, JetBrains</td></tr>
+<tr><td><strong>OpenCode</strong></td><td>Terminal + Desktop + IDE</td><td>75+ proveedores (Claude, GPT, DeepSeek, Gemini, locales)</td><td>Gratis (OSS) + tu API key</td><td>✅ SKILL.md</td><td>✅ general, explore</td><td>✅</td><td>Terminal nativo</td></tr>
+<tr><td><strong>OpenAI Codex</strong></td><td>Cloud + IDE + CLI</td><td>GPT-5.5, GPT-5</td><td>$3.75+ / 1M tok</td><td>✅ Skills</td><td>✅ Subagents</td><td>✅</td><td>VS Code, JetBrains</td></tr>
+<tr><td><strong>GitHub Copilot</strong></td><td>IDE (VS Code, JetBrains)</td><td>GPT-4.1, Claude 4</td><td>$10-39/mes</td><td>❌ (autocompletado + chat)</td><td>❌</td><td>✅ (agente)</td><td>VS Code, JetBrains, Neovim</td></tr>
+<tr><td><strong>Cursor</strong></td><td>IDE fork de VS Code</td><td>Claude, GPT, Gemini</td><td>$20-40/mes</td><td>✅ Rules (.cursorrules)</td><td>❌</td><td>⚠️ Limitado</td><td>Cursor IDE (nativo)</td></tr>
+<tr><td><strong>Windsurf</strong></td><td>IDE fork de VS Code</td><td>Claude, GPT</td><td>$15-30/mes</td><td>✅ Rules (.windsurfrules)</td><td>❌</td><td>❌</td><td>Windsurf IDE</td></tr>
+<tr><td><strong>Aider</strong></td><td>Terminal (OSS)</td><td>Cualquiera (API)</td><td>Gratis (OSS) + API key</td><td>✅ Convention files</td><td>❌</td><td>❌</td><td>Terminal + editor maps</td></tr>
+<tr><td><strong>Continue.dev</strong></td><td>Extensión IDE (OSS)</td><td>Cualquiera (API o local)</td><td>Gratis (OSS) + API key</td><td>✅ Rules</td><td>❌</td><td>✅</td><td>VS Code, JetBrains</td></tr>
+<tr><td><strong>Cline</strong> (OpenClaw)</td><td>Extensión VS Code (OSS)</td><td>Cualquiera (API o local)</td><td>Gratis (OSS) + API key</td><td>✅ .clinerules</td><td>❌</td><td>✅</td><td>VS Code</td></tr>
+</table></div>
+
+<h3>🆚 ¿Cuál Elegir?</h3>
+
+<div class="compare">
+<div><h4>🏢 Empresa / Profesional</h4>
+<ul style="font-size:13px;">
+  <li><strong>Claude Code</strong> — Máxima calidad. Skills robustas, sub-agentes reales, hooks, CI/CD. La opción enterprise por defecto.</li>
+  <li><strong>OpenAI Codex</strong> — Mejor si tu stack ya es OpenAI. Sandbox cloud, background mode, integración total con ecosistema OpenAI.</li>
+  <li><strong>Cursor</strong> — El IDE más pulido. Inline editing, agent mode, .cursorrules. Ideal si quieres un IDE completo, no terminal.</li>
+</ul></div>
+<div><h4>💻 Indie / Open Source</h4>
+<ul style="font-size:13px;">
+  <li><strong>OpenCode</strong> — El más flexible. 75+ proveedores, modelos gratis incluidos, multi-sesión, privacidad total. El que usas ahora.</li>
+  <li><strong>Cline (OpenClaw)</strong> — El más autónomo. Edita archivos, ejecuta comandos, navega webs. Muy proactivo — a veces demasiado.</li>
+  <li><strong>Aider</strong> — El más ligero. Terminal puro, mapas de archivos, git-aware. Ideal para devs que viven en la terminal.</li>
+</ul></div>
+</div>
+
+<h3>Diferencias Clave entre OpenCode y Claude Code</h3>
+<div class="table-wrap"><table>
+<tr><th></th><th><strong>OpenCode</strong></th><th><strong>Claude Code</strong></th></tr>
+<tr><td>Licencia</td><td>Open Source (Apache 2.0)</td><td>Propietario (gratis para usar)</td></tr>
+<tr><td>Modelo por defecto</td><td>El que elijas (DeepSeek, Claude, GPT...)</td><td>Solo Claude (Opus, Sonnet, Haiku)</td></tr>
+<tr><td>Memoria</td><td>AGENTS.md + MEMORY.md + memory/YYYY-MM-DD.md</td><td>CLAUDE.md + auto-memory</td></tr>
+<tr><td>Skills</td><td>Carpeta skills/ con SKILL.md</td><td>.claude/skills/ con SKILL.md + frontmatter YAML rico</td></tr>
+<tr><td>Sub-agentes</td><td>general, explore (vía Task tool)</td><td>Explore, Plan, general-purpose + custom</td></tr>
+<tr><td>Hooks</td><td>❌</td><td>✅ Pre/post tool hooks, event hooks</td></tr>
+<tr><td>Computer Use</td><td>❌</td><td>✅ (beta)</td></tr>
+<tr><td>Desktop app</td><td>✅ (beta)</td><td>✅</td></tr>
+<tr><td>Web UI</td><td>❌</td><td>✅ (claude.ai/code)</td></tr>
+<tr><td>Routines/Scheduled</td><td>❌</td><td>✅</td></tr>
+<tr><td>VS Code / JetBrains</td><td>⚠️ Terminal principalmente</td><td>✅ Extensiones nativas</td></tr>
+<tr><td>Context awareness</td><td>Gestionado por el wrapper</td><td>Nativa del modelo</td></tr>
+<tr><td>Coste</td><td>$0 (OSS) + tu API key</td><td>$0 (gratis) + API key Anthropic</td></tr>
+</table></div>
+
+<h3>Otros Agentes Notables</h3>
+<div class="table-wrap"><table>
+<tr><th>Agente</th><th>Descripción</th><th>Ideal para</th></tr>
+<tr><td><strong>OpenClaw</strong> (Cline)</td><td>Extensión VS Code extremadamente autónoma. Navega webs, ejecuta comandos, lee/escribe archivos. Muy agresivo editando.</td><td>Devs que quieren delegar completamente. Precio: requiere supervisión extra.</td></tr>
+<tr><td><strong>PearAI</strong></td><td>IDE con agentes integrados. Fork de VS Code + Continue. Multi-modelo.</td><td>Alternativa a Cursor, open-source friendly.</td></tr>
+<tr><td><strong>Codeium / Windsurf</strong></td><td>IDE con "Cascade" — agentes que entienden el codebase entero y actúan multi-file.</td><td>Competidor directo de Cursor. Buen autocompletado gratuito.</td></tr>
+<tr><td><strong>Devin</strong> (Cognition)</td><td>Agente autónomo cloud. Le das una task y trabaja solo durante horas. El más autónomo de todos.</td><td>Tareas muy complejas y largas. $500/mes. Overkill para el día a día.</td></tr>
+<tr><td><strong>Replit Agent</strong></td><td>Agente integrado en Replit. Ideal para prototipado rápido de apps completas.</td><td>Prototipos, MVPs, aprender a programar.</td></tr>
+<tr><td><strong>Bolt.new / v0 / Lovable</strong></td><td>Agentes especializados en generar apps web completas desde un prompt. Full-stack en segundos.</td><td>Crear MVPs, landing pages, dashboards sin tocar código.</td></tr>
+</table></div>
+
+<div class="tip"><strong>💡 La regla de oro:</strong> Para trabajo diario de desarrollo sobre un codebase existente → OpenCode o Claude Code. Para proyectos nuevos desde cero → Bolt/v0/Lovable. Para tareas de días → Devin. Para autocompletado rápido en IDE → Copilot o Cursor.</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="table-wrap"><table>
+<tr><th>Agent</th><th>Type</th><th>Models</th><th>Price</th><th>Skills</th><th>Sub-agents</th><th>MCP</th><th>IDE</th></tr>
+<tr><td><strong>Claude Code</strong></td><td>Terminal + IDE + Desktop</td><td>Claude Opus/Sonnet/Haiku</td><td>$15-0.80 / 1M tok</td><td>✅ SKILL.md</td><td>✅ Explore, Plan, General</td><td>✅</td><td>VS Code, JetBrains</td></tr>
+<tr><td><strong>OpenCode</strong></td><td>Terminal + Desktop + IDE</td><td>75+ providers (Claude, GPT, DeepSeek, Gemini, local)</td><td>Free (OSS) + your API key</td><td>✅ SKILL.md</td><td>✅ general, explore</td><td>✅</td><td>Native terminal</td></tr>
+<tr><td><strong>OpenAI Codex</strong></td><td>Cloud + IDE + CLI</td><td>GPT-5.5, GPT-5</td><td>$3.75+ / 1M tok</td><td>✅ Skills</td><td>✅ Subagents</td><td>✅</td><td>VS Code, JetBrains</td></tr>
+<tr><td><strong>GitHub Copilot</strong></td><td>IDE (VS Code, JetBrains)</td><td>GPT-4.1, Claude 4</td><td>$10-39/month</td><td>❌ (autocomplete + chat)</td><td>❌</td><td>✅ (agent)</td><td>VS Code, JetBrains, Neovim</td></tr>
+<tr><td><strong>Cursor</strong></td><td>VS Code fork IDE</td><td>Claude, GPT, Gemini</td><td>$20-40/month</td><td>✅ Rules (.cursorrules)</td><td>❌</td><td>⚠️ Limited</td><td>Cursor IDE (native)</td></tr>
+<tr><td><strong>Windsurf</strong></td><td>VS Code fork IDE</td><td>Claude, GPT</td><td>$15-30/month</td><td>✅ Rules (.windsurfrules)</td><td>❌</td><td>❌</td><td>Windsurf IDE</td></tr>
+<tr><td><strong>Aider</strong></td><td>Terminal (OSS)</td><td>Any (API)</td><td>Free (OSS) + API key</td><td>✅ Convention files</td><td>❌</td><td>❌</td><td>Terminal + editor maps</td></tr>
+<tr><td><strong>Continue.dev</strong></td><td>IDE extension (OSS)</td><td>Any (API or local)</td><td>Free (OSS) + API key</td><td>✅ Rules</td><td>❌</td><td>✅</td><td>VS Code, JetBrains</td></tr>
+<tr><td><strong>Cline</strong> (OpenClaw)</td><td>VS Code extension (OSS)</td><td>Any (API or local)</td><td>Free (OSS) + API key</td><td>✅ .clinerules</td><td>❌</td><td>✅</td><td>VS Code</td></tr>
+</table></div>
+
+<h3>🆚 Which One to Choose?</h3>
+
+<div class="compare">
+<div><h4>🏢 Enterprise / Professional</h4>
+<ul style="font-size:13px;">
+  <li><strong>Claude Code</strong> — Top quality. Robust skills, real sub-agents, hooks, CI/CD. The default enterprise option.</li>
+  <li><strong>OpenAI Codex</strong> — Best if your stack is already OpenAI. Cloud sandbox, background mode, full integration with the OpenAI ecosystem.</li>
+  <li><strong>Cursor</strong> — The most polished IDE. Inline editing, agent mode, .cursorrules. Ideal if you want a complete IDE, not a terminal.</li>
+</ul></div>
+<div><h4>💻 Indie / Open Source</h4>
+<ul style="font-size:13px;">
+  <li><strong>OpenCode</strong> — The most flexible. 75+ providers, free models included, multi-session, full privacy. The one you're using now.</li>
+  <li><strong>Cline (OpenClaw)</strong> — The most autonomous. Edits files, runs commands, browses the web. Very proactive — sometimes too much.</li>
+  <li><strong>Aider</strong> — The lightest. Pure terminal, file maps, git-aware. Ideal for devs who live in the terminal.</li>
+</ul></div>
+</div>
+
+<h3>Key Differences between OpenCode and Claude Code</h3>
+<div class="table-wrap"><table>
+<tr><th></th><th><strong>OpenCode</strong></th><th><strong>Claude Code</strong></th></tr>
+<tr><td>License</td><td>Open Source (Apache 2.0)</td><td>Proprietary (free to use)</td></tr>
+<tr><td>Default model</td><td>The one you pick (DeepSeek, Claude, GPT...)</td><td>Claude only (Opus, Sonnet, Haiku)</td></tr>
+<tr><td>Memory</td><td>AGENTS.md + MEMORY.md + memory/YYYY-MM-DD.md</td><td>CLAUDE.md + auto-memory</td></tr>
+<tr><td>Skills</td><td>skills/ folder with SKILL.md</td><td>.claude/skills/ with SKILL.md + rich YAML frontmatter</td></tr>
+<tr><td>Sub-agents</td><td>general, explore (via Task tool)</td><td>Explore, Plan, general-purpose + custom</td></tr>
+<tr><td>Hooks</td><td>❌</td><td>✅ Pre/post tool hooks, event hooks</td></tr>
+<tr><td>Computer Use</td><td>❌</td><td>✅ (beta)</td></tr>
+<tr><td>Desktop app</td><td>✅ (beta)</td><td>✅</td></tr>
+<tr><td>Web UI</td><td>❌</td><td>✅ (claude.ai/code)</td></tr>
+<tr><td>Routines/Scheduled</td><td>❌</td><td>✅</td></tr>
+<tr><td>VS Code / JetBrains</td><td>⚠️ Mainly terminal</td><td>✅ Native extensions</td></tr>
+<tr><td>Context awareness</td><td>Managed by the wrapper</td><td>Native to the model</td></tr>
+<tr><td>Cost</td><td>$0 (OSS) + your API key</td><td>$0 (free) + Anthropic API key</td></tr>
+</table></div>
+
+<h3>Other Notable Agents</h3>
+<div class="table-wrap"><table>
+<tr><th>Agent</th><th>Description</th><th>Ideal for</th></tr>
+<tr><td><strong>OpenClaw</strong> (Cline)</td><td>Extremely autonomous VS Code extension. Browses the web, runs commands, reads/writes files. Very aggressive when editing.</td><td>Devs who want to delegate completely. Caveat: requires extra supervision.</td></tr>
+<tr><td><strong>PearAI</strong></td><td>IDE with built-in agents. VS Code + Continue fork. Multi-model.</td><td>Open-source-friendly alternative to Cursor.</td></tr>
+<tr><td><strong>Codeium / Windsurf</strong></td><td>IDE with "Cascade" — agents that understand the whole codebase and act multi-file.</td><td>Direct Cursor competitor. Good free autocomplete.</td></tr>
+<tr><td><strong>Devin</strong> (Cognition)</td><td>Cloud autonomous agent. You give it a task and it works alone for hours. The most autonomous of all.</td><td>Very complex, long-running tasks. $500/month. Overkill for daily use.</td></tr>
+<tr><td><strong>Replit Agent</strong></td><td>Agent built into Replit. Ideal for fast prototyping of complete apps.</td><td>Prototypes, MVPs, learning to code.</td></tr>
+<tr><td><strong>Bolt.new / v0 / Lovable</strong></td><td>Agents specialized in generating complete web apps from a prompt. Full-stack in seconds.</td><td>Building MVPs, landing pages, dashboards without touching code.</td></tr>
+</table></div>
+
+<div class="tip"><strong>💡 Golden rule:</strong> For daily development work on an existing codebase → OpenCode or Claude Code. For brand new projects → Bolt/v0/Lovable. For multi-day tasks → Devin. For fast IDE autocomplete → Copilot or Cursor.</div>
+
+</div>
+</section>
+
+<section id="s79">
+<h2>18.1 Patrones de Colaboración Multi-Agente</h2>
+<div class="lang-block" data-lang="es">
+
+<div class="table-wrap"><table>
+<tr><th>Patrón</th><th>Descripción</th><th>Ejemplo</th></tr>
+<tr><td><strong>Debate</strong></td><td>2+ agentes debaten un tema → el "juez" decide la mejor respuesta</td><td>Agente 1: "Usemos React" / Agente 2: "Usemos Vue" → Juez elige</td></tr>
+<tr><td><strong>Divide & Conquer</strong></td><td>Dividir tarea en subtareas independientes → agentes paralelos → merge</td><td>Refactorizar: 1 agente/auth, 1 agente/API, 1 agente/UI</td></tr>
+<tr><td><strong>Pipeline Sequential</strong></td><td>Agente 1 → output → Agente 2 → output → Agente 3</td><td>Investigar → Escribir → Revisar → Publicar</td></tr>
+<tr><td><strong>Supervisor-Worker</strong></td><td>Agente "manager" asigna tareas a workers, revisa resultados, re-asigna si falla</td><td>Manager: "Arregla el bug #452" → Workers investigan, corrigen, testean</td></tr>
+<tr><td><strong>Consensus</strong></td><td>N agentes resuelven el mismo problema → voto mayoritario</td><td>Self-Consistency: 5 agentes analizan → respuesta más común</td></tr>
+</table></div>
+
+<div class="card card-green">
+<div class="card-title">🤖 Ejemplo: Patrón Supervisor-Worker</div>
+<pre><code># System Prompt: Supervisor Agent
+You coordinate a team of 3 AI agents:
+- Researcher: finds relevant information
+- Writer: creates the final output
+- Reviewer: checks quality and suggests improvements
+
+&lt;workflow&gt;
+1. Researcher: gather information → save to research.md
+2. Writer: use research.md → create draft.md
+3. Reviewer: check draft.md against requirements → feedback.md
+4. Writer: revise draft.md based on feedback.md
+5. You: present final output to user
+&lt;/workflow&gt;
+
+Task: {{USER_TASK}}</code></pre>
+</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="table-wrap"><table>
+<tr><th>Pattern</th><th>Description</th><th>Example</th></tr>
+<tr><td><strong>Debate</strong></td><td>2+ agents debate a topic → the "judge" picks the best answer</td><td>Agent 1: "Use React" / Agent 2: "Use Vue" → Judge decides</td></tr>
+<tr><td><strong>Divide & Conquer</strong></td><td>Split task into independent subtasks → parallel agents → merge</td><td>Refactor: 1 agent/auth, 1 agent/API, 1 agent/UI</td></tr>
+<tr><td><strong>Pipeline Sequential</strong></td><td>Agent 1 → output → Agent 2 → output → Agent 3</td><td>Research → Write → Review → Publish</td></tr>
+<tr><td><strong>Supervisor-Worker</strong></td><td>"Manager" agent assigns tasks to workers, reviews results, reassigns on failure</td><td>Manager: "Fix bug #452" → Workers investigate, fix, test</td></tr>
+<tr><td><strong>Consensus</strong></td><td>N agents solve the same problem → majority vote</td><td>Self-Consistency: 5 agents analyze → most common answer</td></tr>
+</table></div>
+
+<div class="card card-green">
+<div class="card-title">🤖 Example: Supervisor-Worker Pattern</div>
+<pre><code># System Prompt: Supervisor Agent
+You coordinate a team of 3 AI agents:
+- Researcher: finds relevant information
+- Writer: creates the final output
+- Reviewer: checks quality and suggests improvements
+
+&lt;workflow&gt;
+1. Researcher: gather information → save to research.md
+2. Writer: use research.md → create draft.md
+3. Reviewer: check draft.md against requirements → feedback.md
+4. Writer: revise draft.md based on feedback.md
+5. You: present final output to user
+&lt;/workflow&gt;
+
+Task: {{USER_TASK}}</code></pre>
+</div>
+
+</div>
+</section>
+
+<section id="s80">
+<h2>18.2 CrewAI, AutoGen y LangGraph</h2>
+<div class="lang-block" data-lang="es">
+
+<div class="table-wrap"><table>
+<tr><th>Framework</th><th>Enfoque</th><th>Ideal para</th></tr>
+<tr><td><strong>CrewAI</strong></td><td>Agentes con "roles" humanos (Researcher, Writer, Reviewer). Sintaxis simple.</td><td>Prototipos rápidos, workflows lineales</td></tr>
+<tr><td><strong>AutoGen</strong> (Microsoft)</td><td>Conversaciones multi-agente. Agentes pueden chatear entre sí. Código → ejecutar → debug.</td><td>Investigación, coding colaborativo</td></tr>
+<tr><td><strong>LangGraph</strong></td><td>Graph-based agent orchestration. Ciclos, condiciones, branching. Checkpointing integrado.</td><td>Workflows complejos con lógica condicional</td></tr>
+<tr><td><strong>OpenAI Swarm</strong></td><td>Agentes ligeros con handoff (transferencia de contexto). Educativo.</td><td>Experimentación, aprendizaje</td></tr>
+</table></div>
+
+<pre><code># CrewAI — Ejemplo de equipo multi-agente
+from crewai import Agent, Task, Crew
+
+researcher = Agent(
+    role="Senior Researcher",
+    goal="Find the latest AI trends in 2026",
+    backstory="Expert at finding and synthesizing information"
+)
+
+writer = Agent(
+    role="Tech Writer",
+    goal="Create an engaging blog post from research",
+    backstory="10 years writing for TechCrunch"
+)
+
+research_task = Task(description="Research AI trends 2026", agent=researcher)
+writing_task = Task(description="Write blog post", agent=writer)
+
+crew = Crew(agents=[researcher, writer], tasks=[research_task, writing_task])
+result = crew.kickoff()</code></pre>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="table-wrap"><table>
+<tr><th>Framework</th><th>Focus</th><th>Ideal for</th></tr>
+<tr><td><strong>CrewAI</strong></td><td>Agents with human "roles" (Researcher, Writer, Reviewer). Simple syntax.</td><td>Quick prototypes, linear workflows</td></tr>
+<tr><td><strong>AutoGen</strong> (Microsoft)</td><td>Multi-agent conversations. Agents can chat with each other. Code → execute → debug.</td><td>Research, collaborative coding</td></tr>
+<tr><td><strong>LangGraph</strong></td><td>Graph-based agent orchestration. Cycles, conditions, branching. Built-in checkpointing.</td><td>Complex workflows with conditional logic</td></tr>
+<tr><td><strong>OpenAI Swarm</strong></td><td>Lightweight agents with handoff (context transfer). Educational.</td><td>Experimentation, learning</td></tr>
+</table></div>
+
+<pre><code># CrewAI — Multi-agent team example
+from crewai import Agent, Task, Crew
+
+researcher = Agent(
+    role="Senior Researcher",
+    goal="Find the latest AI trends in 2026",
+    backstory="Expert at finding and synthesizing information"
+)
+
+writer = Agent(
+    role="Tech Writer",
+    goal="Create an engaging blog post from research",
+    backstory="10 years writing for TechCrunch"
+)
+
+research_task = Task(description="Research AI trends 2026", agent=researcher)
+writing_task = Task(description="Write blog post", agent=writer)
+
+crew = Crew(agents=[researcher, writer], tasks=[research_task, writing_task])
+result = crew.kickoff()</code></pre>
+
+</div>
+</section>
+
+<section id="s81">
+<h2>18.3 Agent Swarms y Sistemas Emergentes</h2>
+<div class="lang-block" data-lang="es">
+
+<div class="card card-accent">
+<div class="card-title">🌐 ¿Qué es un Agent Swarm?</div>
+<p>Múltiples agentes simples que colaboran sin un coordinador central, siguiendo reglas locales. El comportamiento "inteligente" emerge de la interacción. Inspirado en colonias de hormigas, bancos de peces, enjambres de abejas.</p>
+</div>
+
+<h3>Casos de Uso de Swarms</h3>
+<pre><code>1. EXPLORACIÓN DE CÓDIGO MASIVA
+   50 agentes Explore analizan 50 módulos en paralelo
+   → Reporte consolidado automáticamente
+
+2. GENERACIÓN DE DATOS SINTÉTICOS
+   100 agentes generan 100 variaciones de un mismo escenario
+   → Dataset de entrenamiento diverso y balanceado
+
+3. TESTING DISTRIBUIDO
+   N agentes prueban N combinaciones de inputs
+   → Cobertura de edge cases imposible manualmente
+
+4. OPTIMIZACIÓN DE PROMPTS
+   20 agentes generan 20 versiones de un prompt
+   → Evaluar cuál funciona mejor → iterar con las mejores</code></pre>
+
+<div class="warn"><strong>⚠️ No todo necesita multi-agente.</strong> Un solo agente bien configurado (Claude Code, OpenCode) maneja el 90% de los casos. Multi-agente añade complejidad: latencia, coste, coordinación, debugging. Úsalo solo cuando el paralelismo o la especialización justifiquen el overhead.</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="card card-accent">
+<div class="card-title">🌐 What is an Agent Swarm?</div>
+<p>Multiple simple agents that collaborate without a central coordinator, following local rules. "Intelligent" behavior emerges from interaction. Inspired by ant colonies, fish schools, bee swarms.</p>
+</div>
+
+<h3>Swarm Use Cases</h3>
+<pre><code>1. MASSIVE CODE EXPLORATION
+   50 Explore agents analyze 50 modules in parallel
+   → Auto-consolidated report
+
+2. SYNTHETIC DATA GENERATION
+   100 agents generate 100 variations of the same scenario
+   → Diverse, balanced training dataset
+
+3. DISTRIBUTED TESTING
+   N agents test N input combinations
+   → Edge-case coverage impossible to do manually
+
+4. PROMPT OPTIMIZATION
+   20 agents generate 20 versions of a prompt
+   → Evaluate which works best → iterate with the winners</code></pre>
+
+<div class="warn"><strong>⚠️ Not everything needs multi-agent.</strong> A single well-configured agent (Claude Code, OpenCode) handles 90% of cases. Multi-agent adds complexity: latency, cost, coordination, debugging. Use it only when parallelism or specialization justify the overhead.</div>
+
+</div>
+</section>
+
+
+
+<section class="module-references">
+  <h3 data-i18n="ref-header">Referencias</h3>
+  <p style="font-size:13px;color:var(--text-dim);" data-i18n="ref-intro">
+    Documentación oficial y papers consultados durante este módulo. Revísalos para profundizar.
+  </p>
+  <ul class="references-list" data-references="05"></ul>
+</section>
+
+</main>
+</div>
+
+<script src="../js/shared/manifest.js?v=8"></script>
+<script src="../js/shared/sidebar.js?v=8"></script>
+<script src="../js/shared/references.js?v=8"></script>
+<script src="../js/i18n.js?v=8"></script>
+<script src="../js/quiz.js?v=8"></script>
+<script src="../js/glossary.js?v=8"></script>
+<script src="../js/app.js?v=8"></script>
+</body>
+</html>

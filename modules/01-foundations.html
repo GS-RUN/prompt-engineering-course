@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bloque I — Fundamentos — Prompt Engineering Master Course</title>
+<link rel="stylesheet" href="../css/style.css?v=8">
+<link rel="stylesheet" href="../css/bando-b.css?v=8">
+<script>
+  (function() {
+    try {
+      var t = localStorage.getItem('theme');
+      if (t !== 'dark' && t !== 'light') t = 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+    } catch(e) { document.documentElement.setAttribute('data-theme', 'dark'); }
+  })();
+</script>
+</head>
+<body data-page-block="01">
+
+<div class="bg-orb bg-orb-1"></div>
+<div class="bg-orb bg-orb-2"></div>
+<div class="bg-orb bg-orb-3"></div>
+<div class="bg-gradient"></div>
+<div class="bg-grid"></div>
+<div id="progress-bar"></div>
+
+<div id="app">
+<nav id="sidebar"></nav>
+
+<main id="content">
+
+<section class="module-front-matter" data-module-front>
+  <div class="module-meta">
+    <span class="module-icon">📖</span>
+    <span class="module-level level-beginner">beginner</span>
+    <span class="module-time">⏱️ 90 min</span>
+  </div>
+  <h1 class="module-title">
+    <span class="lang-block" data-lang="es">Bloque I — Fundamentos</span>
+    <span class="lang-block" data-lang="en">Block I — Foundations</span>
+  </h1>
+  <div class="module-objectives">
+    <div class="lang-block" data-lang="es">
+      <h3>Objetivos de aprendizaje</h3>
+      <ul>
+        <li>Explicar qué es un LLM en términos de tokens y autoregresión.</li>
+        <li>Distinguir LLM, VLM, embedding model, diffusion, etc.</li>
+        <li>Decidir entre API cloud vs modelo local con criterios objetivos.</li>
+        <li>Conocer el panorama de modelos frontier 2026 (US + China + EU).</li>
+      </ul>
+    </div>
+    <div class="lang-block" data-lang="en">
+      <h3>Learning objectives</h3>
+      <ul>
+        <li>Explain what an LLM is in terms of tokens and autoregression.</li>
+        <li>Distinguish LLM, VLM, embedding model, diffusion, etc.</li>
+        <li>Choose between cloud API and local model with objective criteria.</li>
+        <li>Know the 2026 frontier model landscape (US + China + EU).</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="s1">
+<h2>1.1 ¿Qué es un LLM?</h2>
+<p class="subtitle">Large Language Models — El cerebro detrás de la IA generativa</p>
+<div class="lang-block" data-lang="es">
+
+<div class="card card-accent">
+  <div class="card-title">🔬 ¿Cómo funciona realmente?</div>
+  <p>Un LLM recibe una secuencia de <strong>tokens</strong> (sub-palabras) y predice el siguiente token más probable. Genera texto de forma <strong>autoregresiva</strong>, token por token. No "piensa" como un humano — es un simulador estadístico entrenado con cantidades masivas de texto.</p>
+  <p>En 2026, los modelos han evolucionado para incorporar <strong>razonamiento interno</strong> (thinking tokens), uso de herramientas, y visión.</p>
+</div>
+
+<h3>Modelos Frontier (2026)</h3>
+<p style="font-size:13px;color:var(--text-dim);">El curso cubre el ecosistema completo: cloud propietario (US + China), open-weights y modelos locales. Precios orientativos a inicios de 2026, varían por región y volumen.</p>
+<div class="table-wrap">
+<table>
+<tr><th>Modelo</th><th>Empresa</th><th>Contexto</th><th>Precio (1M tok in)</th><th>Fortaleza</th></tr>
+<tr><td><strong>Claude Opus 4.7</strong></td><td>Anthropic 🇺🇸</td><td>200K</td><td>$15</td><td>Razonamiento profundo, agentes</td></tr>
+<tr><td><strong>GPT-5.5</strong></td><td>OpenAI 🇺🇸</td><td>256K</td><td>$3.75</td><td>Generalista, ecosistema</td></tr>
+<tr><td><strong>Gemini 2.5 Pro</strong></td><td>Google 🇺🇸</td><td>1M+</td><td>$1.25</td><td>Contexto masivo, multimodal</td></tr>
+<tr><td><strong>DeepSeek V4 Pro</strong></td><td>DeepSeek 🇨🇳</td><td>128K</td><td>~$0.50</td><td>30× más barato, coding veloz</td></tr>
+<tr><td><strong>Kimi K2</strong></td><td>Moonshot 🇨🇳</td><td>2M</td><td>~$0.60</td><td>Contexto enorme, agentes nativos</td></tr>
+<tr><td><strong>MiniMax M2</strong></td><td>MiniMax 🇨🇳</td><td>1M</td><td>~$0.30</td><td>Multimodal eficiente, vídeo</td></tr>
+<tr><td><strong>Qwen3-Max</strong></td><td>Alibaba 🇨🇳</td><td>262K</td><td>~$0.80</td><td>Multilingüe, open-weights primos</td></tr>
+<tr><td><strong>GLM-5</strong></td><td>Zhipu 🇨🇳</td><td>128K</td><td>~$0.40</td><td>Agentes web, coding, function-calling</td></tr>
+<tr><td><strong>Grok 4</strong></td><td>xAI 🇺🇸</td><td>256K</td><td>$3</td><td>Razonamiento, datos en tiempo real (X)</td></tr>
+<tr><td><strong>Mistral Large 3</strong></td><td>Mistral 🇪🇺</td><td>256K</td><td>$2</td><td>Eficiencia europea, multilingüe</td></tr>
+</table>
+</div>
+
+<h3>Modelos Open-Weights / Locales (2026)</h3>
+<div class="table-wrap">
+<table>
+<tr><th>Familia</th><th>Tamaños</th><th>Empresa</th><th>Notas</th></tr>
+<tr><td><strong>Llama 4</strong></td><td>8B / 70B / 405B</td><td>Meta</td><td>Open weights, multimodal nativo</td></tr>
+<tr><td><strong>Qwen 3</strong></td><td>0.5B / 7B / 14B / 32B / 72B</td><td>Alibaba</td><td>Apache 2.0, top en multilingüe + coding</td></tr>
+<tr><td><strong>Gemma 3</strong></td><td>1B / 4B / 12B / 27B</td><td>Google</td><td>On-device first, eficiente, <1.5 GB Q4</td></tr>
+<tr><td><strong>Mistral / Codestral</strong></td><td>7B / 22B / Large</td><td>Mistral</td><td>Apache 2.0, fuerte en coding</td></tr>
+<tr><td><strong>DeepSeek V3 / Coder V4</strong></td><td>16B-MoE / 671B-MoE</td><td>DeepSeek</td><td>MIT, MoE eficiente, coding SOTA OSS</td></tr>
+<tr><td><strong>Phi-4</strong></td><td>3.8B / 14B</td><td>Microsoft</td><td>Pequeño + razonamiento, edge devices</td></tr>
+<tr><td><strong>Yi-Lightning / Yi-2</strong></td><td>9B / 34B</td><td>01.AI</td><td>Multilingüe ZH/EN, contexto largo</td></tr>
+<tr><td><strong>Command R+</strong></td><td>104B</td><td>Cohere</td><td>RAG nativo, function calling robusto</td></tr>
+</table>
+</div>
+
+<h3>Parámetros Clave de Configuración</h3>
+<p style="font-size:13px;color:var(--text-dim);">Cada API usa un nombre ligeramente distinto, pero los conceptos son universales. Esta es la lista práctica de parámetros que tocas en el 95% de los casos.</p>
+
+<div class="card card-accent">
+<div class="card-title">🌡️ <code>temperature</code> — aleatoriedad del muestreo</div>
+<p>Controla cuánta aleatoriedad introduce el sampler al elegir el siguiente token. Internamente divide los logits por T antes del softmax: T baja agudiza la distribución (el token top siempre gana), T alta la aplana (todos los tokens viables tienen oportunidad).</p>
+<p><strong>Rango típico:</strong> <code>0.0 – 2.0</code> (la mayoría de APIs limitan a 2.0; valores &gt;1.5 producen alucinación e incoherencia).</p>
+<p><strong>Cuándo usar qué:</strong></p>
+<ul>
+  <li><code>0.0</code> — Determinista. Mismo input → mismo output. Code generation, extracción de datos, clasificación, evals reproducibles.</li>
+  <li><code>0.2 – 0.4</code> — Casi determinista con un poco de variedad. Refactoring, traducción, summarization fiel.</li>
+  <li><code>0.5 – 0.7</code> — Equilibrio. Conversación general, asistente, tutorial. Es el default sensato.</li>
+  <li><code>0.8 – 1.0</code> — Creativo. Brainstorming, copywriting, ficción, generación de variantes.</li>
+  <li><code>1.0 – 1.5</code> — Muy aleatorio. Solo casos donde quieres explorar el espacio de salida (p.ej. self-consistency CoT).</li>
+</ul>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">🎯 <code>top_p</code> — nucleus sampling</div>
+<p>Recorta la cola de la distribución: en cada paso solo se consideran los tokens cuyas probabilidades acumuladas suman <code>p</code>. Si <code>top_p=0.9</code>, descartamos el 10% menos probable de cada decisión. Es complementario a <code>temperature</code> — Anthropic recomienda tocar uno u otro, no ambos a la vez.</p>
+<p><strong>Rango típico:</strong> <code>0.7 – 1.0</code>. Por debajo de 0.5 el modelo se vuelve repetitivo.</p>
+<p><strong>Defaults sensatos:</strong> <code>top_p=1.0</code> y subir <code>temperature</code>, o <code>temperature=1.0</code> y bajar <code>top_p</code>.</p>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">🔝 <code>top_k</code> — corte por número de candidatos</div>
+<p>Solo considera los <code>k</code> tokens más probables en cada paso. Más burdo que <code>top_p</code> (no se adapta a la forma de la distribución). Útil cuando quieres garantizar diversidad acotada. Algunos APIs (Google, DeepSeek) lo exponen; Anthropic no.</p>
+<p><strong>Rango:</strong> <code>1 – 50</code>. <code>k=1</code> es greedy (equivalente a <code>temperature=0</code>).</p>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">📏 <code>max_tokens</code> — tope de salida</div>
+<p>Número máximo de tokens que el modelo puede generar antes de detenerse forzosamente. Es un cap duro, no una sugerencia. Si el modelo iba a producir más, su respuesta se trunca abruptamente (a menudo dejando JSON malformado).</p>
+<p><strong>Reglas prácticas:</strong></p>
+<ul>
+  <li>Respuesta corta esperada: <code>256 – 1024</code>.</li>
+  <li>Respuesta media (artículo, función completa): <code>2048 – 4096</code>.</li>
+  <li>Respuesta larga (código grande, ensayo): <code>8192 – 16384</code>.</li>
+  <li>Tareas con thinking activo: subir a <code>32k – 64k</code> (los thinking tokens cuentan).</li>
+</ul>
+<p>Cap por modelo: Claude 4.x 64k, GPT-5 16k, Gemini 2.5 Pro 64k, DeepSeek 8k.</p>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">🛑 <code>stop_sequences</code> / <code>stop</code> — paradas explícitas</div>
+<p>Lista de strings que, si aparecen en la salida, hacen que el modelo se detenga inmediatamente. Útil cuando estás haciendo few-shot con un delimitador propio (<code>###</code>, <code>END</code>, <code>&lt;/answer&gt;</code>) y no quieres que el modelo continúe alucinando un siguiente ejemplo.</p>
+<p>Hasta 4 secuencias en la mayoría de APIs. La secuencia consumida NO aparece en la respuesta final.</p>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">🔁 <code>frequency_penalty</code> y <code>presence_penalty</code> (OpenAI / DeepSeek)</div>
+<p>Reducen la probabilidad de que el modelo repita tokens.</p>
+<ul>
+  <li><code>frequency_penalty</code> — penaliza tokens proporcionalmente a cuántas veces ya han aparecido (más apariciones, más penalty). Combate bucles literales.</li>
+  <li><code>presence_penalty</code> — penaliza cualquier token que ya haya aparecido al menos una vez (penalty plana). Empuja a explorar vocabulario nuevo.</li>
+</ul>
+<p><strong>Rango:</strong> <code>-2.0 – 2.0</code>. Default <code>0.0</code>. Subir a <code>0.3 – 0.7</code> si ves repeticiones; pasar de 1.0 introduce ruido. Anthropic no los expone (Claude tiene anti-repetición interna).</p>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">🎲 <code>seed</code> — reproducibilidad</div>
+<p>Fija el RNG del sampler. Mismo seed + mismos parámetros + misma versión del modelo → misma salida (con asterisco: la mayoría de proveedores no garantizan determinismo bit-exact entre versiones de infraestructura).</p>
+<p>Crítico para evals automatizados, debugging de prompts y reproducibilidad de papers. OpenAI y DeepSeek lo exponen; Anthropic no.</p>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">🧠 <code>thinking</code> / <code>reasoning_effort</code> — razonamiento interno</div>
+<p>Activa los tokens de razonamiento internos antes de la respuesta visible. El modelo razona "para sí mismo" durante segundos o minutos, y luego entrega la respuesta final más sólida. Estos tokens se facturan.</p>
+<div class="table-wrap"><table>
+<tr><th>API</th><th>Parámetro</th><th>Valores</th></tr>
+<tr><td><span class="badge badge-claude">Claude</span></td><td><code>thinking={"type":"adaptive"}</code> + <code>output_config.effort</code></td><td><code>low / medium / high / xhigh / max</code></td></tr>
+<tr><td>OpenAI (o-series, GPT-5)</td><td><code>reasoning_effort</code></td><td><code>minimal / low / medium / high</code></td></tr>
+<tr><td>Gemini 2.5</td><td><code>thinking_config.thinking_budget</code></td><td><code>0 – 24576</code> (tokens) o <code>-1</code> (auto)</td></tr>
+<tr><td><span class="badge badge-ds">DeepSeek R / V4</span></td><td><code>thinking={"type":"enabled"}</code></td><td><code>on / off</code></td></tr>
+<tr><td>Qwen 3</td><td><code>enable_thinking</code></td><td><code>true / false</code></td></tr>
+</table></div>
+<p>Activar thinking sube calidad 5-30% en tareas multi-step (matemáticas, debugging, planificación) pero multiplica latencia 5-50× y coste por la misma proporción.</p>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">📦 <code>response_format</code> — formato estructurado</div>
+<p>Fuerza al modelo a emitir output que cumpla un esquema determinado.</p>
+<ul>
+  <li><code>{"type": "text"}</code> — Default. Texto libre.</li>
+  <li><code>{"type": "json_object"}</code> — Garantiza JSON válido en la salida (OpenAI, DeepSeek, Mistral, GLM). Formato libre.</li>
+  <li><code>{"type": "json_schema", "schema": {...}}</code> — JSON estricto que cumple el schema (OpenAI, Gemini "controlled generation"). El modelo NO puede desviarse.</li>
+  <li>Anthropic no expone <code>response_format</code> directamente; usa <code>tool_use</code> con <code>input_schema</code> para el mismo efecto.</li>
+</ul>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">🛠️ <code>tools</code> y <code>tool_choice</code> — function calling</div>
+<p>Lista de herramientas que el modelo puede invocar (definidas con nombre, descripción y schema de parámetros).</p>
+<ul>
+  <li><code>tool_choice="auto"</code> — El modelo decide si llama a alguna o responde directamente (default).</li>
+  <li><code>tool_choice="required"</code> / <code>"any"</code> — Forzar llamada a alguna tool.</li>
+  <li><code>tool_choice={"type":"tool","name":"X"}</code> — Forzar tool específica.</li>
+  <li><code>tool_choice="none"</code> — Prohibir tools, responder con texto solo.</li>
+</ul>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">💾 <code>cache_control</code> — prompt caching (Anthropic)</div>
+<p>Marca bloques del prompt como cacheables. La primera llamada paga 1.25× el precio normal de input para escribirlos en caché; las siguientes pagan 0.10× para leerlos. TTL típico 5 min (extensible a 1 h con <code>"ttl": "1h"</code>). Critical para system prompts largos y RAG con docs repetidos.</p>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">🌐 <code>system</code> / mensaje system — instrucciones globales</div>
+<p>El system prompt tiene prioridad máxima sobre los mensajes del usuario. Es donde defines rol, reglas, formato esperado, restricciones de seguridad. NO va dentro de <code>messages[]</code> en Anthropic (es un parámetro top-level <code>system</code>); en OpenAI/DeepSeek va como primer mensaje con <code>role: "system"</code>.</p>
+</div>
+
+<div class="warn"><strong>⚠️ Defaults son tu enemigo.</strong> Si dejas todos los parámetros sin especificar, cada modelo elige unos diferentes (Claude usa <code>temperature=1.0</code>, OpenAI <code>1.0</code>, DeepSeek <code>1.0</code>, Gemini <code>1.0</code> pero con <code>top_p=0.95</code> y <code>top_k=64</code>). Para producción, especifica explícitamente <code>temperature</code>, <code>max_tokens</code> y al menos uno de <code>top_p</code>/<code>top_k</code>.</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="card card-accent">
+  <div class="card-title">🔬 How does it actually work?</div>
+  <p>An LLM receives a sequence of <strong>tokens</strong> (sub-words) and predicts the next most likely token. It generates text <strong>autoregressively</strong>, token by token. It does not "think" like a human — it's a statistical simulator trained on massive amounts of text.</p>
+  <p>By 2026, models have evolved to incorporate <strong>internal reasoning</strong> (thinking tokens), tool use, and vision.</p>
+</div>
+
+<h3>Frontier Models (2026)</h3>
+<p style="font-size:13px;color:var(--text-dim);">The course covers the full ecosystem: proprietary cloud (US + China), open-weights, and local models. Prices indicative as of early 2026 and vary by region and volume.</p>
+<div class="table-wrap">
+<table>
+<tr><th>Model</th><th>Company</th><th>Context</th><th>Price (1M tok in)</th><th>Strength</th></tr>
+<tr><td><strong>Claude Opus 4.7</strong></td><td>Anthropic 🇺🇸</td><td>200K</td><td>$15</td><td>Deep reasoning, agents</td></tr>
+<tr><td><strong>GPT-5.5</strong></td><td>OpenAI 🇺🇸</td><td>256K</td><td>$3.75</td><td>Generalist, ecosystem</td></tr>
+<tr><td><strong>Gemini 2.5 Pro</strong></td><td>Google 🇺🇸</td><td>1M+</td><td>$1.25</td><td>Massive context, multimodal</td></tr>
+<tr><td><strong>DeepSeek V4 Pro</strong></td><td>DeepSeek 🇨🇳</td><td>128K</td><td>~$0.50</td><td>30× cheaper, fast coding</td></tr>
+<tr><td><strong>Kimi K2</strong></td><td>Moonshot 🇨🇳</td><td>2M</td><td>~$0.60</td><td>Massive context, native agents</td></tr>
+<tr><td><strong>MiniMax M2</strong></td><td>MiniMax 🇨🇳</td><td>1M</td><td>~$0.30</td><td>Efficient multimodal, video</td></tr>
+<tr><td><strong>Qwen3-Max</strong></td><td>Alibaba 🇨🇳</td><td>262K</td><td>~$0.80</td><td>Multilingual, open-weights cousins</td></tr>
+<tr><td><strong>GLM-5</strong></td><td>Zhipu 🇨🇳</td><td>128K</td><td>~$0.40</td><td>Web agents, coding, function-calling</td></tr>
+<tr><td><strong>Grok 4</strong></td><td>xAI 🇺🇸</td><td>256K</td><td>$3</td><td>Reasoning, real-time data (X)</td></tr>
+<tr><td><strong>Mistral Large 3</strong></td><td>Mistral 🇪🇺</td><td>256K</td><td>$2</td><td>European efficiency, multilingual</td></tr>
+</table>
+</div>
+
+<h3>Open-Weights / Local Models (2026)</h3>
+<div class="table-wrap">
+<table>
+<tr><th>Family</th><th>Sizes</th><th>Company</th><th>Notes</th></tr>
+<tr><td><strong>Llama 4</strong></td><td>8B / 70B / 405B</td><td>Meta</td><td>Open weights, native multimodal</td></tr>
+<tr><td><strong>Qwen 3</strong></td><td>0.5B / 7B / 14B / 32B / 72B</td><td>Alibaba</td><td>Apache 2.0, top in multilingual + coding</td></tr>
+<tr><td><strong>Gemma 3</strong></td><td>1B / 4B / 12B / 27B</td><td>Google</td><td>On-device first, efficient, &lt;1.5 GB Q4</td></tr>
+<tr><td><strong>Mistral / Codestral</strong></td><td>7B / 22B / Large</td><td>Mistral</td><td>Apache 2.0, strong at coding</td></tr>
+<tr><td><strong>DeepSeek V3 / Coder V4</strong></td><td>16B-MoE / 671B-MoE</td><td>DeepSeek</td><td>MIT, efficient MoE, OSS coding SOTA</td></tr>
+<tr><td><strong>Phi-4</strong></td><td>3.8B / 14B</td><td>Microsoft</td><td>Small + reasoning, edge devices</td></tr>
+<tr><td><strong>Yi-Lightning / Yi-2</strong></td><td>9B / 34B</td><td>01.AI</td><td>ZH/EN multilingual, long context</td></tr>
+<tr><td><strong>Command R+</strong></td><td>104B</td><td>Cohere</td><td>Native RAG, robust function calling</td></tr>
+</table>
+</div>
+
+<h3>Key Configuration Parameters</h3>
+<p style="font-size:13px;color:var(--text-dim);">Each API uses slightly different names, but the concepts are universal. This is the practical list of parameters you'll touch in 95% of cases.</p>
+
+<div class="card card-accent">
+<div class="card-title">🌡️ <code>temperature</code> — sampling randomness</div>
+<p>Controls how much randomness the sampler injects when picking the next token. Internally it divides the logits by T before softmax: low T sharpens the distribution (top token always wins), high T flattens it (every viable token gets a chance).</p>
+<p><strong>Typical range:</strong> <code>0.0 – 2.0</code> (most APIs cap at 2.0; values &gt;1.5 produce hallucination and incoherence).</p>
+<p><strong>When to use what:</strong></p>
+<ul>
+  <li><code>0.0</code> — Deterministic. Same input → same output. Code generation, data extraction, classification, reproducible evals.</li>
+  <li><code>0.2 – 0.4</code> — Almost deterministic with a touch of variety. Refactoring, faithful translation, summarization.</li>
+  <li><code>0.5 – 0.7</code> — Balanced. General conversation, assistant, tutorial. The sensible default.</li>
+  <li><code>0.8 – 1.0</code> — Creative. Brainstorming, copywriting, fiction, generating variants.</li>
+  <li><code>1.0 – 1.5</code> — Very random. Only when you want to explore the output space (e.g. self-consistency CoT).</li>
+</ul>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">🎯 <code>top_p</code> — nucleus sampling</div>
+<p>Trims the tail of the distribution: at each step only tokens whose cumulative probabilities sum to <code>p</code> are considered. With <code>top_p=0.9</code>, you discard the 10% least likely tokens at every decision. It's complementary to <code>temperature</code> — Anthropic recommends tuning one or the other, not both at once.</p>
+<p><strong>Typical range:</strong> <code>0.7 – 1.0</code>. Below 0.5 the model becomes repetitive.</p>
+<p><strong>Sensible defaults:</strong> <code>top_p=1.0</code> and raise <code>temperature</code>, or <code>temperature=1.0</code> and lower <code>top_p</code>.</p>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">🔝 <code>top_k</code> — candidate count cutoff</div>
+<p>Only considers the <code>k</code> most likely tokens at each step. Cruder than <code>top_p</code> (it doesn't adapt to the shape of the distribution). Useful when you want bounded diversity guaranteed. Some APIs (Google, DeepSeek) expose it; Anthropic doesn't.</p>
+<p><strong>Range:</strong> <code>1 – 50</code>. <code>k=1</code> is greedy (equivalent to <code>temperature=0</code>).</p>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">📏 <code>max_tokens</code> — output cap</div>
+<p>Maximum number of tokens the model can generate before being forcibly stopped. It's a hard cap, not a hint. If the model intended to produce more, the response truncates abruptly (often leaving malformed JSON).</p>
+<p><strong>Practical rules:</strong></p>
+<ul>
+  <li>Short response expected: <code>256 – 1024</code>.</li>
+  <li>Medium response (article, full function): <code>2048 – 4096</code>.</li>
+  <li>Long response (large code, essay): <code>8192 – 16384</code>.</li>
+  <li>Tasks with thinking enabled: raise to <code>32k – 64k</code> (thinking tokens count).</li>
+</ul>
+<p>Per-model caps: Claude 4.x 64k, GPT-5 16k, Gemini 2.5 Pro 64k, DeepSeek 8k.</p>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">🛑 <code>stop_sequences</code> / <code>stop</code> — explicit halts</div>
+<p>List of strings that, if they appear in the output, make the model stop immediately. Useful when you're doing few-shot with your own delimiter (<code>###</code>, <code>END</code>, <code>&lt;/answer&gt;</code>) and don't want the model to keep hallucinating a next example.</p>
+<p>Up to 4 sequences in most APIs. The consumed sequence is NOT included in the final response.</p>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">🔁 <code>frequency_penalty</code> and <code>presence_penalty</code> (OpenAI / DeepSeek)</div>
+<p>Reduce the probability of the model repeating tokens.</p>
+<ul>
+  <li><code>frequency_penalty</code> — penalizes tokens proportionally to how many times they've appeared (more occurrences, more penalty). Fights literal loops.</li>
+  <li><code>presence_penalty</code> — penalizes any token that appeared at least once (flat penalty). Pushes the model to explore new vocabulary.</li>
+</ul>
+<p><strong>Range:</strong> <code>-2.0 – 2.0</code>. Default <code>0.0</code>. Raise to <code>0.3 – 0.7</code> if you see repetitions; above 1.0 introduces noise. Anthropic doesn't expose them (Claude has internal anti-repetition).</p>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">🎲 <code>seed</code> — reproducibility</div>
+<p>Fixes the sampler RNG. Same seed + same parameters + same model version → same output (asterisk: most providers don't guarantee bit-exact determinism across infra versions).</p>
+<p>Critical for automated evals, prompt debugging, and paper reproducibility. OpenAI and DeepSeek expose it; Anthropic doesn't.</p>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">🧠 <code>thinking</code> / <code>reasoning_effort</code> — internal reasoning</div>
+<p>Enables internal reasoning tokens before the visible answer. The model thinks "to itself" for seconds or minutes, then delivers a stronger final answer. These tokens are billed.</p>
+<div class="table-wrap"><table>
+<tr><th>API</th><th>Parameter</th><th>Values</th></tr>
+<tr><td><span class="badge badge-claude">Claude</span></td><td><code>thinking={"type":"adaptive"}</code> + <code>output_config.effort</code></td><td><code>low / medium / high / xhigh / max</code></td></tr>
+<tr><td>OpenAI (o-series, GPT-5)</td><td><code>reasoning_effort</code></td><td><code>minimal / low / medium / high</code></td></tr>
+<tr><td>Gemini 2.5</td><td><code>thinking_config.thinking_budget</code></td><td><code>0 – 24576</code> (tokens) or <code>-1</code> (auto)</td></tr>
+<tr><td><span class="badge badge-ds">DeepSeek R / V4</span></td><td><code>thinking={"type":"enabled"}</code></td><td><code>on / off</code></td></tr>
+<tr><td>Qwen 3</td><td><code>enable_thinking</code></td><td><code>true / false</code></td></tr>
+</table></div>
+<p>Enabling thinking lifts quality 5-30% on multi-step tasks (math, debugging, planning) but multiplies latency 5-50× and cost proportionally.</p>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">📦 <code>response_format</code> — structured format</div>
+<p>Forces the model to emit output that conforms to a given schema.</p>
+<ul>
+  <li><code>{"type": "text"}</code> — Default. Free text.</li>
+  <li><code>{"type": "json_object"}</code> — Guarantees valid JSON in the output (OpenAI, DeepSeek, Mistral, GLM). Free form.</li>
+  <li><code>{"type": "json_schema", "schema": {...}}</code> — Strict JSON conforming to the schema (OpenAI, Gemini "controlled generation"). The model CANNOT deviate.</li>
+  <li>Anthropic doesn't expose <code>response_format</code> directly; use <code>tool_use</code> with <code>input_schema</code> for the same effect.</li>
+</ul>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">🛠️ <code>tools</code> and <code>tool_choice</code> — function calling</div>
+<p>List of tools the model can invoke (defined with name, description, and parameter schema).</p>
+<ul>
+  <li><code>tool_choice="auto"</code> — The model decides whether to call any tool or answer directly (default).</li>
+  <li><code>tool_choice="required"</code> / <code>"any"</code> — Force a tool call.</li>
+  <li><code>tool_choice={"type":"tool","name":"X"}</code> — Force a specific tool.</li>
+  <li><code>tool_choice="none"</code> — Forbid tools, text-only response.</li>
+</ul>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">💾 <code>cache_control</code> — prompt caching (Anthropic)</div>
+<p>Marks blocks of the prompt as cacheable. The first call pays 1.25× the normal input price to write to cache; subsequent calls pay 0.10× to read it. Typical TTL 5 min (extensible to 1 h with <code>"ttl": "1h"</code>). Critical for long system prompts and RAG with repeated docs.</p>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">🌐 <code>system</code> / system message — global instructions</div>
+<p>The system prompt has top priority over user messages. It's where you define role, rules, expected format, safety constraints. It does NOT go inside <code>messages[]</code> in Anthropic (it's a top-level <code>system</code> parameter); in OpenAI/DeepSeek it goes as the first message with <code>role: "system"</code>.</p>
+</div>
+
+<div class="warn"><strong>⚠️ Defaults are your enemy.</strong> If you leave all parameters unspecified, each model picks different ones (Claude uses <code>temperature=1.0</code>, OpenAI <code>1.0</code>, DeepSeek <code>1.0</code>, Gemini <code>1.0</code> but with <code>top_p=0.95</code> and <code>top_k=64</code>). For production, explicitly set <code>temperature</code>, <code>max_tokens</code> and at least one of <code>top_p</code>/<code>top_k</code>.</div>
+
+</div>
+</section>
+
+<section id="s55">
+<h2>12.1 Tipos de IA y Modelos</h2>
+<p class="subtitle">No toda la IA es igual — conoce las categorías y qué modelo usar para cada tarea</p>
+<div class="lang-block" data-lang="es">
+
+<div class="card card-accent">
+<div class="card-title">🧬 Taxonomía de Modelos de IA (2026)</div>
+<div class="table-wrap"><table>
+<tr><th>Categoría</th><th>Qué hace</th><th>Ejemplos</th></tr>
+<tr><td><strong>LLM</strong> (Large Language Model)</td><td>Texto → Texto. Genera, resume, traduce, razona.</td><td>Claude Opus, DeepSeek V4, GPT-5</td></tr>
+<tr><td><strong>VLM</strong> (Vision Language Model)</td><td>Imagen + Texto → Texto. Describe, analiza imágenes.</td><td>Claude Vision, GPT-5V, Gemini 2.5</td></tr>
+<tr><td><strong>Embedding Model</strong></td><td>Texto → Vector numérico. Búsqueda semántica.</td><td>text-embedding-3, Cohere Embed v4, BGE-M3</td></tr>
+<tr><td><strong>Diffusion Model</strong></td><td>Texto → Imagen. Genera imágenes desde descripciones.</td><td>DALL-E 4, Stable Diffusion 3.5, Midjourney V7</td></tr>
+<tr><td><strong>Audio/Speech Model</strong></td><td>Audio ↔ Texto. Transcribe, sintetiza voz.</td><td>Whisper V4, ElevenLabs, OpenAI TTS</td></tr>
+<tr><td><strong>Code Model</strong></td><td>Especializado en generación de código.</td><td>Claude Code, Codex, DeepSeek Coder V4</td></tr>
+<tr><td><strong>Reward Model</strong></td><td>Evalúa calidad de respuestas (para RLHF).</td><td>Interno de Anthropic/OpenAI</td></tr>
+</table></div>
+</div>
+
+<h3>Niveles de IA (Conceptual)</h3>
+<div class="table-wrap"><table>
+<tr><th>Nivel</th><th>Descripción</th><th>Estado actual</th></tr>
+<tr><td><strong>ANI</strong> (Narrow AI)</td><td>Especializada en una tarea concreta</td><td>✅ Actualidad — todos los LLMs</td></tr>
+<tr><td><strong>AGI</strong> (General AI)</td><td>Igual o superior al humano en cualquier tarea intelectual</td><td>🔬 En investigación — debate abierto</td></tr>
+<tr><td><strong>ASI</strong> (Super AI)</td><td>Supera a la humanidad en todos los dominios</td><td>📚 Teórico — no existe</td></tr>
+</table></div>
+
+<div class="tip"><strong>💡 En la práctica:</strong> Aunque los LLMs modernos parecen "inteligentes", siguen siendo ANI — modelos estadísticos especializados en lenguaje, no entidades conscientes.</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="card card-accent">
+<div class="card-title">🧬 AI Model Taxonomy (2026)</div>
+<div class="table-wrap"><table>
+<tr><th>Category</th><th>What it does</th><th>Examples</th></tr>
+<tr><td><strong>LLM</strong> (Large Language Model)</td><td>Text → Text. Generate, summarize, translate, reason.</td><td>Claude Opus, DeepSeek V4, GPT-5</td></tr>
+<tr><td><strong>VLM</strong> (Vision Language Model)</td><td>Image + Text → Text. Describe, analyze images.</td><td>Claude Vision, GPT-5V, Gemini 2.5</td></tr>
+<tr><td><strong>Embedding Model</strong></td><td>Text → Numeric vector. Semantic search.</td><td>text-embedding-3, Cohere Embed v4, BGE-M3</td></tr>
+<tr><td><strong>Diffusion Model</strong></td><td>Text → Image. Generate images from descriptions.</td><td>DALL-E 4, Stable Diffusion 3.5, Midjourney V7</td></tr>
+<tr><td><strong>Audio/Speech Model</strong></td><td>Audio ↔ Text. Transcribe, synthesize voice.</td><td>Whisper V4, ElevenLabs, OpenAI TTS</td></tr>
+<tr><td><strong>Code Model</strong></td><td>Specialized in code generation.</td><td>Claude Code, Codex, DeepSeek Coder V4</td></tr>
+<tr><td><strong>Reward Model</strong></td><td>Scores response quality (for RLHF).</td><td>Internal at Anthropic/OpenAI</td></tr>
+</table></div>
+</div>
+
+<h3>AI Levels (Conceptual)</h3>
+<div class="table-wrap"><table>
+<tr><th>Level</th><th>Description</th><th>Current state</th></tr>
+<tr><td><strong>ANI</strong> (Narrow AI)</td><td>Specialized in one specific task</td><td>✅ Today — all current LLMs</td></tr>
+<tr><td><strong>AGI</strong> (General AI)</td><td>Equal or better than humans on any intellectual task</td><td>🔬 Under research — open debate</td></tr>
+<tr><td><strong>ASI</strong> (Super AI)</td><td>Surpasses humanity in all domains</td><td>📚 Theoretical — does not exist</td></tr>
+</table></div>
+
+<div class="tip"><strong>💡 In practice:</strong> Although modern LLMs feel "intelligent," they're still ANI — statistical models specialized in language, not conscious entities.</div>
+
+</div>
+</section>
+
+<section id="s56">
+<h2>12.2 Online (API) vs Local LLMs</h2>
+<p class="subtitle">La decisión más importante de arquitectura: ¿nube o local?</p>
+<div class="lang-block" data-lang="es">
+
+<div class="compare">
+<div><h4>☁️ API / Cloud</h4>
+<ul style="font-size:13px;">
+<li>✅ <strong>Sin GPU:</strong> No necesitas hardware</li>
+<li>✅ <strong>Modelos top:</strong> Acceso a Claude Opus, GPT-5</li>
+<li>✅ <strong>Escala automática:</strong> El proveedor gestiona todo</li>
+<li>✅ <strong>Siempre actualizado:</strong> Última versión del modelo</li>
+<li>❌ Coste por token</li>
+<li>❌ Latencia de red</li>
+<li>❌ Datos salen de tu infraestructura</li>
+<li>❌ Dependencia del proveedor</li>
+</ul></div>
+<div><h4>💻 Local / Self-hosted</h4>
+<ul style="font-size:13px;">
+<li>✅ <strong>Privacidad total:</strong> Datos nunca salen</li>
+<li>✅ <strong>Sin coste por token:</strong> Solo electricidad + HW</li>
+<li>✅ <strong>Sin límites de rate:</strong> Tu hardware, tus reglas</li>
+<li>✅ <strong>Personalizable:</strong> Fine-tuning sin restricciones</li>
+<li>❌ Necesitas GPU(s) potentes</li>
+<li>❌ Modelos más pequeños (7B-70B params)</li>
+<li>❌ Tú gestionas actualizaciones</li>
+<li>❌ Mayor latencia en hardware modesto</li>
+</ul></div>
+</div>
+
+<h3>Herramientas para LLMs Locales</h3>
+<div class="table-wrap"><table>
+<tr><th>Herramienta</th><th>Descripción</th><th>Ideal para</th></tr>
+<tr><td><strong>Ollama</strong></td><td>Ejecuta LLMs localmente con un comando</td><td>Desarrollo, prototyping</td></tr>
+<tr><td><strong>LM Studio</strong></td><td>Interfaz gráfica para descargar y ejecutar modelos</td><td>No-técnicos, experimentación</td></tr>
+<tr><td><strong>llama.cpp</strong></td><td>Inferencia en CPU/GPU con cuantización</td><td>Máxima eficiencia, edge devices</td></tr>
+<tr><td><strong>vLLM</strong></td><td>Serving de alto rendimiento para producción</td><td>APIs, producción</td></tr>
+<tr><td><strong>Text Generation Inference</strong></td><td>Serving optimizado de Hugging Face</td><td>Producción con ecosistema HF</td></tr>
+<tr><td><strong>SGLang</strong></td><td>Serving con structured outputs y constrained decoding</td><td>JSON Schema, function calling local</td></tr>
+<tr><td><strong>MLX (Apple)</strong></td><td>Framework nativo para chips M-series con Unified Memory</td><td>Mac M2/M3/M4 (alta eficiencia memoria)</td></tr>
+<tr><td><strong>llamafile (Mozilla)</strong></td><td>Modelo + runtime en un único archivo ejecutable</td><td>Distribución sencilla, sin instalación</td></tr>
+</table></div>
+
+<h3>Modelos Locales Recomendados por Hardware (2026)</h3>
+<div class="table-wrap"><table>
+<tr><th>Hardware</th><th>Modelos top que caben</th><th>Notas</th></tr>
+<tr><td><strong>CPU + 8 GB RAM</strong></td><td>Gemma 3 1B/4B Q4, Phi-4-mini Q4, Llama 3.2 3B Q4</td><td>1-3 tok/s, ok para tareas simples</td></tr>
+<tr><td><strong>CPU + 16 GB RAM</strong></td><td>Gemma 3 12B Q4, Qwen3-7B Q5, Mistral 7B Q5</td><td>3-6 tok/s en DDR4-3200</td></tr>
+<tr><td><strong>CPU + 32 GB RAM</strong></td><td>Gemma 3 27B Q4, Qwen3-32B Q4, Llama 4 70B Q3</td><td>2-5 tok/s, calidad seria</td></tr>
+<tr><td><strong>GPU 8-12 GB (RTX 3060/4060/5060)</strong></td><td>Qwen3-7B/14B Q4, Phi-4 14B Q5, Mistral 7B</td><td>30-50 tok/s</td></tr>
+<tr><td><strong>GPU 16-24 GB (RTX 4080/4090/5080/5090)</strong></td><td>Qwen3-32B Q5, Llama 4 70B Q4, Codestral 22B Q5</td><td>20-40 tok/s, calidad cloud-equivalente</td></tr>
+<tr><td><strong>GPU 48 GB+ (RTX A6000, dual 4090)</strong></td><td>Llama 4 70B Q6, Qwen3-72B Q5, DeepSeek V3 Q4 (parcial)</td><td>15-30 tok/s, frontier OSS local</td></tr>
+<tr><td><strong>Mac M2/M3/M4 Pro/Max (32-128 GB UMA)</strong></td><td>Gemma 3 27B / Qwen3-72B / Llama 4 70B (Q4-Q5 con MLX)</td><td>10-30 tok/s, todo en VRAM unificada</td></tr>
+<tr><td><strong>Servidor 4× A100 80GB / H100</strong></td><td>Llama 4 405B FP16, DeepSeek V3 671B-MoE, Qwen3-72B FP16</td><td>50-200 tok/s con vLLM, frontier OSS al máximo</td></tr>
+</table></div>
+
+<div class="tip"><strong>💡 Punto dulce 2026 para uso personal:</strong> RTX 4090/5090 (24-32 GB VRAM) + <strong>Qwen3-32B Q5</strong> o <strong>Llama 4 70B Q4</strong> via Ollama. Calidad ~85% de Claude Sonnet en la mayoría de tareas, latencia local, privacidad total. Coste hardware amortizado en ~6-12 meses si sustituye API.</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="compare">
+<div><h4>☁️ API / Cloud</h4>
+<ul style="font-size:13px;">
+<li>✅ <strong>No GPU:</strong> No hardware needed</li>
+<li>✅ <strong>Top models:</strong> Access to Claude Opus, GPT-5</li>
+<li>✅ <strong>Auto-scaling:</strong> Provider handles everything</li>
+<li>✅ <strong>Always up to date:</strong> Latest model version</li>
+<li>❌ Cost per token</li>
+<li>❌ Network latency</li>
+<li>❌ Data leaves your infrastructure</li>
+<li>❌ Vendor dependency</li>
+</ul></div>
+<div><h4>💻 Local / Self-hosted</h4>
+<ul style="font-size:13px;">
+<li>✅ <strong>Total privacy:</strong> Data never leaves</li>
+<li>✅ <strong>No per-token cost:</strong> Just electricity + HW</li>
+<li>✅ <strong>No rate limits:</strong> Your hardware, your rules</li>
+<li>✅ <strong>Customizable:</strong> Fine-tuning without restrictions</li>
+<li>❌ Need powerful GPU(s)</li>
+<li>❌ Smaller models (7B-70B params)</li>
+<li>❌ You manage updates</li>
+<li>❌ Higher latency on modest hardware</li>
+</ul></div>
+</div>
+
+<h3>Tools for Local LLMs</h3>
+<div class="table-wrap"><table>
+<tr><th>Tool</th><th>Description</th><th>Ideal for</th></tr>
+<tr><td><strong>Ollama</strong></td><td>Run LLMs locally with one command</td><td>Development, prototyping</td></tr>
+<tr><td><strong>LM Studio</strong></td><td>GUI to download and run models</td><td>Non-technical users, experimentation</td></tr>
+<tr><td><strong>llama.cpp</strong></td><td>CPU/GPU inference with quantization</td><td>Maximum efficiency, edge devices</td></tr>
+<tr><td><strong>vLLM</strong></td><td>High-performance serving for production</td><td>APIs, production</td></tr>
+<tr><td><strong>Text Generation Inference</strong></td><td>Hugging Face optimized serving</td><td>Production with HF ecosystem</td></tr>
+<tr><td><strong>SGLang</strong></td><td>Serving with structured outputs and constrained decoding</td><td>JSON Schema, local function calling</td></tr>
+<tr><td><strong>MLX (Apple)</strong></td><td>Native framework for M-series chips with Unified Memory</td><td>Mac M2/M3/M4 (high memory efficiency)</td></tr>
+<tr><td><strong>llamafile (Mozilla)</strong></td><td>Model + runtime in a single executable file</td><td>Easy distribution, no install</td></tr>
+</table></div>
+
+<h3>Recommended Local Models by Hardware (2026)</h3>
+<div class="table-wrap"><table>
+<tr><th>Hardware</th><th>Top models that fit</th><th>Notes</th></tr>
+<tr><td><strong>CPU + 8 GB RAM</strong></td><td>Gemma 3 1B/4B Q4, Phi-4-mini Q4, Llama 3.2 3B Q4</td><td>1-3 tok/s, OK for simple tasks</td></tr>
+<tr><td><strong>CPU + 16 GB RAM</strong></td><td>Gemma 3 12B Q4, Qwen3-7B Q5, Mistral 7B Q5</td><td>3-6 tok/s on DDR4-3200</td></tr>
+<tr><td><strong>CPU + 32 GB RAM</strong></td><td>Gemma 3 27B Q4, Qwen3-32B Q4, Llama 4 70B Q3</td><td>2-5 tok/s, serious quality</td></tr>
+<tr><td><strong>GPU 8-12 GB (RTX 3060/4060/5060)</strong></td><td>Qwen3-7B/14B Q4, Phi-4 14B Q5, Mistral 7B</td><td>30-50 tok/s</td></tr>
+<tr><td><strong>GPU 16-24 GB (RTX 4080/4090/5080/5090)</strong></td><td>Qwen3-32B Q5, Llama 4 70B Q4, Codestral 22B Q5</td><td>20-40 tok/s, cloud-equivalent quality</td></tr>
+<tr><td><strong>GPU 48 GB+ (RTX A6000, dual 4090)</strong></td><td>Llama 4 70B Q6, Qwen3-72B Q5, DeepSeek V3 Q4 (partial)</td><td>15-30 tok/s, local frontier OSS</td></tr>
+<tr><td><strong>Mac M2/M3/M4 Pro/Max (32-128 GB UMA)</strong></td><td>Gemma 3 27B / Qwen3-72B / Llama 4 70B (Q4-Q5 via MLX)</td><td>10-30 tok/s, all in unified VRAM</td></tr>
+<tr><td><strong>Server 4× A100 80GB / H100</strong></td><td>Llama 4 405B FP16, DeepSeek V3 671B-MoE, Qwen3-72B FP16</td><td>50-200 tok/s with vLLM, frontier OSS maxed</td></tr>
+</table></div>
+
+<div class="tip"><strong>💡 2026 sweet spot for personal use:</strong> RTX 4090/5090 (24-32 GB VRAM) + <strong>Qwen3-32B Q5</strong> or <strong>Llama 4 70B Q4</strong> via Ollama. Quality ~85% of Claude Sonnet on most tasks, local latency, full privacy. Hardware cost amortized in ~6-12 months if it replaces API spend.</div>
+
+</div>
+</section>
+
+<section id="s57">
+<h2>12.3 Especializaciones de Modelos</h2>
+<p class="subtitle">No todos los LLMs son generalistas — modelos entrenados para dominios específicos</p>
+<div class="lang-block" data-lang="es">
+
+<div class="table-wrap"><table>
+<tr><th>Especialidad</th><th>Modelos</th><th>Características</th></tr>
+<tr><td><strong>Código</strong></td><td>DeepSeek Coder V4, Claude Code, Codex, Qwen Coder</td><td>Fine-tuned en repositorios GitHub, entienden arquitectura de proyectos</td></tr>
+<tr><td><strong>Matemáticas</strong></td><td>DeepSeek Math, Qwen Math, Llemma</td><td>Razonamiento formal, demostraciones, cálculo simbólico</td></tr>
+<tr><td><strong>Medicina</strong></td><td>Med-PaLM 3, Claude (con system prompt médico)</td><td>Diagnóstico diferencial, literatura médica, terminología clínica</td></tr>
+<tr><td><strong>Legal</strong></td><td>Claude (con role prompting legal), Harvey AI</td><td>Contratos, jurisprudencia, regulación, compliance</td></tr>
+<tr><td><strong>Finanzas</strong></td><td>BloombergGPT, FinGPT</td><td>Análisis financiero, reporting, SEC filings</td></tr>
+<tr><td><strong>Multilingüe</strong></td><td>DeepSeek V4, Aya Expanse, Tower</td><td>100+ idiomas, traducción, comprensión cross-lingual</td></tr>
+<tr><td><strong>Pequeños/Edge</strong></td><td>Phi-4, Gemma 3, Llama 3.2 1B/3B</td><td>Ejecutan en móviles, IoT, sin conexión</td></tr>
+</table></div>
+
+<div class="tip"><strong>💡 La mayoría de tareas no necesitan un modelo especializado.</strong> Un buen system prompt + Claude Opus 4.7 o DeepSeek V4 Pro cubre el 95% de casos. Usa especializados solo cuando necesites consistencia extrema en un dominio.</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="table-wrap"><table>
+<tr><th>Specialty</th><th>Models</th><th>Characteristics</th></tr>
+<tr><td><strong>Code</strong></td><td>DeepSeek Coder V4, Claude Code, Codex, Qwen Coder</td><td>Fine-tuned on GitHub repos, understand project architecture</td></tr>
+<tr><td><strong>Math</strong></td><td>DeepSeek Math, Qwen Math, Llemma</td><td>Formal reasoning, proofs, symbolic computation</td></tr>
+<tr><td><strong>Medicine</strong></td><td>Med-PaLM 3, Claude (with medical system prompt)</td><td>Differential diagnosis, medical literature, clinical terminology</td></tr>
+<tr><td><strong>Legal</strong></td><td>Claude (with legal role prompting), Harvey AI</td><td>Contracts, case law, regulation, compliance</td></tr>
+<tr><td><strong>Finance</strong></td><td>BloombergGPT, FinGPT</td><td>Financial analysis, reporting, SEC filings</td></tr>
+<tr><td><strong>Multilingual</strong></td><td>DeepSeek V4, Aya Expanse, Tower</td><td>100+ languages, translation, cross-lingual understanding</td></tr>
+<tr><td><strong>Small/Edge</strong></td><td>Phi-4, Gemma 3, Llama 3.2 1B/3B</td><td>Run on phones, IoT, offline</td></tr>
+</table></div>
+
+<div class="tip"><strong>💡 Most tasks don't need a specialized model.</strong> A good system prompt + Claude Opus 4.7 or DeepSeek V4 Pro covers 95% of cases. Use specialized models only when you need extreme consistency in a domain.</div>
+
+</div>
+</section>
+
+<section id="s58">
+<h2>12.4 Open Source vs Propietario</h2>
+<div class="lang-block" data-lang="es">
+
+<div class="compare">
+<div><h4>🔓 Open-Weights / Open Source</h4>
+<ul style="font-size:13px;">
+<li><strong>DeepSeek V3 / Coder V4</strong> — MIT (DeepSeek)</li>
+<li><strong>Llama 4</strong> — 8B/70B/405B (Meta, Llama Community License)</li>
+<li><strong>Qwen 3</strong> — 0.5B-72B Apache 2.0 (Alibaba)</li>
+<li><strong>Qwen3-Coder / Qwen3-Math</strong> — Variantes especializadas</li>
+<li><strong>Gemma 3</strong> — 1B-27B (Google, Gemma License)</li>
+<li><strong>Mistral / Codestral / Pixtral</strong> — Apache 2.0 (Mistral)</li>
+<li><strong>Phi-4 / Phi-4-mini</strong> — MIT (Microsoft)</li>
+<li><strong>GLM-4</strong> — 9B-32B (Zhipu)</li>
+<li><strong>Yi-2 / Yi-Lightning</strong> — Apache 2.0 (01.AI)</li>
+<li><strong>Command R+</strong> — CC-BY-NC (Cohere, comercial vía API)</li>
+<li><strong>OLMo 2</strong> — Apache 2.0 + datos + recipe (AI2, único 100% OSS)</li>
+<li>✅ Lo ejecutas donde quieras</li>
+<li>✅ Fine-tuning sin restricciones</li>
+<li>✅ Sin dependencia de un vendor</li>
+<li>❌ Necesitas GPU para los grandes</li>
+<li>❌ Frontier OSS sigue 5-15% detrás del top propietario</li>
+</ul></div>
+<div><h4>🔒 Propietario (Solo API)</h4>
+<ul style="font-size:13px;">
+<li><strong>Claude Opus 4.7 / Sonnet 4.6 / Haiku 4.5</strong> — Anthropic</li>
+<li><strong>GPT-5.5 / GPT-5 / GPT-5 Mini</strong> — OpenAI</li>
+<li><strong>Gemini 2.5 Pro / Flash</strong> — Google</li>
+<li><strong>Grok 4</strong> — xAI</li>
+<li><strong>Kimi K2</strong> — Moonshot (cloud only)</li>
+<li><strong>MiniMax M2</strong> — MiniMax (cloud only)</li>
+<li><strong>Qwen3-Max</strong> — Alibaba (top tier solo cloud)</li>
+<li><strong>GLM-5</strong> — Zhipu (top tier solo cloud)</li>
+<li>✅ Rendimiento top-tier</li>
+<li>✅ Sin gestión de infraestructura</li>
+<li>✅ Actualizaciones automáticas</li>
+<li>✅ Multimodal nativo (Gemini, GPT-5, Claude)</li>
+<li>❌ Vendor lock-in</li>
+<li>❌ Coste por token</li>
+<li>❌ No puedes fine-tunear (salvo excepciones)</li>
+<li>❌ Datos salen de tu infraestructura</li>
+</ul></div>
+</div>
+
+<div class="warn"><strong>⚠️ "Open Source" en IA:</strong> La mayoría de modelos "open source" solo publican los pesos (open weights), no el código de entrenamiento ni los datos. Pocos son verdaderamente open source — <strong>OLMo de AI2</strong> publica pesos + datos + recipe + scripts (única familia 100% reproducible). Llama, Qwen, Gemma, Mistral, DeepSeek caen en "open weights" — pesos descargables, training data privado.</div>
+
+<div class="card card-green">
+<div class="card-title">📊 OSS vs Propietario en 2026 — el gap se cierra</div>
+<p>En benchmarks 2026, los frontier OSS top (DeepSeek V3 671B-MoE, Llama 4 405B, Qwen3-72B) están a ~5-15% del frontier propietario (Claude Opus, GPT-5, Gemini Pro). Para muchos casos prácticos OSS basta — la diferencia se nota más en tareas extremas (razonamiento profundo multi-step, agentes largos, ARC-AGI).</p>
+<p><strong>Reglas de pulgar 2026:</strong></p>
+<ul>
+  <li>Si el caso es "uso interno + datos sensibles" → OSS gana siempre (privacidad).</li>
+  <li>Si el caso es "producto público, ROI > coste API" → propietario gana (calidad + actualizaciones).</li>
+  <li>Si el caso es "alto volumen, calidad media" → OSS self-hosted (Qwen3 / Llama 4) o cloud chino barato (DeepSeek / GLM / Kimi).</li>
+</ul>
+</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="compare">
+<div><h4>🔓 Open-Weights / Open Source</h4>
+<ul style="font-size:13px;">
+<li><strong>DeepSeek V3 / Coder V4</strong> — MIT (DeepSeek)</li>
+<li><strong>Llama 4</strong> — 8B/70B/405B (Meta, Llama Community License)</li>
+<li><strong>Qwen 3</strong> — 0.5B-72B Apache 2.0 (Alibaba)</li>
+<li><strong>Qwen3-Coder / Qwen3-Math</strong> — Specialized variants</li>
+<li><strong>Gemma 3</strong> — 1B-27B (Google, Gemma License)</li>
+<li><strong>Mistral / Codestral / Pixtral</strong> — Apache 2.0 (Mistral)</li>
+<li><strong>Phi-4 / Phi-4-mini</strong> — MIT (Microsoft)</li>
+<li><strong>GLM-4</strong> — 9B-32B (Zhipu)</li>
+<li><strong>Yi-2 / Yi-Lightning</strong> — Apache 2.0 (01.AI)</li>
+<li><strong>Command R+</strong> — CC-BY-NC (Cohere, commercial via API)</li>
+<li><strong>OLMo 2</strong> — Apache 2.0 + data + recipe (AI2, the only 100% OSS)</li>
+<li>✅ Run anywhere</li>
+<li>✅ Fine-tuning without restrictions</li>
+<li>✅ No vendor dependency</li>
+<li>❌ Need a GPU for the big ones</li>
+<li>❌ Frontier OSS still 5-15% behind top proprietary</li>
+</ul></div>
+<div><h4>🔒 Proprietary (API only)</h4>
+<ul style="font-size:13px;">
+<li><strong>Claude Opus 4.7 / Sonnet 4.6 / Haiku 4.5</strong> — Anthropic</li>
+<li><strong>GPT-5.5 / GPT-5 / GPT-5 Mini</strong> — OpenAI</li>
+<li><strong>Gemini 2.5 Pro / Flash</strong> — Google</li>
+<li><strong>Grok 4</strong> — xAI</li>
+<li><strong>Kimi K2</strong> — Moonshot (cloud only)</li>
+<li><strong>MiniMax M2</strong> — MiniMax (cloud only)</li>
+<li><strong>Qwen3-Max</strong> — Alibaba (top tier cloud only)</li>
+<li><strong>GLM-5</strong> — Zhipu (top tier cloud only)</li>
+<li>✅ Top-tier performance</li>
+<li>✅ No infrastructure management</li>
+<li>✅ Automatic updates</li>
+<li>✅ Native multimodal (Gemini, GPT-5, Claude)</li>
+<li>❌ Vendor lock-in</li>
+<li>❌ Cost per token</li>
+<li>❌ No fine-tuning (with rare exceptions)</li>
+<li>❌ Data leaves your infrastructure</li>
+</ul></div>
+</div>
+
+<div class="warn"><strong>⚠️ "Open Source" in AI:</strong> Most "open source" models only publish the weights (open weights), not the training code or data. Few are truly open source — <strong>AI2's OLMo</strong> publishes weights + data + recipe + scripts (only fully reproducible family). Llama, Qwen, Gemma, Mistral, DeepSeek fall under "open weights" — downloadable weights, private training data.</div>
+
+<div class="card card-green">
+<div class="card-title">📊 OSS vs Proprietary in 2026 — the gap is closing</div>
+<p>On 2026 benchmarks, top frontier OSS (DeepSeek V3 671B-MoE, Llama 4 405B, Qwen3-72B) sit ~5-15% behind frontier proprietary (Claude Opus, GPT-5, Gemini Pro). For many practical cases OSS is enough — the gap shows mostly on extreme tasks (deep multi-step reasoning, long-running agents, ARC-AGI).</p>
+<p><strong>2026 rules of thumb:</strong></p>
+<ul>
+  <li>If the case is "internal use + sensitive data" → OSS always wins (privacy).</li>
+  <li>If the case is "public product, ROI &gt; API cost" → proprietary wins (quality + updates).</li>
+  <li>If the case is "high volume, medium quality" → OSS self-hosted (Qwen3 / Llama 4) or cheap Chinese cloud (DeepSeek / GLM / Kimi).</li>
+</ul>
+</div>
+
+</div>
+</section>
+
+
+
+<section class="module-references">
+  <h3 data-i18n="ref-header">Referencias</h3>
+  <p style="font-size:13px;color:var(--text-dim);" data-i18n="ref-intro">
+    Documentación oficial y papers consultados durante este módulo. Revísalos para profundizar.
+  </p>
+  <ul class="references-list" data-references="01"></ul>
+</section>
+
+</main>
+</div>
+
+<script src="../js/shared/manifest.js?v=8"></script>
+<script src="../js/shared/sidebar.js?v=8"></script>
+<script src="../js/shared/references.js?v=8"></script>
+<script src="../js/i18n.js?v=8"></script>
+<script src="../js/quiz.js?v=8"></script>
+<script src="../js/glossary.js?v=8"></script>
+<script src="../js/app.js?v=8"></script>
+</body>
+</html>

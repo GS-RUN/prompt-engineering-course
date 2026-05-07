@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bloque VI — Infraestructura y RAG — Prompt Engineering Master Course</title>
+<link rel="stylesheet" href="../css/style.css?v=8">
+<link rel="stylesheet" href="../css/bando-b.css?v=8">
+<script>
+  (function() {
+    try {
+      var t = localStorage.getItem('theme');
+      if (t !== 'dark' && t !== 'light') t = 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+    } catch(e) { document.documentElement.setAttribute('data-theme', 'dark'); }
+  })();
+</script>
+</head>
+<body data-page-block="06">
+
+<div class="bg-orb bg-orb-1"></div>
+<div class="bg-orb bg-orb-2"></div>
+<div class="bg-orb bg-orb-3"></div>
+<div class="bg-gradient"></div>
+<div class="bg-grid"></div>
+<div id="progress-bar"></div>
+
+<div id="app">
+<nav id="sidebar"></nav>
+
+<main id="content">
+
+<section class="module-front-matter" data-module-front>
+  <div class="module-meta">
+    <span class="module-icon">🏗️</span>
+    <span class="module-level level-intermediate">intermediate</span>
+    <span class="module-time">⏱️ 150 min</span>
+  </div>
+  <h1 class="module-title">
+    <span class="lang-block" data-lang="es">Bloque VI — Infraestructura y RAG</span>
+    <span class="lang-block" data-lang="en">Block VI — Infrastructure + RAG deep-dive</span>
+  </h1>
+  <div class="module-objectives">
+    <div class="lang-block" data-lang="es">
+      <h3>Objetivos de aprendizaje</h3>
+      <ul>
+        <li>Diseñar pipeline RAG: chunking + embeddings + vector DB.</li>
+        <li>Elegir vector DB según escala (Chroma → Pinecone → Milvus).</li>
+        <li>Servir LLMs en producción (vLLM, TGI, SGLang) con monitoring.</li>
+        <li>Instrumentar latencia, coste, tasa de refusal y calidad.</li>
+      </ul>
+    </div>
+    <div class="lang-block" data-lang="en">
+      <h3>Learning objectives</h3>
+      <ul>
+        <li>Design a RAG pipeline: chunking + embeddings + vector DB.</li>
+        <li>Pick a vector DB by scale (Chroma → Pinecone → Milvus).</li>
+        <li>Serve LLMs in production (vLLM, TGI, SGLang) with monitoring.</li>
+        <li>Instrument latency, cost, refusal rate and quality.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="s64">
+<h2>14.1 RAG: Chunking + Embeddings</h2>
+<p class="subtitle">El corazón de RAG: cómo dividir documentos y convertir texto en vectores</p>
+<div class="lang-block" data-lang="es">
+
+<h3>Estrategias de Chunking</h3>
+<div class="table-wrap"><table>
+<tr><th>Estrategia</th><th>Descripción</th><th>Mejor para</th></tr>
+<tr><td><strong>Fixed-size</strong></td><td>Dividir cada N tokens (ej: 512)</td><td>Simple, rápido, general</td></tr>
+<tr><td><strong>Sentence-based</strong></td><td>Dividir por frases, agrupar hasta ~N tokens</td><td>Texto narrativo, FAQs</td></tr>
+<tr><td><strong>Recursive Character</strong></td><td>Dividir por párrafos → frases → palabras</td><td>Documentos estructurados (LangChain default)</td></tr>
+<tr><td><strong>Semantic</strong></td><td>Agrupar por similitud semántica entre frases</td><td>Documentación técnica, manuales</td></tr>
+<tr><td><strong>Hierarchical</strong></td><td>Chunks padre + chunks hijo (auto-merge)</td><td>Búsqueda precisa con contexto</td></tr>
+<tr><td><strong>Overlap (sliding window)</strong></td><td>Chunks con solapamiento (10-20%)</td><td>Evitar cortar información a mitad</td></tr>
+</table></div>
+
+<h3>Modelos de Embedding Populares</h3>
+<div class="table-wrap"><table>
+<tr><th>Modelo</th><th>Dimensiones</th><th>Max Tokens</th><th>Precio</th></tr>
+<tr><td>OpenAI text-embedding-3-large</td><td>256-3072</td><td>8192</td><td>$0.13 / 1M tok</td></tr>
+<tr><td>OpenAI text-embedding-3-small</td><td>256-1536</td><td>8192</td><td>$0.02 / 1M tok</td></tr>
+<tr><td>Cohere Embed v4</td><td>1024</td><td>8192</td><td>$0.10 / 1M tok</td></tr>
+<tr><td>BGE-M3 (BAAI)</td><td>1024</td><td>8192</td><td>Gratis (local)</td></tr>
+<tr><td>Jina Embeddings v4</td><td>1024</td><td>8192</td><td>Gratis (local) / API</td></tr>
+<tr><td>Nomic Embed Text v2</td><td>768</td><td>8192</td><td>Gratis (local)</td></tr>
+</table></div>
+
+<div class="tip"><strong>💡 Chunk size ideal:</strong> 256-512 tokens para QA factual. 1024-2048 tokens para resúmenes o preguntas que requieren contexto amplio. Prueba con overlap del 10-20%.</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<h3>Chunking Strategies</h3>
+<div class="table-wrap"><table>
+<tr><th>Strategy</th><th>Description</th><th>Best for</th></tr>
+<tr><td><strong>Fixed-size</strong></td><td>Split every N tokens (e.g. 512)</td><td>Simple, fast, general</td></tr>
+<tr><td><strong>Sentence-based</strong></td><td>Split by sentences, group up to ~N tokens</td><td>Narrative text, FAQs</td></tr>
+<tr><td><strong>Recursive Character</strong></td><td>Split by paragraphs → sentences → words</td><td>Structured docs (LangChain default)</td></tr>
+<tr><td><strong>Semantic</strong></td><td>Group by semantic similarity between sentences</td><td>Technical docs, manuals</td></tr>
+<tr><td><strong>Hierarchical</strong></td><td>Parent chunks + child chunks (auto-merge)</td><td>Precise search with context</td></tr>
+<tr><td><strong>Overlap (sliding window)</strong></td><td>Chunks with 10-20% overlap</td><td>Avoid cutting info mid-thought</td></tr>
+</table></div>
+
+<h3>Popular Embedding Models</h3>
+<div class="table-wrap"><table>
+<tr><th>Model</th><th>Dimensions</th><th>Max Tokens</th><th>Price</th></tr>
+<tr><td>OpenAI text-embedding-3-large</td><td>256-3072</td><td>8192</td><td>$0.13 / 1M tok</td></tr>
+<tr><td>OpenAI text-embedding-3-small</td><td>256-1536</td><td>8192</td><td>$0.02 / 1M tok</td></tr>
+<tr><td>Cohere Embed v4</td><td>1024</td><td>8192</td><td>$0.10 / 1M tok</td></tr>
+<tr><td>BGE-M3 (BAAI)</td><td>1024</td><td>8192</td><td>Free (local)</td></tr>
+<tr><td>Jina Embeddings v4</td><td>1024</td><td>8192</td><td>Free (local) / API</td></tr>
+<tr><td>Nomic Embed Text v2</td><td>768</td><td>8192</td><td>Free (local)</td></tr>
+</table></div>
+
+<div class="tip"><strong>💡 Ideal chunk size:</strong> 256-512 tokens for factual QA. 1024-2048 tokens for summaries or queries needing wider context. Try 10-20% overlap.</div>
+
+</div>
+</section>
+
+<section id="s65">
+<h2>14.2 Vector Databases</h2>
+<p class="subtitle">Donde se almacenan y buscan los embeddings — el motor de RAG</p>
+<div class="lang-block" data-lang="es">
+
+<div class="table-wrap"><table>
+<tr><th>Vector DB</th><th>Tipo</th><th>Escala</th><th>Mejor para</th></tr>
+<tr><td><strong>Pinecone</strong></td><td>Cloud (SaaS)</td><td>Billones de vectores</td><td>Enterprise, sin gestión de infra</td></tr>
+<tr><td><strong>Weaviate</strong></td><td>Cloud + Self-hosted</td><td>Millones-Billones</td><td>Híbrido (vector + keyword search)</td></tr>
+<tr><td><strong>Qdrant</strong></td><td>Cloud + Self-hosted</td><td>Millones</td><td>Rendimiento, filtrado avanzado</td></tr>
+<tr><td><strong>ChromaDB</strong></td><td>Local / Embedded</td><td>Miles-Millones</td><td>Prototipos, desarrollo, simple</td></tr>
+<tr><td><strong>pgvector</strong></td><td>Extensión PostgreSQL</td><td>Millones</td><td>Ya tienes Postgres, queries SQL</td></tr>
+<tr><td><strong>Milvus</strong></td><td>Cloud + Self-hosted</td><td>Billones</td><td>Escala masiva, GPU-accelerated</td></tr>
+<tr><td><strong>FAISS (Meta)</strong></td><td>Librería local</td><td>Billones</td><td>Investigación, máxima velocidad</td></tr>
+</table></div>
+
+<h3>¿Cuál elegir?</h3>
+<pre><code># Prototipo rápido → ChromaDB (pip install chromadb)
+# Ya usas Postgres → pgvector (sin nueva infra)
+# Startup / scale-up → Pinecone Serverless (sin DevOps)
+# Enterprise on-prem → Qdrant o Weaviate self-hosted
+# Investigación / custom → FAISS + custom pipeline</code></pre>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="table-wrap"><table>
+<tr><th>Vector DB</th><th>Type</th><th>Scale</th><th>Best for</th></tr>
+<tr><td><strong>Pinecone</strong></td><td>Cloud (SaaS)</td><td>Billions of vectors</td><td>Enterprise, no infra management</td></tr>
+<tr><td><strong>Weaviate</strong></td><td>Cloud + Self-hosted</td><td>Millions-Billions</td><td>Hybrid (vector + keyword search)</td></tr>
+<tr><td><strong>Qdrant</strong></td><td>Cloud + Self-hosted</td><td>Millions</td><td>Performance, advanced filtering</td></tr>
+<tr><td><strong>ChromaDB</strong></td><td>Local / Embedded</td><td>Thousands-Millions</td><td>Prototypes, dev, simple</td></tr>
+<tr><td><strong>pgvector</strong></td><td>PostgreSQL extension</td><td>Millions</td><td>Already on Postgres, SQL queries</td></tr>
+<tr><td><strong>Milvus</strong></td><td>Cloud + Self-hosted</td><td>Billions</td><td>Massive scale, GPU-accelerated</td></tr>
+<tr><td><strong>FAISS (Meta)</strong></td><td>Local library</td><td>Billions</td><td>Research, maximum speed</td></tr>
+</table></div>
+
+<h3>Which one to pick?</h3>
+<pre><code># Quick prototype → ChromaDB (pip install chromadb)
+# Already on Postgres → pgvector (no new infra)
+# Startup / scale-up → Pinecone Serverless (no DevOps)
+# Enterprise on-prem → Qdrant or Weaviate self-hosted
+# Research / custom → FAISS + custom pipeline</code></pre>
+
+</div>
+</section>
+
+<section id="s66">
+<h2>14.3 Frameworks para LLMs</h2>
+<div class="lang-block" data-lang="es">
+
+<div class="table-wrap"><table>
+<tr><th>Framework</th><th>Enfoque</th><th>Curva aprendizaje</th><th>Ideal para</th></tr>
+<tr><td><strong>LangChain</strong></td><td>Orquestación general: chains, agents, RAG, tools</td><td>Media-Alta</td><td>Aplicaciones complejas multi-componente</td></tr>
+<tr><td><strong>LlamaIndex</strong></td><td>Indexación y RAG: ingesta, chunking, retrieval</td><td>Media</td><td>RAG-heavy apps, búsqueda sobre documentos</td></tr>
+<tr><td><strong>Haystack</strong></td><td>Pipelines NLP modulares (deepset)</td><td>Media</td><td>Producción, pipelines robustas</td></tr>
+<tr><td><strong>CrewAI / AutoGen</strong></td><td>Multi-agente: agentes que colaboran</td><td>Baja-Media</td><td>Workflows con múltiples agentes</td></tr>
+<tr><td><strong>DSPy</strong></td><td>Optimización de prompts como programa</td><td>Alta</td><td>Investigación, prompt optimization automática</td></tr>
+<tr><td><strong>Vercel AI SDK</strong></td><td>Streaming, agents, tools para web</td><td>Baja</td><td>Apps web React/Next.js con AI</td></tr>
+<tr><td><strong>Instructor</strong></td><td>Structured outputs con type hints (Python)</td><td>Baja</td><td>Extracción de datos tipada</td></tr>
+</table></div>
+
+<pre><code># Ejemplo: LangChain RAG en 15 líneas
+from langchain.document_loaders import TextLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.embeddings import OpenAIEmbeddings
+from langchain.vectorstores import Chroma
+
+# 1. Cargar documentos
+loader = TextLoader("docs/")
+docs = loader.load()
+
+# 2. Chunking
+splitter = RecursiveCharacterTextSplitter(chunk_size=512, chunk_overlap=50)
+chunks = splitter.split_documents(docs)
+
+# 3. Embeddings + Vector Store
+db = Chroma.from_documents(chunks, OpenAIEmbeddings())
+
+# 4. Búsqueda
+results = db.similarity_search("¿Cómo configuro el firewall?", k=3)</code></pre>
+
+<div class="warn"><strong>⚠️ LangChain no es necesario:</strong> Para proyectos simples, usar directamente la API del LLM + un vector DB es más ligero y mantenible. LangChain brilla en aplicaciones complejas con muchas integraciones.</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="table-wrap"><table>
+<tr><th>Framework</th><th>Focus</th><th>Learning curve</th><th>Ideal for</th></tr>
+<tr><td><strong>LangChain</strong></td><td>General orchestration: chains, agents, RAG, tools</td><td>Medium-High</td><td>Complex multi-component apps</td></tr>
+<tr><td><strong>LlamaIndex</strong></td><td>Indexing and RAG: ingest, chunking, retrieval</td><td>Medium</td><td>RAG-heavy apps, search over docs</td></tr>
+<tr><td><strong>Haystack</strong></td><td>Modular NLP pipelines (deepset)</td><td>Medium</td><td>Production, robust pipelines</td></tr>
+<tr><td><strong>CrewAI / AutoGen</strong></td><td>Multi-agent: agents that collaborate</td><td>Low-Medium</td><td>Workflows with multiple agents</td></tr>
+<tr><td><strong>DSPy</strong></td><td>Prompt optimization as a program</td><td>High</td><td>Research, automatic prompt optimization</td></tr>
+<tr><td><strong>Vercel AI SDK</strong></td><td>Streaming, agents, tools for the web</td><td>Low</td><td>React/Next.js web apps with AI</td></tr>
+<tr><td><strong>Instructor</strong></td><td>Structured outputs with type hints (Python)</td><td>Low</td><td>Typed data extraction</td></tr>
+</table></div>
+
+<pre><code># Example: LangChain RAG in 15 lines
+from langchain.document_loaders import TextLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.embeddings import OpenAIEmbeddings
+from langchain.vectorstores import Chroma
+
+# 1. Load documents
+loader = TextLoader("docs/")
+docs = loader.load()
+
+# 2. Chunking
+splitter = RecursiveCharacterTextSplitter(chunk_size=512, chunk_overlap=50)
+chunks = splitter.split_documents(docs)
+
+# 3. Embeddings + Vector Store
+db = Chroma.from_documents(chunks, OpenAIEmbeddings())
+
+# 4. Search
+results = db.similarity_search("How do I configure the firewall?", k=3)</code></pre>
+
+<div class="warn"><strong>⚠️ LangChain isn't required:</strong> For simple projects, using the LLM API directly + a vector DB is lighter and more maintainable. LangChain shines in complex apps with many integrations.</div>
+
+</div>
+</section>
+
+<section id="s67">
+<h2>14.4 Deployment y Serving de LLMs</h2>
+<div class="lang-block" data-lang="es">
+
+<div class="table-wrap"><table>
+<tr><th>Solución</th><th>Tipo</th><th>Throughput</th><th>Ideal para</th></tr>
+<tr><td><strong>vLLM</strong></td><td>Self-hosted</td><td>Muy alto (PagedAttention)</td><td>Producción, alta concurrencia</td></tr>
+<tr><td><strong>TGI</strong> (Text Generation Inference)</td><td>Self-hosted</td><td>Alto</td><td>Producción con ecosistema HF</td></tr>
+<tr><td><strong>Ollama</strong></td><td>Local / Dev</td><td>Bajo-Medio</td><td>Desarrollo individual, pruebas</td></tr>
+<tr><td><strong>Together AI</strong></td><td>Cloud API</td><td>Alto</td><td>Sin gestionar GPU, fine-tuning incluido</td></tr>
+<tr><td><strong>Fireworks AI</strong></td><td>Cloud API</td><td>Muy alto</td><td>Mínima latencia, modelos optimizados</td></tr>
+<tr><td><strong>Groq</strong></td><td>Cloud API (LPUs)</td><td>Altísimo</td><td>Latencia mínima (~500 tok/s), hardware especializado</td></tr>
+<tr><td><strong>Modal / Replicate</strong></td><td>Serverless GPU</td><td>Variable</td><td>Escalar a cero, sin gestión de servidores</td></tr>
+</table></div>
+
+<h3>Stack Recomendado por Escala</h3>
+<pre><code># Proyecto personal
+Ollama (local) + ChromaDB + LangChain
+
+# Startup / MVP
+Together AI API + Pinecone Serverless + Vercel AI SDK
+
+# Scale-up
+vLLM en A100/H100 + Qdrant + custom pipeline + Redis cache
+
+# Enterprise
+TGI en Kubernetes + Milvus + Haystack + Prometheus/Grafana</code></pre>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="table-wrap"><table>
+<tr><th>Solution</th><th>Type</th><th>Throughput</th><th>Ideal for</th></tr>
+<tr><td><strong>vLLM</strong></td><td>Self-hosted</td><td>Very high (PagedAttention)</td><td>Production, high concurrency</td></tr>
+<tr><td><strong>TGI</strong> (Text Generation Inference)</td><td>Self-hosted</td><td>High</td><td>Production with HF ecosystem</td></tr>
+<tr><td><strong>Ollama</strong></td><td>Local / Dev</td><td>Low-Medium</td><td>Individual development, testing</td></tr>
+<tr><td><strong>Together AI</strong></td><td>Cloud API</td><td>High</td><td>No GPU management, fine-tuning included</td></tr>
+<tr><td><strong>Fireworks AI</strong></td><td>Cloud API</td><td>Very high</td><td>Minimum latency, optimized models</td></tr>
+<tr><td><strong>Groq</strong></td><td>Cloud API (LPUs)</td><td>Extreme</td><td>Lowest latency (~500 tok/s), specialized hardware</td></tr>
+<tr><td><strong>Modal / Replicate</strong></td><td>Serverless GPU</td><td>Variable</td><td>Scale to zero, no server management</td></tr>
+</table></div>
+
+<h3>Recommended Stack by Scale</h3>
+<pre><code># Personal project
+Ollama (local) + ChromaDB + LangChain
+
+# Startup / MVP
+Together AI API + Pinecone Serverless + Vercel AI SDK
+
+# Scale-up
+vLLM on A100/H100 + Qdrant + custom pipeline + Redis cache
+
+# Enterprise
+TGI on Kubernetes + Milvus + Haystack + Prometheus/Grafana</code></pre>
+
+</div>
+</section>
+
+<section id="s68">
+<h2>14.5 Monitoring y Observabilidad</h2>
+<div class="lang-block" data-lang="es">
+
+<div class="table-wrap"><table>
+<tr><th>Herramienta</th><th>Qué monitoriza</th><th>Tipo</th></tr>
+<tr><td><strong>LangSmith</strong></td><td>Trazas de chains/agentes, costes, latencia, eval</td><td>SaaS (LangChain)</td></tr>
+<tr><td><strong>LangFuse</strong></td><td>Trazas, costes, scores, datasets de eval (OSS)</td><td>Self-hosted / Cloud</td></tr>
+<tr><td><strong>Helicone</strong></td><td>Proxy para logs, costes, rate limiting</td><td>SaaS</td></tr>
+<tr><td><strong>Weights & Biases</strong></td><td>Experiment tracking, eval, fine-tuning</td><td>SaaS</td></tr>
+<tr><td><strong>Braintrust</strong></td><td>Evals, prompt management, A/B testing</td><td>SaaS</td></tr>
+<tr><td><strong>OpenTelemetry + Grafana</strong></td><td>Métricas genéricas, trazas, dashboards</td><td>Self-hosted</td></tr>
+</table></div>
+
+<h3>Qué Monitorizar</h3>
+<pre><code># Métricas críticas en producción:
+1. Latencia (p50, p95, p99) por modelo/endpoint
+2. Tokens por request (input + output)
+3. Coste por request y por usuario
+4. Tasa de error (4xx, 5xx, timeouts)
+5. Tasa de "refusal" (modelo rechaza responder)
+6. Feedback de usuarios (thumbs up/down)
+7. Calidad de respuestas (eval automatizado periódico)
+8. Uso de caché (hit rate, ahorro)</code></pre>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="table-wrap"><table>
+<tr><th>Tool</th><th>What it monitors</th><th>Type</th></tr>
+<tr><td><strong>LangSmith</strong></td><td>Chain/agent traces, costs, latency, eval</td><td>SaaS (LangChain)</td></tr>
+<tr><td><strong>LangFuse</strong></td><td>Traces, costs, scores, eval datasets (OSS)</td><td>Self-hosted / Cloud</td></tr>
+<tr><td><strong>Helicone</strong></td><td>Proxy for logs, costs, rate limiting</td><td>SaaS</td></tr>
+<tr><td><strong>Weights & Biases</strong></td><td>Experiment tracking, eval, fine-tuning</td><td>SaaS</td></tr>
+<tr><td><strong>Braintrust</strong></td><td>Evals, prompt management, A/B testing</td><td>SaaS</td></tr>
+<tr><td><strong>OpenTelemetry + Grafana</strong></td><td>Generic metrics, traces, dashboards</td><td>Self-hosted</td></tr>
+</table></div>
+
+<h3>What to Monitor</h3>
+<pre><code># Critical metrics in production:
+1. Latency (p50, p95, p99) per model/endpoint
+2. Tokens per request (input + output)
+3. Cost per request and per user
+4. Error rate (4xx, 5xx, timeouts)
+5. Refusal rate (model declines to answer)
+6. User feedback (thumbs up/down)
+7. Response quality (periodic automated eval)
+8. Cache usage (hit rate, savings)</code></pre>
+
+</div>
+</section>
+
+
+
+<section class="module-references">
+  <h3 data-i18n="ref-header">Referencias</h3>
+  <p style="font-size:13px;color:var(--text-dim);" data-i18n="ref-intro">
+    Documentación oficial y papers consultados durante este módulo. Revísalos para profundizar.
+  </p>
+  <ul class="references-list" data-references="06"></ul>
+</section>
+
+</main>
+</div>
+
+<script src="../js/shared/manifest.js?v=8"></script>
+<script src="../js/shared/sidebar.js?v=8"></script>
+<script src="../js/shared/references.js?v=8"></script>
+<script src="../js/i18n.js?v=8"></script>
+<script src="../js/quiz.js?v=8"></script>
+<script src="../js/glossary.js?v=8"></script>
+<script src="../js/app.js?v=8"></script>
+</body>
+</html>

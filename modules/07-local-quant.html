@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bloque VII — Modelos locales, cuantización y privacidad — Prompt Engineering Master Course</title>
+<link rel="stylesheet" href="../css/style.css?v=8">
+<link rel="stylesheet" href="../css/bando-b.css?v=8">
+<script>
+  (function() {
+    try {
+      var t = localStorage.getItem('theme');
+      if (t !== 'dark' && t !== 'light') t = 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+    } catch(e) { document.documentElement.setAttribute('data-theme', 'dark'); }
+  })();
+</script>
+</head>
+<body data-page-block="07">
+
+<div class="bg-orb bg-orb-1"></div>
+<div class="bg-orb bg-orb-2"></div>
+<div class="bg-orb bg-orb-3"></div>
+<div class="bg-gradient"></div>
+<div class="bg-grid"></div>
+<div id="progress-bar"></div>
+
+<div id="app">
+<nav id="sidebar"></nav>
+
+<main id="content">
+
+<section class="module-front-matter" data-module-front>
+  <div class="module-meta">
+    <span class="module-icon">🔒</span>
+    <span class="module-level level-advanced">advanced</span>
+    <span class="module-time">⏱️ 200 min</span>
+  </div>
+  <h1 class="module-title">
+    <span class="lang-block" data-lang="es">Bloque VII — Modelos locales, cuantización y privacidad</span>
+    <span class="lang-block" data-lang="en">Block VII — Local Models, Quantization + Privacy</span>
+  </h1>
+  <div class="module-objectives">
+    <div class="lang-block" data-lang="es">
+      <h3>Objetivos de aprendizaje</h3>
+      <ul>
+        <li>Cuantizar modelos a Q4_K_M / Q5_K_M / AWQ / GPTQ con criterio.</li>
+        <li>Desplegar local con Ollama / llama.cpp / vLLM / MLX según hardware.</li>
+        <li>Realizar fine-tuning con SFT, LoRA y QLoRA en consumer-grade GPU.</li>
+        <li>Cumplir GDPR/CCPA en pipelines on-prem con datos sensibles.</li>
+      </ul>
+    </div>
+    <div class="lang-block" data-lang="en">
+      <h3>Learning objectives</h3>
+      <ul>
+        <li>Quantize models to Q4_K_M / Q5_K_M / AWQ / GPTQ with judgment.</li>
+        <li>Deploy locally with Ollama / llama.cpp / vLLM / MLX per hardware.</li>
+        <li>Run fine-tuning with SFT, LoRA and QLoRA on consumer GPUs.</li>
+        <li>Comply with GDPR/CCPA in on-prem pipelines with sensitive data.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="s88">
+<h2>21.1 ¿Qué es Cuantizar un Modelo?</h2>
+<p class="subtitle">Comprimir modelos para que quepan en tu GPU (o en tu móvil)</p>
+<div class="lang-block" data-lang="es">
+
+<div class="card card-accent">
+<div class="card-title">📐 De Floats a Integers</div>
+<p>Un modelo sin cuantizar usa <strong>FP32</strong> (32 bits por parámetro). Un modelo de 70B parámetros ocupa <strong>280 GB</strong> — necesitas 4+ GPUs A100. La cuantización reduce la precisión de los pesos para que ocupen menos.</p>
+</div>
+
+<h3>Niveles de Precisión</h3>
+<div class="table-wrap"><table>
+<tr><th>Formato</th><th>Bits por parámetro</th><th>Modelo 7B</th><th>Modelo 70B</th><th>Calidad relativa</th></tr>
+<tr><td><strong>FP32</strong> (full precision)</td><td>32</td><td>28 GB</td><td>280 GB</td><td>100% (referencia)</td></tr>
+<tr><td><strong>FP16 / BF16</strong></td><td>16</td><td>14 GB</td><td>140 GB</td><td>~99.9%</td></tr>
+<tr><td><strong>INT8</strong></td><td>8</td><td>7 GB</td><td>70 GB</td><td>~99.5%</td></tr>
+<tr><td><strong>INT4</strong> (4-bit)</td><td>4</td><td>3.5 GB</td><td>35 GB</td><td>~97-99%</td></tr>
+<tr><td><strong>INT3</strong> (3-bit)</td><td>3</td><td>2.6 GB</td><td>26 GB</td><td>~93-96%</td></tr>
+<tr><td><strong>INT2</strong> (2-bit)</td><td>2</td><td>1.75 GB</td><td>17.5 GB</td><td>~80-90% ⚠️</td></tr>
+</table></div>
+
+<h3>El "Punto Dulce"</h3>
+<pre><code># Trade-off calidad vs tamaño:
+
+FP32 → Solo para entrenamiento. Nadie infiere en FP32.
+FP16 → Standard para inference en servidor (vLLM, TGI).
+INT8 → Buen balance. Casi idéntica calidad. 2x más pequeño.
+INT4 → EL sweet spot. 97-99% calidad por 4x menos memoria.
+       La mayoría de modelos "locales" usan 4-bit (GPTQ, AWQ, GGUF).
+INT3 → Aceptable para modelos grandes (70B+) donde cada GB cuenta.
+INT2 → Emergencia. Solo si no hay otra opción. Degradación notable.</code></pre>
+
+<div class="tip"><strong>💡 Dato clave:</strong> Un modelo de 70B en INT4 cabe en una sola RTX 4090 (24 GB). En FP16 necesitarías 2-3 GPUs. La cuantización es lo que democratiza los LLMs locales.</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="card card-accent">
+<div class="card-title">📐 From Floats to Integers</div>
+<p>An unquantized model uses <strong>FP32</strong> (32 bits per parameter). A 70B-parameter model takes <strong>280 GB</strong> — you need 4+ A100 GPUs. Quantization reduces weight precision so they take less space.</p>
+</div>
+
+<h3>Precision Levels</h3>
+<div class="table-wrap"><table>
+<tr><th>Format</th><th>Bits per parameter</th><th>7B Model</th><th>70B Model</th><th>Relative quality</th></tr>
+<tr><td><strong>FP32</strong> (full precision)</td><td>32</td><td>28 GB</td><td>280 GB</td><td>100% (reference)</td></tr>
+<tr><td><strong>FP16 / BF16</strong></td><td>16</td><td>14 GB</td><td>140 GB</td><td>~99.9%</td></tr>
+<tr><td><strong>INT8</strong></td><td>8</td><td>7 GB</td><td>70 GB</td><td>~99.5%</td></tr>
+<tr><td><strong>INT4</strong> (4-bit)</td><td>4</td><td>3.5 GB</td><td>35 GB</td><td>~97-99%</td></tr>
+<tr><td><strong>INT3</strong> (3-bit)</td><td>3</td><td>2.6 GB</td><td>26 GB</td><td>~93-96%</td></tr>
+<tr><td><strong>INT2</strong> (2-bit)</td><td>2</td><td>1.75 GB</td><td>17.5 GB</td><td>~80-90% ⚠️</td></tr>
+</table></div>
+
+<h3>The "Sweet Spot"</h3>
+<pre><code># Quality vs size trade-off:
+
+FP32 → Training only. Nobody runs inference in FP32.
+FP16 → Standard for server inference (vLLM, TGI).
+INT8 → Good balance. Nearly identical quality. 2x smaller.
+INT4 → THE sweet spot. 97-99% quality at 4x less memory.
+       Most "local" models use 4-bit (GPTQ, AWQ, GGUF).
+INT3 → Acceptable for big models (70B+) where every GB counts.
+INT2 → Emergency. Only when there's no other option. Notable degradation.</code></pre>
+
+<div class="tip"><strong>💡 Key fact:</strong> A 70B model in INT4 fits on a single RTX 4090 (24 GB). In FP16 you'd need 2-3 GPUs. Quantization is what democratizes local LLMs.</div>
+
+</div>
+</section>
+
+<section id="s89">
+<h2>21.2 Métodos de Cuantización</h2>
+<div class="lang-block" data-lang="es">
+
+<div class="table-wrap"><table>
+<tr><th>Método</th><th>Formato</th><th>Características</th><th>Ideal para</th></tr>
+<tr><td><strong>GPTQ</strong></td><td>INT4/INT8</td><td>Post-training quantization. Necesita dataset de calibración (~128 samples). Optimizado para GPU.</td><td>Inferencia rápida en GPU (vLLM, TGI)</td></tr>
+<tr><td><strong>AWQ</strong></td><td>INT4</td><td>Activation-aware. Protege los pesos más importantes (1% de "salient channels"). Mejor calidad que GPTQ.</td><td>Inferencia GPU, máxima calidad en 4-bit</td></tr>
+<tr><td><strong>GGUF</strong> (llama.cpp)</td><td>2-8 bit</td><td>Formato de archivo único. Soporta CPU + GPU (offloading). Cuantización mixta por capa (K-quants).</td><td>CPU, edge, móviles, Ollama, LM Studio</td></tr>
+<tr><td><strong>BitsAndBytes</strong></td><td>4/8 bit</td><td>Cuantización on-the-fly. Se carga en FP16 y se cuantiza al volar. Integración nativa con HuggingFace.</td><td>Fine-tuning (QLoRA), prototipado</td></tr>
+<tr><td><strong>NF4</strong> (NormalFloat)</td><td>4 bit</td><td>Distribución optimizada para pesos de redes neuronales (normal distribution). Usado en QLoRA.</td><td>Fine-tuning con máxima calidad en 4-bit</td></tr>
+<tr><td><strong>AQLM / QuIP</strong></td><td>2-4 bit</td><td>Métodos extremos. Agrupan pesos y cuantizan grupos. Calidad sorprendente en 2-bit.</td><td>Investigación, modelos enormes en HW limitado</td></tr>
+</table></div>
+
+<h3>Formato GGUF — El Estándar Local</h3>
+<pre><code># GGUF es el formato que usan Ollama y llama.cpp
+# Nomenclatura típica:
+
+q2_K    — 2-bit, calidad baja, ~90% del original
+q3_K_M  — 3-bit medium, ~94%
+q4_K_M  — 4-bit medium, ~97% ← RECOMENDADO para la mayoría
+q5_K_M  — 5-bit medium, ~98.5%
+q6_K    — 6-bit, ~99%
+q8_0    — 8-bit, ~99.5%
+
+# K-quants: cuantización MIXTA
+# - Las capas de atención usan más bits (son más sensibles)
+# - Las capas feed-forward usan menos bits
+# K_M = balance calidad/tamaño. K_S = más pequeño. K_L = más calidad.
+
+# Ejemplo con Ollama:
+ollama run llama4:7b-q4_K_M    # 4-bit, recomendado
+ollama run llama4:70b-q5_K_M   # 5-bit para modelo grande</code></pre>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="table-wrap"><table>
+<tr><th>Method</th><th>Format</th><th>Characteristics</th><th>Ideal for</th></tr>
+<tr><td><strong>GPTQ</strong></td><td>INT4/INT8</td><td>Post-training quantization. Needs a calibration dataset (~128 samples). GPU-optimized.</td><td>Fast GPU inference (vLLM, TGI)</td></tr>
+<tr><td><strong>AWQ</strong></td><td>INT4</td><td>Activation-aware. Protects the most important weights (1% "salient channels"). Better quality than GPTQ.</td><td>GPU inference, top quality at 4-bit</td></tr>
+<tr><td><strong>GGUF</strong> (llama.cpp)</td><td>2-8 bit</td><td>Single file format. Supports CPU + GPU (offloading). Mixed quantization per layer (K-quants).</td><td>CPU, edge, mobile, Ollama, LM Studio</td></tr>
+<tr><td><strong>BitsAndBytes</strong></td><td>4/8 bit</td><td>On-the-fly quantization. Loads in FP16 and quantizes on the fly. Native HuggingFace integration.</td><td>Fine-tuning (QLoRA), prototyping</td></tr>
+<tr><td><strong>NF4</strong> (NormalFloat)</td><td>4 bit</td><td>Distribution optimized for neural net weights (normal distribution). Used in QLoRA.</td><td>Fine-tuning at top 4-bit quality</td></tr>
+<tr><td><strong>AQLM / QuIP</strong></td><td>2-4 bit</td><td>Extreme methods. Group weights and quantize the groups. Surprising quality at 2-bit.</td><td>Research, huge models on limited HW</td></tr>
+</table></div>
+
+<h3>GGUF Format — The Local Standard</h3>
+<pre><code># GGUF is the format used by Ollama and llama.cpp
+# Typical naming:
+
+q2_K    — 2-bit, low quality, ~90% of original
+q3_K_M  — 3-bit medium, ~94%
+q4_K_M  — 4-bit medium, ~97% ← RECOMMENDED for most uses
+q5_K_M  — 5-bit medium, ~98.5%
+q6_K    — 6-bit, ~99%
+q8_0    — 8-bit, ~99.5%
+
+# K-quants: MIXED quantization
+# - Attention layers use more bits (more sensitive)
+# - Feed-forward layers use fewer bits
+# K_M = quality/size balance. K_S = smaller. K_L = better quality.
+
+# Example with Ollama:
+ollama run llama4:7b-q4_K_M    # 4-bit, recommended
+ollama run llama4:70b-q5_K_M   # 5-bit for big model</code></pre>
+
+</div>
+</section>
+
+<section id="s90">
+<h2>21.3 Calidad vs Tamaño — La Tabla Definitiva</h2>
+<div class="lang-block" data-lang="es">
+
+<div class="table-wrap"><table>
+<tr><th>Cuantización</th><th>Bits</th><th>Modelo 7B</th><th>Modelo 13B</th><th>Modelo 70B</th><th>Calidad MMLU</th><th>¿Recomendado?</th></tr>
+<tr><td>FP16</td><td>16</td><td>14 GB</td><td>26 GB</td><td>140 GB</td><td>100%</td><td>Servidores</td></tr>
+<tr><td>Q8_0</td><td>8</td><td>7.5 GB</td><td>14 GB</td><td>75 GB</td><td>99.9%</td><td>✅ Excelente</td></tr>
+<tr><td>Q6_K</td><td>6</td><td>6 GB</td><td>11 GB</td><td>58 GB</td><td>99.5%</td><td>✅ Muy bueno</td></tr>
+<tr><td>Q5_K_M</td><td>5</td><td>5.5 GB</td><td>10 GB</td><td>50 GB</td><td>99%</td><td>✅ Buen balance</td></tr>
+<tr><td>Q4_K_M</td><td>4</td><td>4.5 GB</td><td>8 GB</td><td>40 GB</td><td>98%</td><td>⭐ Sweet spot</td></tr>
+<tr><td>Q3_K_M</td><td>3</td><td>3.8 GB</td><td>6.5 GB</td><td>32 GB</td><td>95%</td><td>⚠️ Aceptable</td></tr>
+<tr><td>Q2_K</td><td>2</td><td>2.8 GB</td><td>5.5 GB</td><td>26 GB</td><td>88%</td><td>❌ Solo emergencia</td></tr>
+</table></div>
+
+<h3>¿Qué Cuantización Deberías Usar?</h3>
+<div class="compare">
+<div><h4>🖥️ GPU Server (vLLM/TGI)</h4>
+<ul style="font-size:13px;">
+<li><strong>GPTQ INT4</strong> o <strong>AWQ INT4</strong></li>
+<li>Máximo throughput, mínima latencia</li>
+<li>Optimizado para GPU kernels</li>
+<li>Ej: TheBloke/Llama-4-70B-AWQ</li>
+</ul></div>
+<div><h4>💻 PC Personal (Ollama/LM Studio)</h4>
+<ul style="font-size:13px;">
+<li><strong>GGUF Q4_K_M</strong></li>
+<li>Buen balance calidad/velocidad</li>
+<li>Funciona en CPU + GPU parcial</li>
+<li>Ej: llama4:7b-q4_K_M</li>
+</ul></div>
+</div>
+
+<pre><code># REGLA PRÁCTICA para elegir cuantización:
+
+¿GPU con ≥24 GB VRAM?
+  → Q4_K_M para 7B-13B. Q5_K_M para 70B.
+  → AWQ/GPTQ si usas vLLM/TGI.
+
+¿GPU con 8-12 GB VRAM?
+  → Q4_K_M para 7B-8B. Q3_K_M para 13B.
+  → Modelos >13B no caben bien — usa API cloud.
+
+¿Solo CPU? (32+ GB RAM)
+  → Q4_K_M. La RAM es más barata que la VRAM pero más lenta.
+  → Tokens/segundo bajos (2-10 tok/s vs 50+ en GPU).
+
+¿Edge / Móvil?
+  → Q2_K o Q3_K_S para modelos pequeños (1B-3B).
+  → Gemma 3 1B Q4 o Phi-4-mini Q4.</code></pre>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="table-wrap"><table>
+<tr><th>Quantization</th><th>Bits</th><th>7B Model</th><th>13B Model</th><th>70B Model</th><th>MMLU Quality</th><th>Recommended?</th></tr>
+<tr><td>FP16</td><td>16</td><td>14 GB</td><td>26 GB</td><td>140 GB</td><td>100%</td><td>Servers</td></tr>
+<tr><td>Q8_0</td><td>8</td><td>7.5 GB</td><td>14 GB</td><td>75 GB</td><td>99.9%</td><td>✅ Excellent</td></tr>
+<tr><td>Q6_K</td><td>6</td><td>6 GB</td><td>11 GB</td><td>58 GB</td><td>99.5%</td><td>✅ Very good</td></tr>
+<tr><td>Q5_K_M</td><td>5</td><td>5.5 GB</td><td>10 GB</td><td>50 GB</td><td>99%</td><td>✅ Good balance</td></tr>
+<tr><td>Q4_K_M</td><td>4</td><td>4.5 GB</td><td>8 GB</td><td>40 GB</td><td>98%</td><td>⭐ Sweet spot</td></tr>
+<tr><td>Q3_K_M</td><td>3</td><td>3.8 GB</td><td>6.5 GB</td><td>32 GB</td><td>95%</td><td>⚠️ Acceptable</td></tr>
+<tr><td>Q2_K</td><td>2</td><td>2.8 GB</td><td>5.5 GB</td><td>26 GB</td><td>88%</td><td>❌ Emergency only</td></tr>
+</table></div>
+
+<h3>Which Quantization Should You Use?</h3>
+<div class="compare">
+<div><h4>🖥️ GPU Server (vLLM/TGI)</h4>
+<ul style="font-size:13px;">
+<li><strong>GPTQ INT4</strong> or <strong>AWQ INT4</strong></li>
+<li>Maximum throughput, minimum latency</li>
+<li>Optimized for GPU kernels</li>
+<li>Ex: TheBloke/Llama-4-70B-AWQ</li>
+</ul></div>
+<div><h4>💻 Personal PC (Ollama/LM Studio)</h4>
+<ul style="font-size:13px;">
+<li><strong>GGUF Q4_K_M</strong></li>
+<li>Good quality/speed balance</li>
+<li>Works on CPU + partial GPU</li>
+<li>Ex: llama4:7b-q4_K_M</li>
+</ul></div>
+</div>
+
+<pre><code># PRACTICAL RULE for choosing quantization:
+
+GPU with ≥24 GB VRAM?
+  → Q4_K_M for 7B-13B. Q5_K_M for 70B.
+  → AWQ/GPTQ if using vLLM/TGI.
+
+GPU with 8-12 GB VRAM?
+  → Q4_K_M for 7B-8B. Q3_K_M for 13B.
+  → Models >13B don't fit well — use cloud API.
+
+CPU only? (32+ GB RAM)
+  → Q4_K_M. RAM is cheaper than VRAM but slower.
+  → Low tokens/sec (2-10 tok/s vs 50+ on GPU).
+
+Edge / Mobile?
+  → Q2_K or Q3_K_S for small models (1B-3B).
+  → Gemma 3 1B Q4 or Phi-4-mini Q4.</code></pre>
+
+</div>
+</section>
+
+<section id="s59">
+<h2>13.1 Cómo se Entrena un LLM</h2>
+<p class="subtitle">De texto crudo de internet a asistente conversacional — las 3 fases del entrenamiento</p>
+<div class="lang-block" data-lang="es">
+
+<div class="card card-accent">
+<div class="card-title">🏋️ Fase 1: Pre-training (Self-Supervised)</div>
+<pre><code># Objetivo: Predecir el siguiente token
+# Datos: Trillones de tokens de internet, libros, código
+# Tiempo: Semanas/meses en miles de GPUs
+# Coste: $10M - $500M+
+
+Input:  "The capital of France is"
+Target: "Paris"
+
+# El modelo aprende: gramática, hechos, razonamiento, patrones
+# NO aprende: a seguir instrucciones, a ser útil, a decir "no sé"</code></pre>
+</div>
+
+<div class="card card-orange">
+<div class="card-title">🔬 Fase 2: Post-Training (Alignment)</div>
+<pre><code># Objetivo: Enseñar al modelo a ser útil, inofensivo y honesto
+# Métodos: SFT → RLHF → DPO → Constitutional AI
+
+1. SFT (Supervised Fine-Tuning): Entrenar con ejemplos de diálogo ideal
+2. RLHF: Humanos rankean respuestas → Reward Model → Refuerzo
+3. DPO: Optimización directa sin reward model separado
+4. Constitutional AI: El modelo se auto-mejora siguiendo principios</code></pre>
+</div>
+
+<div class="card card-green">
+<div class="card-title">🎓 Fase 3: Specialization (Opcional)</div>
+<pre><code># Fine-tuning para dominios o tareas específicas
+# Datos: 500 - 10K ejemplos de alta calidad
+# Tiempo: Minutos/horas en 1-8 GPUs
+# Coste: $10 - $1000 (LoRA/QLoRA)
+
+Ejemplo: Fine-tunear Llama 4 para hablar solo en haikus,
+o para extraer campos específicos de facturas en PDF.</code></pre>
+</div>
+
+<div class="tip"><strong>💡 Dato clave:</strong> El pre-training es lo que hace al modelo "inteligente". El post-training es lo que lo hace "útil". Un modelo solo pre-entrenado (base model) completa texto pero no sigue instrucciones — necesita post-training para ser un asistente.</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="card card-accent">
+<div class="card-title">🏋️ Phase 1: Pre-training (Self-Supervised)</div>
+<pre><code># Goal: Predict the next token
+# Data: Trillions of tokens from internet, books, code
+# Time: Weeks/months on thousands of GPUs
+# Cost: $10M - $500M+
+
+Input:  "The capital of France is"
+Target: "Paris"
+
+# The model learns: grammar, facts, reasoning, patterns
+# Does NOT learn: to follow instructions, to be helpful, to say "I don't know"</code></pre>
+</div>
+
+<div class="card card-orange">
+<div class="card-title">🔬 Phase 2: Post-Training (Alignment)</div>
+<pre><code># Goal: Teach the model to be helpful, harmless and honest
+# Methods: SFT → RLHF → DPO → Constitutional AI
+
+1. SFT (Supervised Fine-Tuning): Train on examples of ideal dialogue
+2. RLHF: Humans rank responses → Reward Model → Reinforcement
+3. DPO: Direct optimization without a separate reward model
+4. Constitutional AI: The model self-improves following principles</code></pre>
+</div>
+
+<div class="card card-green">
+<div class="card-title">🎓 Phase 3: Specialization (Optional)</div>
+<pre><code># Fine-tuning for specific domains or tasks
+# Data: 500 - 10K high-quality examples
+# Time: Minutes/hours on 1-8 GPUs
+# Cost: $10 - $1000 (LoRA/QLoRA)
+
+Example: Fine-tune Llama 4 to speak only in haikus,
+or to extract specific fields from PDF invoices.</code></pre>
+</div>
+
+<div class="tip"><strong>💡 Key insight:</strong> Pre-training is what makes the model "smart." Post-training is what makes it "useful." A purely pre-trained model (base model) completes text but doesn't follow instructions — it needs post-training to become an assistant.</div>
+
+</div>
+</section>
+
+<section id="s60">
+<h2>13.2 Post-Training: RLHF, DPO y Constitutional AI</h2>
+<div class="lang-block" data-lang="es">
+
+<div class="table-wrap"><table>
+<tr><th>Método</th><th>Cómo funciona</th><th>Ventajas</th><th>Usado por</th></tr>
+<tr><td><strong>RLHF</strong><br>(Reinforcement Learning from Human Feedback)</td>
+<td>1. Humanos rankean respuestas<br>2. Entrenan Reward Model<br>3. PPO optimiza el LLM contra el reward</td>
+<td>Alignment preciso con preferencias humanas</td>
+<td>OpenAI (GPT-4), Anthropic (primeros Claude)</td></tr>
+<tr><td><strong>DPO</strong><br>(Direct Preference Optimization)</td>
+<td>Optimiza directamente sobre pares de respuestas preferidas/rechazadas, sin reward model separado</td>
+<td>Más simple, más estable, menos costoso</td>
+<td>Meta (Llama 3/4), Mistral, DeepSeek</td></tr>
+<tr><td><strong>Constitutional AI</strong></td>
+<td>El modelo se auto-critica y mejora siguiendo una "constitución" de principios éticos</td>
+<td>Escalable, no requiere tantos humanos</td>
+<td>Anthropic (Claude)</td></tr>
+<tr><td><strong>SPIN / ORPO</strong></td>
+<td>Variantes modernas que combinan SFT + preference optimization en una fase</td>
+<td>Más eficiente, una sola fase</td>
+<td>Investigación reciente</td></tr>
+</table></div>
+
+<div class="card">
+<div class="card-title">📝 Ejemplo: DPO en la práctica</div>
+<pre><code># Dataset de preferencias para DPO
+{
+  "prompt": "¿Cómo hago una bomba?",
+  "chosen": "No puedo ayudarte a hacer armas o explosivos...",
+  "rejected": "Aquí tienes los ingredientes: nitrato de amonio..."
+}
+# El modelo aprende a PREFERIR la respuesta "chosen"
+# sobre la "rejected" para ese prompt</code></pre>
+</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="table-wrap"><table>
+<tr><th>Method</th><th>How it works</th><th>Advantages</th><th>Used by</th></tr>
+<tr><td><strong>RLHF</strong><br>(Reinforcement Learning from Human Feedback)</td>
+<td>1. Humans rank responses<br>2. Train Reward Model<br>3. PPO optimizes the LLM against the reward</td>
+<td>Precise alignment with human preferences</td>
+<td>OpenAI (GPT-4), Anthropic (early Claude)</td></tr>
+<tr><td><strong>DPO</strong><br>(Direct Preference Optimization)</td>
+<td>Optimizes directly on preferred/rejected response pairs, no separate reward model</td>
+<td>Simpler, more stable, less expensive</td>
+<td>Meta (Llama 3/4), Mistral, DeepSeek</td></tr>
+<tr><td><strong>Constitutional AI</strong></td>
+<td>The model self-critiques and improves following a "constitution" of ethical principles</td>
+<td>Scalable, requires fewer humans</td>
+<td>Anthropic (Claude)</td></tr>
+<tr><td><strong>SPIN / ORPO</strong></td>
+<td>Modern variants combining SFT + preference optimization in a single phase</td>
+<td>More efficient, single phase</td>
+<td>Recent research</td></tr>
+</table></div>
+
+<div class="card">
+<div class="card-title">📝 Example: DPO in practice</div>
+<pre><code># Preference dataset for DPO
+{
+  "prompt": "How do I make a bomb?",
+  "chosen": "I can't help you make weapons or explosives...",
+  "rejected": "Here are the ingredients: ammonium nitrate..."
+}
+# The model learns to PREFER the "chosen" response
+# over the "rejected" one for that prompt</code></pre>
+</div>
+
+</div>
+</section>
+
+<section id="s61">
+<h2>13.3 Fine-tuning: SFT, LoRA y QLoRA</h2>
+<div class="lang-block" data-lang="es">
+
+<div class="card card-accent">
+<div class="card-title">🎓 Tipos de Fine-tuning</div>
+<div class="table-wrap"><table>
+<tr><th>Método</th><th>Qué modifica</th><th>GPU necesaria</th><th>Coste</th></tr>
+<tr><td><strong>Full Fine-tuning</strong></td><td>TODOS los parámetros</td><td>8× A100 (80GB)</td><td>$1000s</td></tr>
+<tr><td><strong>LoRA</strong> (Low-Rank Adaptation)</td><td>Matrices pequeñas añadidas (~1% params)</td><td>1× RTX 4090</td><td>$10-50</td></tr>
+<tr><td><strong>QLoRA</strong> (Quantized LoRA)</td><td>LoRA sobre modelo cuantizado a 4-bit</td><td>1× RTX 3090</td><td>$5-20</td></tr>
+<tr><td><strong>SFT</strong> (Supervised FT)</td><td>Todos o LoRA — entrenamiento supervisado</td><td>Variable</td><td>$10-500</td></tr>
+</table></div>
+</div>
+
+<h3>¿Cuándo Fine-tunear?</h3>
+<div class="card card-green">
+<ul>
+<li>✅ <strong>Tienes 500+ ejemplos</strong> de alta calidad de tu tarea específica</li>
+<li>✅ <strong>El prompting no llega:</strong> Has probado todas las técnicas y no alcanzas la calidad necesaria</li>
+<li>✅ <strong>Necesitas un estilo/tomo muy específico</strong> y consistente</li>
+<li>✅ <strong>Quieres reducir coste de tokens:</strong> El modelo aprende el comportamiento sin necesidad de prompts largos</li>
+<li>✅ <strong>Domínio muy especializado:</strong> Terminología médica, legal, o técnica que el modelo base no domina</li>
+<li>❌ <strong>Menos de 200 ejemplos:</strong> Overfitting casi garantizado</li>
+<li>❌ <strong>La tarea cambia frecuentemente:</strong> Re-entrenar es costoso</li>
+<li>❌ <strong>Quieres conocimiento nuevo:</strong> El fine-tuning NO añade datos factuales nuevos, solo cambia el comportamiento. Para añadir conocimiento, usa RAG.</li>
+</ul>
+</div>
+
+<div class="warn"><strong>⚠️ Fine-tuning NO es para añadir conocimiento nuevo.</strong> Es para cambiar COMPORTAMIENTO (estilo, formato, tono). Para datos factuales nuevos (ej: la documentación de tu API), usa RAG o prompt con contexto.</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="card card-accent">
+<div class="card-title">🎓 Fine-tuning Types</div>
+<div class="table-wrap"><table>
+<tr><th>Method</th><th>What it modifies</th><th>GPU needed</th><th>Cost</th></tr>
+<tr><td><strong>Full Fine-tuning</strong></td><td>ALL parameters</td><td>8× A100 (80GB)</td><td>$1000s</td></tr>
+<tr><td><strong>LoRA</strong> (Low-Rank Adaptation)</td><td>Small added matrices (~1% params)</td><td>1× RTX 4090</td><td>$10-50</td></tr>
+<tr><td><strong>QLoRA</strong> (Quantized LoRA)</td><td>LoRA on top of 4-bit quantized model</td><td>1× RTX 3090</td><td>$5-20</td></tr>
+<tr><td><strong>SFT</strong> (Supervised FT)</td><td>Full or LoRA — supervised training</td><td>Variable</td><td>$10-500</td></tr>
+</table></div>
+</div>
+
+<h3>When to Fine-tune?</h3>
+<div class="card card-green">
+<ul>
+<li>✅ <strong>You have 500+ examples</strong> of high quality on your specific task</li>
+<li>✅ <strong>Prompting isn't enough:</strong> You've tried every technique and can't reach the needed quality</li>
+<li>✅ <strong>You need a very specific style/tone</strong> consistently</li>
+<li>✅ <strong>You want to reduce token cost:</strong> The model learns the behavior without long prompts</li>
+<li>✅ <strong>Highly specialized domain:</strong> Medical, legal or technical terminology the base model doesn't master</li>
+<li>❌ <strong>Fewer than 200 examples:</strong> Overfitting almost guaranteed</li>
+<li>❌ <strong>The task changes frequently:</strong> Retraining is expensive</li>
+<li>❌ <strong>You want new knowledge:</strong> Fine-tuning does NOT add new factual data, only changes behavior. To add knowledge, use RAG.</li>
+</ul>
+</div>
+
+<div class="warn"><strong>⚠️ Fine-tuning is NOT for adding new knowledge.</strong> It's for changing BEHAVIOR (style, format, tone). For new factual data (like your API docs), use RAG or prompt with context.</div>
+
+</div>
+</section>
+
+<section id="s62">
+<h2>13.4 Herramientas para Fine-tuning</h2>
+<div class="lang-block" data-lang="es">
+
+<div class="table-wrap"><table>
+<tr><th>Herramienta</th><th>Descripción</th><th>Nivel</th></tr>
+<tr><td><strong>Hugging Face TRL</strong></td><td>Librería oficial para SFT, DPO, RLHF con Transformers</td><td>Medio-Alto</td></tr>
+<tr><td><strong>Axolotl</strong></td><td>Framework completo para fine-tuning — soporta LoRA, QLoRA, FSDP</td><td>Medio</td></tr>
+<tr><td><strong>Unsloth</strong></td><td>Fine-tuning 2-5x más rápido, optimizado para GPUs consumer</td><td>Bajo-Medio</td></tr>
+<tr><td><strong>LLaMA-Factory</strong></td><td>Interfaz web + CLI para fine-tuning de 100+ modelos</td><td>Bajo</td></tr>
+<tr><td><strong>Together AI / Modal</strong></td><td>Fine-tuning en la nube sin gestionar GPUs</td><td>Bajo</td></tr>
+<tr><td><strong>OpenAI Fine-tuning API</strong></td><td>Fine-tuning gestionado de GPT-4.1 / GPT-5 Mini</td><td>Bajo</td></tr>
+</table></div>
+
+<pre><code># Ejemplo mínimo con Unsloth (fine-tuning en 10 líneas)
+from unsloth import FastLanguageModel
+import torch
+
+model, tokenizer = FastLanguageModel.from_pretrained(
+    "unsloth/Llama-4-8B-bnb-4bit",
+    max_seq_length=2048, load_in_4bit=True
+)
+model = FastLanguageModel.get_peft_model(model, r=16, ...)
+
+# Preparar dataset en formato ShareGPT / Alpaca
+dataset = [{"conversations": [
+    {"role": "user", "content": "..."},
+    {"role": "assistant", "content": "..."}
+]}]
+
+# Entrenar
+trainer = FastLanguageModel.train(model, tokenizer, dataset)
+trainer.train()
+model.save_pretrained("my-fine-tuned-model")</code></pre>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="table-wrap"><table>
+<tr><th>Tool</th><th>Description</th><th>Level</th></tr>
+<tr><td><strong>Hugging Face TRL</strong></td><td>Official library for SFT, DPO, RLHF with Transformers</td><td>Medium-High</td></tr>
+<tr><td><strong>Axolotl</strong></td><td>Full fine-tuning framework — supports LoRA, QLoRA, FSDP</td><td>Medium</td></tr>
+<tr><td><strong>Unsloth</strong></td><td>Fine-tuning 2-5x faster, optimized for consumer GPUs</td><td>Low-Medium</td></tr>
+<tr><td><strong>LLaMA-Factory</strong></td><td>Web GUI + CLI for fine-tuning 100+ models</td><td>Low</td></tr>
+<tr><td><strong>Together AI / Modal</strong></td><td>Cloud fine-tuning without managing GPUs</td><td>Low</td></tr>
+<tr><td><strong>OpenAI Fine-tuning API</strong></td><td>Managed fine-tuning of GPT-4.1 / GPT-5 Mini</td><td>Low</td></tr>
+</table></div>
+
+<pre><code># Minimal example with Unsloth (fine-tuning in 10 lines)
+from unsloth import FastLanguageModel
+import torch
+
+model, tokenizer = FastLanguageModel.from_pretrained(
+    "unsloth/Llama-4-8B-bnb-4bit",
+    max_seq_length=2048, load_in_4bit=True
+)
+model = FastLanguageModel.get_peft_model(model, r=16, ...)
+
+# Prepare dataset in ShareGPT / Alpaca format
+dataset = [{"conversations": [
+    {"role": "user", "content": "..."},
+    {"role": "assistant", "content": "..."}
+]}]
+
+# Train
+trainer = FastLanguageModel.train(model, tokenizer, dataset)
+trainer.train()
+model.save_pretrained("my-fine-tuned-model")</code></pre>
+
+</div>
+</section>
+
+<section id="s63">
+<h2>13.5 Datasets Populares para Fine-tuning</h2>
+<div class="lang-block" data-lang="es">
+
+<div class="table-wrap"><table>
+<tr><th>Dataset</th><th>Tipo</th><th>Tamaño</th><th>Uso</th></tr>
+<tr><td><strong>ShareGPT</strong></td><td>Conversaciones multi-turno</td><td>~90K</td><td>SFT de chatbots conversacionales</td></tr>
+<tr><td><strong>Alpaca (Stanford)</strong></td><td>Instrucciones + respuesta</td><td>52K</td><td>SFT para instruction following</td></tr>
+<tr><td><strong>OpenOrca</strong></td><td>Instrucciones diversas</td><td>~1M</td><td>SFT generalista de alta calidad</td></tr>
+<tr><td><strong>UltraChat / UltraFeedback</strong></td><td>Diálogos + preferencias</td><td>1.5M / 64K</td><td>SFT + DPO / RLHF</td></tr>
+<tr><td><strong>Dolly (Databricks)</strong></td><td>Instrucciones empresariales</td><td>15K</td><td>SFT para uso corporativo</td></tr>
+<tr><td><strong>Anthropic HH-RLHF</strong></td><td>Preferencias Helpful+Harmless</td><td>~170K</td><td>RLHF/DPO para alignment</td></tr>
+<tr><td><strong>CodeAlpaca / Stack</strong></td><td>Instrucciones de código</td><td>20K / enorme</td><td>SFT de modelos de código</td></tr>
+<tr><td><strong>OpenAssistant</strong></td><td>Árboles de conversación</td><td>~10K</td><td>SFT multilingüe, multitarea</td></tr>
+</table></div>
+
+<h3>Formato Estándar: ShareGPT</h3>
+<pre><code>{"conversations": [
+  {"from": "system", "value": "Eres un asistente útil."},
+  {"from": "human", "value": "¿Qué es Python?"},
+  {"from": "gpt", "value": "Python es un lenguaje de programación..."}
+]}</code></pre>
+
+<div class="tip"><strong>💡 Calidad > Cantidad:</strong> 500 ejemplos diversos y bien curados producen mejores resultados que 50K ejemplos ruidosos. Anthropic demostró que 1K ejemplos de altísima calidad pueden superar a 100K mediocres.</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="table-wrap"><table>
+<tr><th>Dataset</th><th>Type</th><th>Size</th><th>Use</th></tr>
+<tr><td><strong>ShareGPT</strong></td><td>Multi-turn conversations</td><td>~90K</td><td>SFT for conversational chatbots</td></tr>
+<tr><td><strong>Alpaca (Stanford)</strong></td><td>Instruction + response</td><td>52K</td><td>SFT for instruction following</td></tr>
+<tr><td><strong>OpenOrca</strong></td><td>Diverse instructions</td><td>~1M</td><td>High-quality general SFT</td></tr>
+<tr><td><strong>UltraChat / UltraFeedback</strong></td><td>Dialogues + preferences</td><td>1.5M / 64K</td><td>SFT + DPO / RLHF</td></tr>
+<tr><td><strong>Dolly (Databricks)</strong></td><td>Enterprise instructions</td><td>15K</td><td>SFT for corporate use</td></tr>
+<tr><td><strong>Anthropic HH-RLHF</strong></td><td>Helpful+Harmless preferences</td><td>~170K</td><td>RLHF/DPO for alignment</td></tr>
+<tr><td><strong>CodeAlpaca / Stack</strong></td><td>Code instructions</td><td>20K / huge</td><td>SFT for code models</td></tr>
+<tr><td><strong>OpenAssistant</strong></td><td>Conversation trees</td><td>~10K</td><td>Multilingual, multitask SFT</td></tr>
+</table></div>
+
+<h3>Standard Format: ShareGPT</h3>
+<pre><code>{"conversations": [
+  {"from": "system", "value": "You are a helpful assistant."},
+  {"from": "human", "value": "What is Python?"},
+  {"from": "gpt", "value": "Python is a programming language..."}
+]}</code></pre>
+
+<div class="tip"><strong>💡 Quality > Quantity:</strong> 500 diverse, well-curated examples produce better results than 50K noisy ones. Anthropic showed that 1K extremely high-quality examples can beat 100K mediocre ones.</div>
+
+</div>
+</section>
+
+
+
+<section class="module-references">
+  <h3 data-i18n="ref-header">Referencias</h3>
+  <p style="font-size:13px;color:var(--text-dim);" data-i18n="ref-intro">
+    Documentación oficial y papers consultados durante este módulo. Revísalos para profundizar.
+  </p>
+  <ul class="references-list" data-references="07"></ul>
+</section>
+
+</main>
+</div>
+
+<script src="../js/shared/manifest.js?v=8"></script>
+<script src="../js/shared/sidebar.js?v=8"></script>
+<script src="../js/shared/references.js?v=8"></script>
+<script src="../js/i18n.js?v=8"></script>
+<script src="../js/quiz.js?v=8"></script>
+<script src="../js/glossary.js?v=8"></script>
+<script src="../js/app.js?v=8"></script>
+</body>
+</html>

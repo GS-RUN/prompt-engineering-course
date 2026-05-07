@@ -1,15 +1,17 @@
 /* ============================================================
-   Main App — Routing, Navigation, State, Theme
+   App v2 — multi-page architecture
+   ============================================================
+   Defensive instantiation of widgets: only construct an engine if its
+   class is loaded on this page (each module page only pulls the JS it
+   needs). Theme controller and progress bar are global; intersection
+   observers operate on whatever section nodes exist on the page.
    ============================================================ */
 
-/* Theme controller — exposed on window for robust click delegation */
 window.ThemeController = {
   current: 'dark',
   init() {
     const saved = localStorage.getItem('theme');
-    if (saved === 'light' || saved === 'dark') {
-      this.current = saved;
-    }
+    if (saved === 'light' || saved === 'dark') this.current = saved;
     this.apply();
   },
   toggle() {
@@ -25,11 +27,9 @@ window.ThemeController = {
       btn.setAttribute('title',
         this.current === 'dark' ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro');
     }
-  },
+  }
 };
 
-/* Click delegation — sobrevive a re-renders del button + sin depender
- * de timing de ID-existe-cuando-init-corre. */
 document.addEventListener('click', (e) => {
   const t = e.target.closest('#theme-toggle');
   if (t) {
@@ -40,83 +40,48 @@ document.addEventListener('click', (e) => {
 
 class App {
   constructor() {
-    this.exerciseEngine = null;
-    this.promptSimulator = null;
-    this.diagramEngine = null;
-    this.quizEngine = null;
-    this.tokenTools = null;
-    this.promptDiff = null;
     this.activeSection = null;
-    this.visitedSections = new Set();
+    this.visitedBlocks = new Set();
     this.init();
   }
 
   init() {
-    // Load visited from localStorage
     try {
-      const saved = JSON.parse(localStorage.getItem('visitedSections') || '[]');
-      saved.forEach(s => this.visitedSections.add(s));
+      const saved = JSON.parse(localStorage.getItem('visitedBlocks') || '[]');
+      saved.forEach(b => this.visitedBlocks.add(b));
     } catch (e) {}
 
-    // Initialize modules (Three.js bg removed — replaced by CSS orbs)
-    this.exerciseEngine = new ExerciseEngine();
-    this.promptSimulator = new PromptSimulator();
-    this.diagramEngine = new DiagramEngine();
-    this.quizEngine = new QuizEngine();
-    this.tokenTools = new TokenTools();
-    this.promptDiff = new PromptDiff();
+    // Defensive instantiation — each engine class is only present if its
+    // script tag was included on this page.
+    this.maybeInstantiate('ExerciseEngine');
+    this.maybeInstantiate('PromptSimulator');
+    this.maybeInstantiate('DiagramEngine');
+    this.maybeInstantiate('QuizEngine');
+    this.maybeInstantiate('TokenTools');
+    this.maybeInstantiate('PromptDiff');
+    this.maybeInstantiate('LinterEngine');
+    this.maybeInstantiate('LibraryEngine');
+    this.maybeInstantiate('EvolutionEngine');
+    this.maybeInstantiate('ProjectPanel');
 
-    // Wiring
-    this.setupNavigation();
-    this.setupScrollSpy();
+    if (this.quizEngine && typeof this.quizEngine.attachHandlers === 'function') {
+      setTimeout(() => this.quizEngine.attachHandlers(), 100);
+    }
+
     this.setupCopyButtons();
-    setTimeout(() => this.quizEngine.attachHandlers(), 100);
     this.setupProgressBar();
-    this.markVisited();
+    this.setupSectionAnimations();
+    this.markBlockVisited();
   }
 
-  setupNavigation() {
-    document.querySelectorAll('.nav-link').forEach(link => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        const target = document.getElementById(link.dataset.target);
-        if (target) {
-          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          this.markVisited(link.dataset.target);
-        }
-      });
-    });
-  }
-
-  setupScrollSpy() {
-    const sections = document.querySelectorAll('#main section[id]');
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          this.activeSection = entry.target.id;
-          this.updateActiveNav(entry.target.id);
-          this.markVisited(entry.target.id);
-        }
-      });
-    }, { rootMargin: '-80px 0px -60% 0px' });
-
-    sections.forEach(s => observer.observe(s));
-  }
-
-  updateActiveNav(sectionId) {
-    document.querySelectorAll('.nav-link').forEach(l => {
-      l.classList.toggle('active', l.dataset.target === sectionId);
-    });
-  }
-
-  markVisited(sectionId) {
-    if (sectionId && !this.visitedSections.has(sectionId)) {
-      this.visitedSections.add(sectionId);
-      try {
-        localStorage.setItem('visitedSections', JSON.stringify([...this.visitedSections]));
-      } catch (e) {}
-      const link = document.querySelector(`.nav-link[data-target="${sectionId}"]`);
-      if (link) link.classList.add('completed');
+  maybeInstantiate(globalName) {
+    const Cls = window[globalName];
+    if (typeof Cls !== 'function') return;
+    try {
+      const propName = globalName[0].toLowerCase() + globalName.slice(1);
+      this[propName] = new Cls();
+    } catch (e) {
+      console.warn(`[app] Failed to instantiate ${globalName}:`, e.message);
     }
   }
 
@@ -139,37 +104,40 @@ class App {
   }
 
   setupProgressBar() {
+    const bar = document.getElementById('progress-bar');
+    if (!bar) return;
     window.addEventListener('scroll', () => {
       const scrollTop = window.scrollY;
       const docHeight = document.documentElement.scrollHeight - window.innerHeight;
       const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-      const bar = document.getElementById('progress-bar');
-      if (bar) bar.style.width = progress + '%';
+      bar.style.width = progress + '%';
     });
+  }
+
+  setupSectionAnimations() {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('#content section, #main section').forEach(s => observer.observe(s));
+  }
+
+  markBlockVisited() {
+    const blockId = document.body?.dataset?.pageBlock;
+    if (!blockId || blockId === 'home' || blockId === 'glossary') return;
+    if (!this.visitedBlocks.has(blockId)) {
+      this.visitedBlocks.add(blockId);
+      try {
+        localStorage.setItem('visitedBlocks', JSON.stringify([...this.visitedBlocks]));
+      } catch (e) {}
+    }
   }
 }
 
-// Theme primero (evita flash al cargar) — el inline en <head> ya seteó
-// data-theme; aquí sincronizamos el state interno del controller + el btn.
 window.ThemeController.init();
 
-// Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
   window.ThemeController.init();
   window.app = new App();
-});
-
-// Make visible sections animate in
-document.addEventListener('DOMContentLoaded', () => {
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-      }
-    });
-  }, { threshold: 0.1 });
-
-  document.querySelectorAll('#main section').forEach(s => {
-    observer.observe(s);
-  });
 });

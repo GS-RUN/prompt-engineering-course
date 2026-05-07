@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bloque 0 — Orientación · Prompt Engineering Master Course</title>
+<link rel="stylesheet" href="../css/style.css?v=8">
+<link rel="stylesheet" href="../css/bando-b.css?v=8">
+<script>
+  (function() {
+    try {
+      var t = localStorage.getItem('theme');
+      if (t !== 'dark' && t !== 'light') t = 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+    } catch(e) { document.documentElement.setAttribute('data-theme', 'dark'); }
+  })();
+</script>
+</head>
+<body data-page-block="00">
+
+<div class="bg-orb bg-orb-1"></div>
+<div class="bg-orb bg-orb-2"></div>
+<div class="bg-orb bg-orb-3"></div>
+<div class="bg-gradient"></div>
+<div class="bg-grid"></div>
+<div id="progress-bar"></div>
+
+<div id="app">
+<nav id="sidebar"></nav>
+
+<main id="content">
+
+<section class="module-front-matter">
+  <div class="module-meta">
+    <span class="module-icon">🧭</span>
+    <span class="module-level level-beginner">beginner</span>
+    <span class="module-time">⏱️ 20 min</span>
+  </div>
+  <h1 class="module-title">
+    <span class="lang-block" data-lang="es">Bloque 0 — Orientación</span>
+    <span class="lang-block" data-lang="en">Block 0 — Orientation</span>
+  </h1>
+  <div class="module-objectives">
+    <div class="lang-block" data-lang="es">
+      <h3>Objetivos de aprendizaje</h3>
+      <ul>
+        <li>Entender qué es y qué no es este curso.</li>
+        <li>Conocer los prerrequisitos y cómo recorrerlo.</li>
+        <li>Configurar el entorno (API + modelo local) en 15 min.</li>
+      </ul>
+    </div>
+    <div class="lang-block" data-lang="en">
+      <h3>Learning objectives</h3>
+      <ul>
+        <li>Understand what this course is and isn't.</li>
+        <li>Know the prerequisites and how to navigate it.</li>
+        <li>Set up your environment (API + local model) in 15 min.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="b0-1">
+<h2>
+  <span class="lang-block" data-lang="es">0.1 ¿Qué es este curso?</span>
+  <span class="lang-block" data-lang="en">0.1 What is this course?</span>
+</h2>
+
+<div class="lang-block" data-lang="es">
+<p>Un curso académico abierto para hacer de ti un <strong>profesional competente con LLMs en 2026</strong>. Cubre desde fundamentos (qué es un transformer, cómo se entrena) hasta producción (RAG en escala, observabilidad, agentes multi-día), pasando por todo lo intermedio.</p>
+
+<div class="card card-accent">
+<div class="card-title">✅ Lo que SÍ es</div>
+<ul>
+  <li><strong>Agnóstico de proveedor.</strong> Cada técnica se enseña con tablas cross-API: Claude, GPT-5, Gemini, DeepSeek, Kimi, MiniMax, Qwen, GLM, Grok, Mistral, Llama, Gemma. No "curso de Anthropic" ni "curso de OpenAI".</li>
+  <li><strong>Académico.</strong> Cada bloque tiene objetivos de aprendizaje, prerrequisitos, tiempo estimado, knowledge checks y bibliografía con enlaces a documentación oficial y papers.</li>
+  <li><strong>Profesional.</strong> Equiparable en alcance a Anthropic Academy, Google ML Crash Course, DeepLearning.AI Generative AI courses.</li>
+  <li><strong>Práctico.</strong> Ejemplos runnable, ejercicios interactivos, proyectos capstone con starter repos.</li>
+  <li><strong>Bilingüe.</strong> Todo en castellano e inglés. Toggle ES/EN en la sidebar.</li>
+  <li><strong>Vivo.</strong> Versionado con changelog. Las afirmaciones llevan fecha y se actualizan cuando el panorama cambia.</li>
+  <li><strong>Gratuito y abierto.</strong> MIT license. Fork it, mejoradlo, repostead.</li>
+</ul>
+</div>
+
+<div class="card card-orange">
+<div class="card-title">❌ Lo que NO es</div>
+<ul>
+  <li><strong>Un tutorial de "Hello World con la API".</strong> Asumimos que sabes pedir HTTP/REST y leer JSON. Si nunca has llamado a una API, primero hazlo: hay tutoriales de 30 minutos.</li>
+  <li><strong>Un libro de matemáticas.</strong> Explicamos atención, transformer y entrenamiento con la profundidad necesaria para entender QUÉ pasa, no para derivar las ecuaciones. Para eso ve a "Attention is All You Need" o al curso de Andrej Karpathy "Let's build GPT".</li>
+  <li><strong>Comercial.</strong> No vendemos certificación, ni hay paywall, ni promocionamos un proveedor.</li>
+  <li><strong>Un curso de programación.</strong> Mostramos código (Python mayoritariamente, también JavaScript), pero no enseñamos el lenguaje. Si Python te suena chino, primero el curso de Python.</li>
+</ul>
+</div>
+</div>
+
+<div class="lang-block" data-lang="en">
+<p>An open academic course to make you a <strong>competent professional with LLMs in 2026</strong>. It covers from fundamentals (what is a transformer, how it's trained) all the way to production (RAG at scale, observability, multi-day agents), and everything in between.</p>
+
+<div class="card card-accent">
+<div class="card-title">✅ What it IS</div>
+<ul>
+  <li><strong>Vendor-agnostic.</strong> Every technique is taught with cross-API tables: Claude, GPT-5, Gemini, DeepSeek, Kimi, MiniMax, Qwen, GLM, Grok, Mistral, Llama, Gemma. Not "an Anthropic course" or "an OpenAI course".</li>
+  <li><strong>Academic.</strong> Each block has learning objectives, prerequisites, time estimates, knowledge checks and bibliography with links to official docs and papers.</li>
+  <li><strong>Professional.</strong> Comparable in scope to Anthropic Academy, Google ML Crash Course, DeepLearning.AI Generative AI courses.</li>
+  <li><strong>Practical.</strong> Runnable examples, interactive exercises, capstone projects with starter repos.</li>
+  <li><strong>Bilingual.</strong> Everything in Spanish and English. ES/EN toggle in the sidebar.</li>
+  <li><strong>Living.</strong> Versioned with changelog. Claims are dated and updated as the landscape shifts.</li>
+  <li><strong>Free and open.</strong> MIT license. Fork it, improve it, republish.</li>
+</ul>
+</div>
+
+<div class="card card-orange">
+<div class="card-title">❌ What it ISN'T</div>
+<ul>
+  <li><strong>A "Hello World API" tutorial.</strong> We assume you can make HTTP/REST calls and read JSON. If you've never called an API, do that first — there are 30-minute intro tutorials.</li>
+  <li><strong>A math book.</strong> We explain attention, transformers and training with enough depth to understand WHAT happens, not to derive the equations. For that, read "Attention is All You Need" or follow Andrej Karpathy's "Let's build GPT".</li>
+  <li><strong>Commercial.</strong> We don't sell certifications, there's no paywall, no provider promotion.</li>
+  <li><strong>A programming course.</strong> We show code (mostly Python, some JavaScript), but we don't teach the language. If Python is foreign to you, take a Python course first.</li>
+</ul>
+</div>
+</div>
+</section>
+
+<section id="b0-2">
+<h2>
+  <span class="lang-block" data-lang="es">0.2 Prerrequisitos</span>
+  <span class="lang-block" data-lang="en">0.2 Prerequisites</span>
+</h2>
+
+<div class="lang-block" data-lang="es">
+<div class="table-wrap"><table>
+<tr><th>Conocimiento</th><th>Nivel mínimo</th><th>Por qué</th></tr>
+<tr><td>Programación general</td><td>1+ año experiencia</td><td>Leerás snippets en Python/JS, harás llamadas a APIs.</td></tr>
+<tr><td>HTTP / REST / JSON</td><td>Básico</td><td>Todas las APIs LLM hablan REST + JSON.</td></tr>
+<tr><td>Línea de comandos</td><td>Básico (git, npm/pip, ssh)</td><td>Para Ollama, Claude Code, OpenCode.</td></tr>
+<tr><td>Inglés técnico (lectura)</td><td>B2+</td><td>Aunque el curso es bilingüe, los papers y docs oficiales están en inglés.</td></tr>
+<tr><td>Estadística / probabilidad</td><td>Útil pero no esencial</td><td>Para entender sampling, evals y benchmarks. Conceptos clave los introducimos.</td></tr>
+<tr><td>Álgebra lineal</td><td>Útil pero no esencial</td><td>Para profundizar en cómo funcionan los transformers. No imprescindible.</td></tr>
+</table></div>
+
+<div class="tip"><strong>💡 Si te falta alguno:</strong> el curso lo cita y te apunta a un recurso rápido cuando hace falta. No tienes que parar todo para repasarlo antes de empezar.</div>
+</div>
+
+<div class="lang-block" data-lang="en">
+<div class="table-wrap"><table>
+<tr><th>Knowledge</th><th>Minimum level</th><th>Why</th></tr>
+<tr><td>General programming</td><td>1+ year experience</td><td>You'll read Python/JS snippets, make API calls.</td></tr>
+<tr><td>HTTP / REST / JSON</td><td>Basic</td><td>All LLM APIs speak REST + JSON.</td></tr>
+<tr><td>Command line</td><td>Basic (git, npm/pip, ssh)</td><td>For Ollama, Claude Code, OpenCode.</td></tr>
+<tr><td>Technical English (reading)</td><td>B2+</td><td>The course is bilingual but papers and official docs are in English.</td></tr>
+<tr><td>Statistics / probability</td><td>Helpful but not essential</td><td>To understand sampling, evals and benchmarks. Key concepts are introduced.</td></tr>
+<tr><td>Linear algebra</td><td>Helpful but not essential</td><td>To deepen transformer understanding. Not required.</td></tr>
+</table></div>
+
+<div class="tip"><strong>💡 If you're missing any:</strong> the course points to a quick resource when needed. You don't have to stop and review everything before starting.</div>
+</div>
+</section>
+
+<section id="b0-3">
+<h2>
+  <span class="lang-block" data-lang="es">0.3 Cómo recorrer el curso</span>
+  <span class="lang-block" data-lang="en">0.3 How to navigate the course</span>
+</h2>
+
+<div class="lang-block" data-lang="es">
+<p>Hay tres modos de uso según tu objetivo:</p>
+
+<div class="compare">
+<div><h4>📖 Modo "estudio sistemático"</h4>
+<p>Vas en orden 0 → I → II → III → IV → … → XIII. Cada bloque toma 1-3 horas. Total ~30 horas distribuidas en 4-6 semanas.</p>
+<p>Al final, deberías poder llevar un sistema LLM a producción end-to-end.</p>
+</div>
+<div><h4>🎯 Modo "necesito saber X"</h4>
+<p>Vas directo al bloque que necesitas. Cada bloque tiene prerrequisitos al principio — si te faltan, salta a esos bloques antes.</p>
+<p>Útil para: integrar RAG en tu app (Bloque VI), montar local self-hosted (Bloque VII), defender contra prompt injection (Bloque IV).</p>
+</div>
+<div><h4>🔍 Modo "referencia"</h4>
+<p>Usas el <a href="glossary.html">glosario</a>, las tablas comparativas (Bloques I y IX) y la <a href="../index.html#tools">cost calculator</a> como herramientas de consulta.</p>
+<p>Útil cuando ya sabes el tema y necesitas un dato preciso.</p>
+</div>
+</div>
+
+<h3>Convenciones del curso</h3>
+<ul>
+  <li><strong>Idioma del prompt:</strong> los ejemplos en castellano se muestran en castellano cuando el toggle está en ES, en inglés cuando está en EN. En producción, escribir prompts en inglés rinde 5-15% mejor en los modelos abiertos pequeños (Llama, Qwen, Gemma) y marginalmente mejor en frontier — adapta al modelo target.</li>
+  <li><strong>Versiones:</strong> precios, contextos y benchmarks reflejan inicios de 2026. El changelog (footer) anota cuando algo se actualiza.</li>
+  <li><strong>Niveles de dificultad:</strong> <span class="block-level level-beginner">beginner</span> <span class="block-level level-intermediate">intermediate</span> <span class="block-level level-advanced">advanced</span> visibles en cada bloque.</li>
+  <li><strong>Términos técnicos:</strong> al pasar el ratón sobre un término técnico verás su definición; clic abre la entrada completa en el <a href="glossary.html">glosario</a>.</li>
+</ul>
+</div>
+
+<div class="lang-block" data-lang="en">
+<p>Three modes of use depending on your goal:</p>
+
+<div class="compare">
+<div><h4>📖 "Systematic study" mode</h4>
+<p>Go in order 0 → I → II → III → IV → … → XIII. Each block takes 1-3 hours. Total ~30 hours spread over 4-6 weeks.</p>
+<p>By the end, you should be able to take an LLM system to production end-to-end.</p>
+</div>
+<div><h4>🎯 "I need to know X" mode</h4>
+<p>Jump straight to the block you need. Each block has prerequisites at the top — if you're missing them, hit those blocks first.</p>
+<p>Useful for: integrating RAG in your app (Block VI), self-hosting local (Block VII), defending against prompt injection (Block IV).</p>
+</div>
+<div><h4>🔍 "Reference" mode</h4>
+<p>Use the <a href="glossary.html">glossary</a>, comparison tables (Blocks I and IX) and the <a href="../index.html#tools">cost calculator</a> as lookup tools.</p>
+<p>Useful when you know the topic and need a precise data point.</p>
+</div>
+</div>
+
+<h3>Course conventions</h3>
+<ul>
+  <li><strong>Prompt language:</strong> Spanish examples show in Spanish when the toggle is ES, in English when EN. In production, English prompts run 5-15% better on small open models (Llama, Qwen, Gemma) and marginally better on frontier — adapt to the target model.</li>
+  <li><strong>Versions:</strong> prices, contexts and benchmarks reflect early 2026. The changelog (footer) tracks updates.</li>
+  <li><strong>Difficulty levels:</strong> <span class="block-level level-beginner">beginner</span> <span class="block-level level-intermediate">intermediate</span> <span class="block-level level-advanced">advanced</span> visible on each block.</li>
+  <li><strong>Technical terms:</strong> hover over a technical term to see its definition; click to open the full entry in the <a href="glossary.html">glossary</a>.</li>
+</ul>
+</div>
+</section>
+
+<section id="b0-4">
+<h2>
+  <span class="lang-block" data-lang="es">0.4 Setup del entorno</span>
+  <span class="lang-block" data-lang="en">0.4 Environment Setup</span>
+</h2>
+
+<div class="lang-block" data-lang="es">
+<p>Necesitas <strong>al menos uno</strong> de estos canales antes del Bloque II:</p>
+
+<h3>Canal 1 — API cloud (más rápido, paga por uso)</h3>
+<div class="card">
+<p>Elige <strong>uno</strong> de los siguientes según tu presupuesto y caso:</p>
+<div class="table-wrap"><table>
+<tr><th>Proveedor</th><th>Coste mínimo viable</th><th>Cómo crear API key</th></tr>
+<tr><td><strong>Anthropic</strong> (Claude)</td><td>$5 prepago</td><td><a href="https://console.anthropic.com/" target="_blank" rel="noopener">console.anthropic.com</a> → API Keys</td></tr>
+<tr><td><strong>OpenAI</strong> (GPT-5)</td><td>$5 prepago</td><td><a href="https://platform.openai.com/" target="_blank" rel="noopener">platform.openai.com</a> → API Keys</td></tr>
+<tr><td><strong>Google</strong> (Gemini)</td><td>Free tier 15 req/min</td><td><a href="https://aistudio.google.com/" target="_blank" rel="noopener">aistudio.google.com</a></td></tr>
+<tr><td><strong>DeepSeek</strong> (V4 Pro)</td><td>$2 prepago, ~30× más barato</td><td><a href="https://platform.deepseek.com/" target="_blank" rel="noopener">platform.deepseek.com</a></td></tr>
+<tr><td><strong>OpenRouter</strong> (multi-proveedor)</td><td>$5 prepago, todos los modelos</td><td><a href="https://openrouter.ai/" target="_blank" rel="noopener">openrouter.ai</a></td></tr>
+</table></div>
+<p><strong>Recomendación 2026:</strong> empieza con <strong>OpenRouter</strong> ($5 prepago te da acceso a todos los modelos top con una sola API key) o <strong>DeepSeek</strong> (más barato si vas a hacer mucho coding).</p>
+</div>
+
+<h3>Canal 2 — Modelo local (privacidad total, requiere hardware)</h3>
+<div class="card">
+<p>Instala <strong>Ollama</strong>, el camino más rápido:</p>
+<pre><code># macOS
+brew install ollama
+ollama serve  # arranca daemon en :11434
+
+# Linux
+curl -fsSL https://ollama.com/install.sh | sh
+
+# Windows
+# Descarga el .exe en https://ollama.com/
+
+# Descarga un modelo y prueba
+ollama run gemma3:4b
+ollama run qwen3:7b
+ollama run llama3.2:3b   # 2 GB, corre en cualquier PC moderno</code></pre>
+
+<p>Si tienes ≥16 GB VRAM (RTX 4080+/4090/5090) sube a <strong>Qwen3-14B Q5</strong> o <strong>Llama 4 70B Q4</strong>.</p>
+<p>Para Mac M-series con ≥32 GB unified memory, instala <a href="https://lmstudio.ai/" target="_blank" rel="noopener">LM Studio</a> que usa MLX nativo.</p>
+</div>
+
+<h3>Canal 3 — Tu agente de coding</h3>
+<div class="card">
+<p>Para los bloques V (Agentes), VI (Infra) y XIII (Workshop), instala uno:</p>
+<ul>
+  <li><strong>Claude Code</strong> — <code>npm install -g @anthropic-ai/claude-code</code> (requiere API key Anthropic).</li>
+  <li><strong>OpenCode</strong> — <code>curl -fsSL https://opencode.ai/install | bash</code> (open-source, soporta 75+ proveedores).</li>
+  <li><strong>Codex CLI</strong> — <code>npm install -g @openai/codex</code> (requiere API key OpenAI).</li>
+</ul>
+</div>
+
+<div class="warn"><strong>⚠️ Antes de seguir:</strong> verifica que puedes hacer una llamada simple. Abre tu canal y manda "Hola, dime el resultado de 2+2 explicado paso a paso". Si responde "4 (porque 2+2=4 por la propiedad asociativa…)", estás listo. Si no, revisa la API key y el endpoint.</div>
+</div>
+
+<div class="lang-block" data-lang="en">
+<p>You need <strong>at least one</strong> of these channels before Block II:</p>
+
+<h3>Channel 1 — Cloud API (fastest, pay-per-use)</h3>
+<div class="card">
+<p>Pick <strong>one</strong> of the following based on your budget and case:</p>
+<div class="table-wrap"><table>
+<tr><th>Provider</th><th>Minimum viable cost</th><th>How to create an API key</th></tr>
+<tr><td><strong>Anthropic</strong> (Claude)</td><td>$5 prepaid</td><td><a href="https://console.anthropic.com/" target="_blank" rel="noopener">console.anthropic.com</a> → API Keys</td></tr>
+<tr><td><strong>OpenAI</strong> (GPT-5)</td><td>$5 prepaid</td><td><a href="https://platform.openai.com/" target="_blank" rel="noopener">platform.openai.com</a> → API Keys</td></tr>
+<tr><td><strong>Google</strong> (Gemini)</td><td>Free tier 15 req/min</td><td><a href="https://aistudio.google.com/" target="_blank" rel="noopener">aistudio.google.com</a></td></tr>
+<tr><td><strong>DeepSeek</strong> (V4 Pro)</td><td>$2 prepaid, ~30× cheaper</td><td><a href="https://platform.deepseek.com/" target="_blank" rel="noopener">platform.deepseek.com</a></td></tr>
+<tr><td><strong>OpenRouter</strong> (multi-provider)</td><td>$5 prepaid, every model</td><td><a href="https://openrouter.ai/" target="_blank" rel="noopener">openrouter.ai</a></td></tr>
+</table></div>
+<p><strong>2026 recommendation:</strong> start with <strong>OpenRouter</strong> ($5 prepaid gives you all top models with a single API key) or <strong>DeepSeek</strong> (cheaper if you'll do a lot of coding).</p>
+</div>
+
+<h3>Channel 2 — Local model (full privacy, needs hardware)</h3>
+<div class="card">
+<p>Install <strong>Ollama</strong>, the fastest path:</p>
+<pre><code># macOS
+brew install ollama
+ollama serve  # starts daemon on :11434
+
+# Linux
+curl -fsSL https://ollama.com/install.sh | sh
+
+# Windows
+# Download the .exe at https://ollama.com/
+
+# Pull a model and test
+ollama run gemma3:4b
+ollama run qwen3:7b
+ollama run llama3.2:3b   # 2 GB, runs on any modern PC</code></pre>
+
+<p>If you have ≥16 GB VRAM (RTX 4080+/4090/5090) move up to <strong>Qwen3-14B Q5</strong> or <strong>Llama 4 70B Q4</strong>.</p>
+<p>For Mac M-series with ≥32 GB unified memory, install <a href="https://lmstudio.ai/" target="_blank" rel="noopener">LM Studio</a> which uses MLX natively.</p>
+</div>
+
+<h3>Channel 3 — Your coding agent</h3>
+<div class="card">
+<p>For blocks V (Agents), VI (Infra) and XIII (Workshop), install one:</p>
+<ul>
+  <li><strong>Claude Code</strong> — <code>npm install -g @anthropic-ai/claude-code</code> (needs Anthropic API key).</li>
+  <li><strong>OpenCode</strong> — <code>curl -fsSL https://opencode.ai/install | bash</code> (open-source, supports 75+ providers).</li>
+  <li><strong>Codex CLI</strong> — <code>npm install -g @openai/codex</code> (needs OpenAI API key).</li>
+</ul>
+</div>
+
+<div class="warn"><strong>⚠️ Before moving on:</strong> verify you can make a simple call. Open your channel and send "Hi, what's 2+2 explained step by step?" If it replies "4 (because 2+2=4 by the associative property…)", you're set. Otherwise, double-check API key and endpoint.</div>
+</div>
+</section>
+
+<section class="module-references">
+  <h3>
+    <span class="lang-block" data-lang="es">Referencias</span>
+    <span class="lang-block" data-lang="en">References</span>
+  </h3>
+  <ul class="references-list">
+    <li><a href="https://docs.anthropic.com/en/docs/welcome" target="_blank" rel="noopener">Anthropic — Welcome / API Quickstart</a></li>
+    <li><a href="https://platform.openai.com/docs/quickstart" target="_blank" rel="noopener">OpenAI — Quickstart</a></li>
+    <li><a href="https://ai.google.dev/gemini-api/docs/quickstart" target="_blank" rel="noopener">Google — Gemini API Quickstart</a></li>
+    <li><a href="https://platform.deepseek.com/api-docs/" target="_blank" rel="noopener">DeepSeek — API Docs</a></li>
+    <li><a href="https://openrouter.ai/docs" target="_blank" rel="noopener">OpenRouter — Docs</a></li>
+    <li><a href="https://github.com/ollama/ollama/blob/main/docs/README.md" target="_blank" rel="noopener">Ollama — Documentation</a></li>
+  </ul>
+</section>
+
+</main>
+</div>
+
+<script src="../js/shared/manifest.js?v=8"></script>
+<script src="../js/shared/sidebar.js?v=8"></script>
+<script src="../js/i18n.js?v=8"></script>
+<script src="../js/app.js?v=8"></script>
+</body>
+</html>

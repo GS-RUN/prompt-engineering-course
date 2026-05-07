@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bloque IX — Benchmarks y evaluación — Prompt Engineering Master Course</title>
+<link rel="stylesheet" href="../css/style.css?v=8">
+<link rel="stylesheet" href="../css/bando-b.css?v=8">
+<script>
+  (function() {
+    try {
+      var t = localStorage.getItem('theme');
+      if (t !== 'dark' && t !== 'light') t = 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+    } catch(e) { document.documentElement.setAttribute('data-theme', 'dark'); }
+  })();
+</script>
+</head>
+<body data-page-block="09">
+
+<div class="bg-orb bg-orb-1"></div>
+<div class="bg-orb bg-orb-2"></div>
+<div class="bg-orb bg-orb-3"></div>
+<div class="bg-gradient"></div>
+<div class="bg-grid"></div>
+<div id="progress-bar"></div>
+
+<div id="app">
+<nav id="sidebar"></nav>
+
+<main id="content">
+
+<section class="module-front-matter" data-module-front>
+  <div class="module-meta">
+    <span class="module-icon">📊</span>
+    <span class="module-level level-intermediate">intermediate</span>
+    <span class="module-time">⏱️ 90 min</span>
+  </div>
+  <h1 class="module-title">
+    <span class="lang-block" data-lang="es">Bloque IX — Benchmarks y evaluación</span>
+    <span class="lang-block" data-lang="en">Block IX — Benchmarks + Evaluation</span>
+  </h1>
+  <div class="module-objectives">
+    <div class="lang-block" data-lang="es">
+      <h3>Objetivos de aprendizaje</h3>
+      <ul>
+        <li>Leer un leaderboard sin saturarse (MMLU/HumanEval están saturados).</li>
+        <li>Construir tu eval: golden dataset, criterios, métricas.</li>
+        <li>Configurar OpenCode + AGENTS.md para alto volumen.</li>
+      </ul>
+    </div>
+    <div class="lang-block" data-lang="en">
+      <h3>Learning objectives</h3>
+      <ul>
+        <li>Read a leaderboard without saturating (MMLU/HumanEval are saturated).</li>
+        <li>Build your eval: golden dataset, criteria, metrics.</li>
+        <li>Configure OpenCode + AGENTS.md for high volume.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="s73">
+<h2>16.1 Benchmarks Clave para LLMs</h2>
+<p class="subtitle">Cómo se mide objetivamente la calidad de un modelo</p>
+<div class="lang-block" data-lang="es">
+
+<div class="table-wrap"><table>
+<tr><th>Benchmark</th><th>Qué mide</th><th>Formato</th><th>Ejemplo</th></tr>
+<tr><td><strong>MMLU</strong> (Massive Multitask Language Understanding)</td><td>Conocimiento en 57 materias (STEM, humanidades, sociales)</td><td>Multiple choice</td><td>"¿Cuál es la capital de Burkina Faso?"</td></tr>
+<tr><td><strong>HumanEval</strong></td><td>Generación de código Python (genera función → tests)</td><td>Coding</td><td>"Write a function that..." → pass@k</td></tr>
+<tr><td><strong>MATH</strong></td><td>Problemas matemáticos de competición (pre-álgebra a cálculo)</td><td>Respuesta numérica</td><td>"Solve x² + 5x + 6 = 0"</td></tr>
+<tr><td><strong>GSM8K</strong></td><td>Problemas matemáticos escolares (multi-step word problems)</td><td>Respuesta numérica</td><td>"Jane has 5 apples..."</td></tr>
+<tr><td><strong>HellaSwag</strong></td><td>Razonamiento de sentido común (completar escenarios)</td><td>Multiple choice</td><td>"The chef opened the oven and..."</td></tr>
+<tr><td><strong>TruthfulQA</strong></td><td>Veracidad — evita conceptos erróneos comunes</td><td>Open-ended</td><td>"What happens if you crack your knuckles?"</td></tr>
+<tr><td><strong>GPQA</strong></td><td>Preguntas de posgrado en biología, física, química</td><td>Multiple choice</td><td>"Which enzyme catalyzes..." (nivel PhD)</td></tr>
+<tr><td><strong>SWE-bench</strong></td><td>Resolver issues reales de GitHub (bug fixing)</td><td>Coding agent</td><td>"Fix issue #4523 in this repo"</td></tr>
+<tr><td><strong>MT-Bench</strong></td><td>Calidad de conversación multi-turno (juzgado por GPT-4)</td><td>LLM-as-Judge</td><td>Conversación de 2 turnos sobre viajes</td></tr>
+</table></div>
+
+<div class="tip"><strong>💡 Un solo benchmark no basta.</strong> Un modelo puede ser excelente en MMLU y pésimo en coding. Mira al menos: 1 benchmark de conocimiento, 1 de razonamiento, 1 de código, y 1 de seguridad.</div>
+
+<h3>Cada Benchmark en Detalle</h3>
+<p class="subtitle">Qué mide exactamente, cómo se calcula la puntuación y qué dice de un modelo.</p>
+
+<div class="card card-accent">
+  <div class="card-title">📚 MMLU — Massive Multitask Language Understanding</div>
+  <p><strong>Qué mide:</strong> conocimiento factual y razonamiento en <strong>57 dominios académicos</strong> distintos: STEM (matemáticas, física, química, biología, CS), humanidades (filosofía, historia, derecho), ciencias sociales (economía, psicología) y profesionales (medicina, contabilidad).</p>
+  <p><strong>Formato:</strong> ~16 000 preguntas multiple choice de 4 opciones, dificultad nivel high-school a posgrado. Se mide accuracy global (0-100%).</p>
+  <p><strong>Por qué importa:</strong> es el benchmark estándar de "inteligencia general académica". Un score &gt; 90% indica que el modelo absorbió el conocimiento equivalente al de un humano educado promedio. Limitación: solo mide conocimiento memorizado, no razonamiento profundo ni habilidades aplicadas.</p>
+  <p><strong>Estado del arte 2026:</strong> humanos expertos ~89.8%, GPT-5.5 94.1%, Claude Opus 4.7 93.8%. Los modelos top ya superan al humano experto promedio.</p>
+</div>
+
+<div class="card card-accent">
+  <div class="card-title">💻 HumanEval — Generación de Código Python</div>
+  <p><strong>Qué mide:</strong> capacidad de generar funciones Python correctas a partir de un docstring describiendo el comportamiento esperado. Cada problema incluye tests unitarios; el modelo aprueba si su código pasa todos los tests.</p>
+  <p><strong>Formato:</strong> 164 problemas de programación curados manualmente. La métrica oficial es <code>pass@k</code> — probabilidad de que al menos una de <code>k</code> generaciones pase los tests. Se reporta típicamente <code>pass@1</code> (greedy single-shot).</p>
+  <p><strong>Por qué importa:</strong> primer benchmark serio de coding. Limitación: problemas relativamente cortos y aislados (~10 líneas), no captura programación real (debugging, integración, codebases grandes). Los modelos top lo saturan al &gt;95%, por eso SWE-bench es el nuevo estándar.</p>
+  <p><strong>Estado del arte 2026:</strong> Claude Opus 4.7 96.2%, GPT-5.5 95.8%. Saturado — todos los frontier models están dentro del rango 92-97%.</p>
+</div>
+
+<div class="card card-accent">
+  <div class="card-title">🧮 MATH — Problemas de Competición Matemática</div>
+  <p><strong>Qué mide:</strong> resolución de problemas matemáticos de nivel competición olímpica (AMC, AIME) — pre-álgebra, álgebra, conteo y probabilidad, geometría, teoría de números, pre-cálculo, cálculo. NO son cálculos rutinarios: requieren razonamiento creativo en pasos.</p>
+  <p><strong>Formato:</strong> 12 500 problemas con solución numérica exacta. Cada problema tiene una respuesta única verificable; se mide accuracy. Crítico: no acepta "casi" — la respuesta debe coincidir bit-exact.</p>
+  <p><strong>Por qué importa:</strong> es el benchmark donde más drásticamente se ve la diferencia entre modelos con razonamiento (thinking tokens, chain-of-thought) y sin él. Un modelo que mejora 30 puntos al activar thinking demuestra que sus tokens internos sí están razonando, no solo decorando.</p>
+  <p><strong>Estado del arte 2026:</strong> Claude Opus 4.7 92.1%, GPT-5.5 91.7%, DeepSeek V4 Pro 90.3%. Hace 2 años los modelos sin thinking apenas llegaban al 50%.</p>
+</div>
+
+<div class="card card-accent">
+  <div class="card-title">🎓 GPQA — Graduate-Level Physics, Chemistry, Biology</div>
+  <p><strong>Qué mide:</strong> preguntas de nivel <strong>doctoral</strong> en biología, física y química, escritas y validadas por PhDs en cada campo. La clave: las respuestas correctas no se pueden encontrar googleando — requieren entender los fundamentos.</p>
+  <p><strong>Formato:</strong> 448 preguntas multiple choice extremadamente técnicas. Subset "GPQA Diamond" (198 preguntas) es el más usado para reportar — más estricto.</p>
+  <p><strong>Por qué importa:</strong> diseñado específicamente para ser <strong>"Google-proof"</strong>. Mide si el modelo realmente entiende la materia o solo recuerda información de internet. Los humanos expertos del campo correspondiente sacan ~65-75%; los humanos de otro campo (incluso otros PhDs) sacan ~34% (apenas mejor que random).</p>
+  <p><strong>Estado del arte 2026:</strong> Claude Opus 4.7 74.5%, GPT-5.5 73.8%. Los frontier models ya están al nivel de un experto del dominio — un salto enorme respecto a 2024.</p>
+</div>
+
+<div class="card card-accent">
+  <div class="card-title">🔧 SWE-bench — Bug Fixing en Repos Reales de GitHub</div>
+  <p><strong>Qué mide:</strong> capacidad de un agente de código para resolver issues reales de proyectos open-source famosos (Django, sympy, scikit-learn, matplotlib, etc). Dado un issue + el repo entero como contexto, el modelo debe producir un patch que arregle el bug y pase los tests existentes.</p>
+  <p><strong>Formato:</strong> 2 294 issues reales con commits ground-truth y suite de tests. Se mide <strong>resolution rate</strong> — % de issues donde el patch generado pasa todos los tests. Variantes: SWE-bench Lite (300 issues curados), SWE-bench Verified (issues humanos-validados como solucionables).</p>
+  <p><strong>Por qué importa:</strong> es el benchmark más realista para coding agents. Captura todo lo que HumanEval no: navegar codebases grandes, entender arquitectura, debugging, ejecutar tests, iterar. Un modelo con 60%+ aquí está literalmente reemplazando trabajo de un junior dev.</p>
+  <p><strong>Estado del arte 2026:</strong> Claude Opus 4.7 lidera con 68.3% (con Claude Code agent), GPT-5.5 65.1%, DeepSeek V4 Pro 60.4%. Hace 18 meses ningún modelo pasaba del 25%.</p>
+</div>
+
+<div class="card card-accent">
+  <div class="card-title">🧠 GSM8K · HellaSwag · TruthfulQA · MT-Bench</div>
+  <p><strong>GSM8K (Grade School Math 8K):</strong> 8 500 problemas matemáticos de nivel primaria con enunciado en lenguaje natural ("Jane tiene 5 manzanas, regala 2..."). Mide razonamiento <em>multi-step</em> sobre aritmética básica. Saturado &gt;95% en frontier models — útil para validar que un modelo small no está roto.</p>
+  <p><strong>HellaSwag:</strong> completa el final más razonable de un escenario común. 10 000 preguntas multiple choice. Mide sentido común físico y social ("El chef abrió el horno y..."). Prácticamente saturado &gt;95% — ya no diferencia frontier models, sirve para detectar regresiones.</p>
+  <p><strong>TruthfulQA:</strong> 817 preguntas diseñadas para inducir conceptos erróneos comunes ("¿Qué pasa si te tronas los nudillos?"). Mide veracidad bajo presión social. Útil para safety — score bajo significa que el modelo repite mitos populares como si fueran ciertos.</p>
+  <p><strong>MT-Bench:</strong> 80 conversaciones multi-turno (escritura, razonamiento, matemáticas, coding, role-play, extracción). Cada respuesta evaluada por GPT-4 (LLM-as-Judge) en escala 1-10. Mide <strong>calidad conversacional</strong> que las pruebas multiple-choice no capturan. Crítico: depende del juez (GPT-4 favorece estilos similares al suyo).</p>
+</div>
+
+<div class="warn"><strong>⚠️ Cuidado con la "saturación":</strong> cuando un benchmark satura (todos los modelos &gt; 95%), deja de discriminar. MMLU y HumanEval están cerca de saturar. Los benchmarks útiles ahora son <strong>SWE-bench, GPQA Diamond, ARC-AGI, MATH avanzado</strong> — donde aún hay headroom y se separan los modelos top.</div>
+
+<div class="tip"><strong>💡 Cómo interpretar un leaderboard:</strong> mira siempre fecha (<6 meses), versión exacta del modelo (no "Claude" sino "Claude Opus 4.7"), modo (con/sin thinking), y método de eval (zero-shot, few-shot, chain-of-thought). Dos números del mismo modelo pueden diferir 15 puntos según método.</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="table-wrap"><table>
+<tr><th>Benchmark</th><th>What it measures</th><th>Format</th><th>Example</th></tr>
+<tr><td><strong>MMLU</strong> (Massive Multitask Language Understanding)</td><td>Knowledge across 57 subjects (STEM, humanities, social)</td><td>Multiple choice</td><td>"What is the capital of Burkina Faso?"</td></tr>
+<tr><td><strong>HumanEval</strong></td><td>Python code generation (write function → tests)</td><td>Coding</td><td>"Write a function that..." → pass@k</td></tr>
+<tr><td><strong>MATH</strong></td><td>Competition math problems (pre-algebra to calculus)</td><td>Numeric answer</td><td>"Solve x² + 5x + 6 = 0"</td></tr>
+<tr><td><strong>GSM8K</strong></td><td>Grade-school math (multi-step word problems)</td><td>Numeric answer</td><td>"Jane has 5 apples..."</td></tr>
+<tr><td><strong>HellaSwag</strong></td><td>Common-sense reasoning (complete scenarios)</td><td>Multiple choice</td><td>"The chef opened the oven and..."</td></tr>
+<tr><td><strong>TruthfulQA</strong></td><td>Truthfulness — avoids common misconceptions</td><td>Open-ended</td><td>"What happens if you crack your knuckles?"</td></tr>
+<tr><td><strong>GPQA</strong></td><td>Graduate-level biology, physics, chemistry</td><td>Multiple choice</td><td>"Which enzyme catalyzes..." (PhD level)</td></tr>
+<tr><td><strong>SWE-bench</strong></td><td>Solve real GitHub issues (bug fixing)</td><td>Coding agent</td><td>"Fix issue #4523 in this repo"</td></tr>
+<tr><td><strong>MT-Bench</strong></td><td>Multi-turn conversation quality (judged by GPT-4)</td><td>LLM-as-Judge</td><td>2-turn conversation about travel</td></tr>
+</table></div>
+
+<div class="tip"><strong>💡 A single benchmark isn't enough.</strong> A model can be excellent at MMLU and terrible at coding. Look at: 1 knowledge benchmark, 1 reasoning, 1 code, and 1 safety.</div>
+
+<h3>Each Benchmark in Detail</h3>
+<p class="subtitle">What exactly each one measures, how it's scored, and what it tells you about a model.</p>
+
+<div class="card card-accent">
+  <div class="card-title">📚 MMLU — Massive Multitask Language Understanding</div>
+  <p><strong>What it measures:</strong> factual knowledge and reasoning across <strong>57 academic domains</strong>: STEM (math, physics, chemistry, biology, CS), humanities (philosophy, history, law), social sciences (economics, psychology), and professional fields (medicine, accounting).</p>
+  <p><strong>Format:</strong> ~16,000 multiple-choice questions with 4 options, ranging from high-school to graduate difficulty. Reported as overall accuracy (0-100%).</p>
+  <p><strong>Why it matters:</strong> the standard benchmark for "general academic intelligence." A score &gt;90% indicates the model has absorbed knowledge equivalent to an educated adult. Limitation: only measures memorized knowledge, not deep reasoning or applied skills.</p>
+  <p><strong>State of the art 2026:</strong> human experts ~89.8%, GPT-5.5 94.1%, Claude Opus 4.7 93.8%. Top models now exceed the average human expert.</p>
+</div>
+
+<div class="card card-accent">
+  <div class="card-title">💻 HumanEval — Python Code Generation</div>
+  <p><strong>What it measures:</strong> ability to generate correct Python functions from a docstring describing expected behavior. Each problem includes unit tests; the model passes if its code passes all tests.</p>
+  <p><strong>Format:</strong> 164 hand-curated programming problems. The official metric is <code>pass@k</code> — probability that at least one of <code>k</code> generations passes all tests. Typically reported as <code>pass@1</code> (greedy single-shot).</p>
+  <p><strong>Why it matters:</strong> the first serious coding benchmark. Limitation: problems are short and isolated (~10 lines), don't capture real-world programming (debugging, integration, large codebases). Top models saturate at &gt;95%, which is why SWE-bench is the new standard.</p>
+  <p><strong>State of the art 2026:</strong> Claude Opus 4.7 96.2%, GPT-5.5 95.8%. Saturated — all frontier models in the 92-97% range.</p>
+</div>
+
+<div class="card card-accent">
+  <div class="card-title">🧮 MATH — Competition Math Problems</div>
+  <p><strong>What it measures:</strong> solving math problems at competition level (AMC, AIME) — pre-algebra, algebra, counting and probability, geometry, number theory, pre-calculus, calculus. NOT routine calculations: requires creative multi-step reasoning.</p>
+  <p><strong>Format:</strong> 12,500 problems with exact numeric solutions. Each has a unique verifiable answer; accuracy is measured. Critical: doesn't accept "close" — must be bit-exact.</p>
+  <p><strong>Why it matters:</strong> the benchmark where the difference between models with reasoning (thinking tokens, chain-of-thought) and without is most dramatic. A model that improves 30 points when thinking is enabled proves its internal tokens are actually reasoning, not just decoration.</p>
+  <p><strong>State of the art 2026:</strong> Claude Opus 4.7 92.1%, GPT-5.5 91.7%, DeepSeek V4 Pro 90.3%. Two years ago, models without thinking barely reached 50%.</p>
+</div>
+
+<div class="card card-accent">
+  <div class="card-title">🎓 GPQA — Graduate-Level Physics, Chemistry, Biology</div>
+  <p><strong>What it measures:</strong> <strong>doctoral-level</strong> questions in biology, physics, and chemistry, written and validated by PhDs in each field. The key: correct answers can't be found by Googling — they require understanding the fundamentals.</p>
+  <p><strong>Format:</strong> 448 extremely technical multiple-choice questions. The "GPQA Diamond" subset (198 questions) is the most-used reporting tier — stricter.</p>
+  <p><strong>Why it matters:</strong> specifically designed to be <strong>"Google-proof."</strong> Measures whether a model truly understands the subject or just recalls internet info. Domain-expert humans score ~65-75%; out-of-domain humans (even other PhDs) score ~34% (barely above random).</p>
+  <p><strong>State of the art 2026:</strong> Claude Opus 4.7 74.5%, GPT-5.5 73.8%. Frontier models are now at the level of a domain expert — a huge jump from 2024.</p>
+</div>
+
+<div class="card card-accent">
+  <div class="card-title">🔧 SWE-bench — Bug Fixing on Real GitHub Repos</div>
+  <p><strong>What it measures:</strong> ability of a code agent to solve real issues from famous open-source projects (Django, sympy, scikit-learn, matplotlib, etc). Given an issue + the entire repo as context, the model must produce a patch that fixes the bug and passes existing tests.</p>
+  <p><strong>Format:</strong> 2,294 real issues with ground-truth commits and test suites. Measures <strong>resolution rate</strong> — % of issues where the generated patch passes all tests. Variants: SWE-bench Lite (300 curated issues), SWE-bench Verified (human-validated solvable issues).</p>
+  <p><strong>Why it matters:</strong> the most realistic benchmark for coding agents. Captures everything HumanEval misses: navigating large codebases, understanding architecture, debugging, running tests, iterating. A model with 60%+ here is literally replacing junior dev work.</p>
+  <p><strong>State of the art 2026:</strong> Claude Opus 4.7 leads at 68.3% (with Claude Code agent), GPT-5.5 65.1%, DeepSeek V4 Pro 60.4%. 18 months ago no model passed 25%.</p>
+</div>
+
+<div class="card card-accent">
+  <div class="card-title">🧠 GSM8K · HellaSwag · TruthfulQA · MT-Bench</div>
+  <p><strong>GSM8K (Grade School Math 8K):</strong> 8,500 elementary-school math problems with natural-language statements ("Jane has 5 apples, gives away 2..."). Measures <em>multi-step</em> reasoning over basic arithmetic. Saturated &gt;95% in frontier models — useful to validate that a small model isn't broken.</p>
+  <p><strong>HellaSwag:</strong> complete the most reasonable ending of a common scenario. 10,000 multiple-choice questions. Measures physical and social common sense ("The chef opened the oven and..."). Practically saturated &gt;95% — no longer differentiates frontier models, useful for regression detection.</p>
+  <p><strong>TruthfulQA:</strong> 817 questions designed to induce common misconceptions ("What happens if you crack your knuckles?"). Measures truthfulness under social pressure. Useful for safety — a low score means the model parrots popular myths as if true.</p>
+  <p><strong>MT-Bench:</strong> 80 multi-turn conversations (writing, reasoning, math, coding, role-play, extraction). Each response judged by GPT-4 (LLM-as-Judge) on a 1-10 scale. Measures <strong>conversational quality</strong> that multiple-choice tests miss. Critical: depends on the judge (GPT-4 favors styles similar to its own).</p>
+</div>
+
+<div class="warn"><strong>⚠️ Beware "saturation":</strong> when a benchmark saturates (every model &gt; 95%), it stops discriminating. MMLU and HumanEval are close to saturation. Useful benchmarks now are <strong>SWE-bench, GPQA Diamond, ARC-AGI, advanced MATH</strong> — where headroom remains and top models separate.</div>
+
+<div class="tip"><strong>💡 How to read a leaderboard:</strong> always check the date (&lt;6 months), exact model version (not "Claude" but "Claude Opus 4.7"), mode (with/without thinking), and eval method (zero-shot, few-shot, chain-of-thought). Two numbers from the same model can differ by 15 points depending on method.</div>
+
+</div>
+</section>
+
+<section id="s74">
+<h2>16.2 Comparativa de Modelos (Datos 2026)</h2>
+<div class="lang-block" data-lang="es">
+
+<div class="table-wrap"><table>
+<tr><th>Modelo</th><th>MMLU</th><th>HumanEval</th><th>MATH</th><th>GPQA Diamond</th><th>SWE-bench</th><th>ARC-AGI</th></tr>
+<tr><td><strong>GPT-5.5</strong></td><td>94.1% 🏆</td><td>95.8%</td><td>91.7%</td><td>73.8%</td><td>65.1%</td><td>~52%</td></tr>
+<tr><td><strong>Claude Opus 4.7</strong></td><td>93.8%</td><td>96.2% 🏆</td><td>92.1% 🏆</td><td>74.5% 🏆</td><td>68.3% 🏆</td><td>~55% 🏆</td></tr>
+<tr><td><strong>Gemini 2.5 Pro</strong></td><td>92.6%</td><td>93.1%</td><td>89.8%</td><td>72.9%</td><td>58.7%</td><td>~48%</td></tr>
+<tr><td><strong>DeepSeek V4 Pro</strong></td><td>91.2%</td><td>94.5%</td><td>90.3%</td><td>71.2%</td><td>60.4%</td><td>~42%</td></tr>
+<tr><td><strong>DeepSeek R2</strong></td><td>90.5%</td><td>93.8%</td><td>91.2%</td><td>72.8%</td><td>59.1%</td><td>~46%</td></tr>
+<tr><td><strong>Kimi K2</strong></td><td>89.4%</td><td>92.0%</td><td>87.5%</td><td>68.7%</td><td>54.3%</td><td>~38%</td></tr>
+<tr><td><strong>Qwen3-Max</strong></td><td>91.8%</td><td>93.2%</td><td>89.1%</td><td>70.4%</td><td>56.2%</td><td>~40%</td></tr>
+<tr><td><strong>GLM-5</strong></td><td>88.7%</td><td>91.5%</td><td>86.3%</td><td>67.2%</td><td>51.8%</td><td>~36%</td></tr>
+<tr><td><strong>MiniMax M2</strong></td><td>87.9%</td><td>89.6%</td><td>84.7%</td><td>65.8%</td><td>48.4%</td><td>~34%</td></tr>
+<tr><td><strong>Grok 4</strong></td><td>92.1%</td><td>92.8%</td><td>90.5%</td><td>71.6%</td><td>57.3%</td><td>~44%</td></tr>
+<tr><td><strong>Claude Sonnet 4.6</strong></td><td>90.3%</td><td>93.5%</td><td>88.2%</td><td>69.1%</td><td>62.8%</td><td>~46%</td></tr>
+<tr><td><strong>Mistral Large 3</strong></td><td>87.2%</td><td>88.4%</td><td>83.5%</td><td>63.7%</td><td>45.2%</td><td>~30%</td></tr>
+<tr><td colspan="7" style="background:var(--glass);font-size:11px;color:var(--text-muted);text-align:center;">— frontier OSS (open-weights) —</td></tr>
+<tr><td><strong>Llama 4 405B</strong></td><td>89.7%</td><td>91.2%</td><td>87.6%</td><td>68.4%</td><td>55.9%</td><td>~36%</td></tr>
+<tr><td><strong>DeepSeek V3 671B-MoE</strong></td><td>88.5%</td><td>92.5%</td><td>88.8%</td><td>67.9%</td><td>53.7%</td><td>~34%</td></tr>
+<tr><td><strong>Qwen3-72B</strong></td><td>87.4%</td><td>90.1%</td><td>86.5%</td><td>65.3%</td><td>49.8%</td><td>~32%</td></tr>
+<tr><td><strong>Llama 4 70B</strong></td><td>83.6%</td><td>85.7%</td><td>78.4%</td><td>58.2%</td><td>38.5%</td><td>~22%</td></tr>
+<tr><td><strong>Qwen3-32B</strong></td><td>82.8%</td><td>86.4%</td><td>79.1%</td><td>57.8%</td><td>36.7%</td><td>~20%</td></tr>
+<tr><td><strong>Gemma 3 27B</strong></td><td>78.5%</td><td>80.3%</td><td>72.6%</td><td>52.4%</td><td>30.1%</td><td>~15%</td></tr>
+<tr><td><strong>Phi-4 14B</strong></td><td>77.2%</td><td>82.1%</td><td>74.8%</td><td>54.7%</td><td>28.4%</td><td>~14%</td></tr>
+</table></div>
+
+<div class="warn"><strong>⚠️ Los números varían.</strong> Los benchmarks son una foto instantánea. Los modelos se actualizan constantemente y los reporting methods varían (zero-shot, n-shot, with/without thinking, with/without tool-use). Consulta los leaderboards oficiales — <strong>LMSys Chatbot Arena</strong> (preferencias humanas), <strong>HuggingFace Open LLM Leaderboard</strong> (OSS), <strong>SWE-bench Verified</strong> (coding agents), <strong>SimpleBench</strong> y <strong>ARC-AGI-2</strong> (no saturados) para datos actualizados.</div>
+
+<div class="tip"><strong>💡 Lectura del leaderboard:</strong> Los puntos del 1-3 entre frontier (Claude, GPT, Gemini, DeepSeek, Kimi, Qwen-Max, Grok) suelen ser ruido del método. ARC-AGI y SWE-bench Verified son los que mejor diferencian capacidad real en 2026 — MMLU y HumanEval están saturados (todos &gt;90%).</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="table-wrap"><table>
+<tr><th>Model</th><th>MMLU</th><th>HumanEval</th><th>MATH</th><th>GPQA Diamond</th><th>SWE-bench</th><th>ARC-AGI</th></tr>
+<tr><td><strong>GPT-5.5</strong></td><td>94.1% 🏆</td><td>95.8%</td><td>91.7%</td><td>73.8%</td><td>65.1%</td><td>~52%</td></tr>
+<tr><td><strong>Claude Opus 4.7</strong></td><td>93.8%</td><td>96.2% 🏆</td><td>92.1% 🏆</td><td>74.5% 🏆</td><td>68.3% 🏆</td><td>~55% 🏆</td></tr>
+<tr><td><strong>Gemini 2.5 Pro</strong></td><td>92.6%</td><td>93.1%</td><td>89.8%</td><td>72.9%</td><td>58.7%</td><td>~48%</td></tr>
+<tr><td><strong>DeepSeek V4 Pro</strong></td><td>91.2%</td><td>94.5%</td><td>90.3%</td><td>71.2%</td><td>60.4%</td><td>~42%</td></tr>
+<tr><td><strong>DeepSeek R2</strong></td><td>90.5%</td><td>93.8%</td><td>91.2%</td><td>72.8%</td><td>59.1%</td><td>~46%</td></tr>
+<tr><td><strong>Kimi K2</strong></td><td>89.4%</td><td>92.0%</td><td>87.5%</td><td>68.7%</td><td>54.3%</td><td>~38%</td></tr>
+<tr><td><strong>Qwen3-Max</strong></td><td>91.8%</td><td>93.2%</td><td>89.1%</td><td>70.4%</td><td>56.2%</td><td>~40%</td></tr>
+<tr><td><strong>GLM-5</strong></td><td>88.7%</td><td>91.5%</td><td>86.3%</td><td>67.2%</td><td>51.8%</td><td>~36%</td></tr>
+<tr><td><strong>MiniMax M2</strong></td><td>87.9%</td><td>89.6%</td><td>84.7%</td><td>65.8%</td><td>48.4%</td><td>~34%</td></tr>
+<tr><td><strong>Grok 4</strong></td><td>92.1%</td><td>92.8%</td><td>90.5%</td><td>71.6%</td><td>57.3%</td><td>~44%</td></tr>
+<tr><td><strong>Claude Sonnet 4.6</strong></td><td>90.3%</td><td>93.5%</td><td>88.2%</td><td>69.1%</td><td>62.8%</td><td>~46%</td></tr>
+<tr><td><strong>Mistral Large 3</strong></td><td>87.2%</td><td>88.4%</td><td>83.5%</td><td>63.7%</td><td>45.2%</td><td>~30%</td></tr>
+<tr><td colspan="7" style="background:var(--glass);font-size:11px;color:var(--text-muted);text-align:center;">— frontier OSS (open-weights) —</td></tr>
+<tr><td><strong>Llama 4 405B</strong></td><td>89.7%</td><td>91.2%</td><td>87.6%</td><td>68.4%</td><td>55.9%</td><td>~36%</td></tr>
+<tr><td><strong>DeepSeek V3 671B-MoE</strong></td><td>88.5%</td><td>92.5%</td><td>88.8%</td><td>67.9%</td><td>53.7%</td><td>~34%</td></tr>
+<tr><td><strong>Qwen3-72B</strong></td><td>87.4%</td><td>90.1%</td><td>86.5%</td><td>65.3%</td><td>49.8%</td><td>~32%</td></tr>
+<tr><td><strong>Llama 4 70B</strong></td><td>83.6%</td><td>85.7%</td><td>78.4%</td><td>58.2%</td><td>38.5%</td><td>~22%</td></tr>
+<tr><td><strong>Qwen3-32B</strong></td><td>82.8%</td><td>86.4%</td><td>79.1%</td><td>57.8%</td><td>36.7%</td><td>~20%</td></tr>
+<tr><td><strong>Gemma 3 27B</strong></td><td>78.5%</td><td>80.3%</td><td>72.6%</td><td>52.4%</td><td>30.1%</td><td>~15%</td></tr>
+<tr><td><strong>Phi-4 14B</strong></td><td>77.2%</td><td>82.1%</td><td>74.8%</td><td>54.7%</td><td>28.4%</td><td>~14%</td></tr>
+</table></div>
+
+<div class="warn"><strong>⚠️ Numbers vary.</strong> Benchmarks are a snapshot. Models update constantly and reporting methods differ (zero-shot, n-shot, with/without thinking, with/without tool use). Check official leaderboards — <strong>LMSys Chatbot Arena</strong> (human preferences), <strong>HuggingFace Open LLM Leaderboard</strong> (OSS), <strong>SWE-bench Verified</strong> (coding agents), <strong>SimpleBench</strong> and <strong>ARC-AGI-2</strong> (unsaturated) for current data.</div>
+
+<div class="tip"><strong>💡 Reading the leaderboard:</strong> 1-3 point spreads among frontier models (Claude, GPT, Gemini, DeepSeek, Kimi, Qwen-Max, Grok) are usually method noise. ARC-AGI and SWE-bench Verified discriminate real capability best in 2026 — MMLU and HumanEval are saturated (everyone &gt;90%).</div>
+
+</div>
+</section>
+
+<section id="s75">
+<h2>16.3 Cómo Evaluar un Modelo para tu Caso de Uso</h2>
+<div class="lang-block" data-lang="es">
+
+<div class="card card-accent">
+<div class="card-title">🧪 Metodología de Evaluación</div>
+<ol>
+  <li><strong>Define tu tarea:</strong> Exactamente qué necesitas (no "un chatbot", sino "un chatbot que responde preguntas sobre nuestra documentación interna con <95% de accuracy")</li>
+  <li><strong>Crea un dataset de prueba:</strong> 50-200 ejemplos representativos con "ground truth" (respuesta ideal)</li>
+  <li><strong>Evalúa varios modelos:</strong> Mismo prompt, mismo dataset, diferentes modelos</li>
+  <li><strong>Mide lo que importa:</strong> Accuracy, latencia, coste, tasa de alucinación</li>
+  <li><strong>Itera:</strong> Ajusta prompt → re-evalúa → compara</li>
+</ol>
+</div>
+
+<h3>Tipos de Evaluación por Tarea</h3>
+<div class="table-wrap"><table>
+<tr><th>Tipo de tarea</th><th>Mejor métrica</th><th>Herramienta</th></tr>
+<tr><td>Clasificación</td><td>Accuracy, F1, Precision/Recall</td><td>Scikit-learn, scripts</td></tr>
+<tr><td>Extracción de datos</td><td>Exact Match + Field-level accuracy</td><td>Custom eval scripts</td></tr>
+<tr><td>Generación de texto</td><td>LLM-as-Judge (GPT-4 eval)</td><td>LangSmith, Braintrust</td></tr>
+<tr><td>RAG / QA</td><td>Answer correctness + citation accuracy</td><td>RAGAS, TruLens</td></tr>
+<tr><td>Código</td><td>pass@k (tests pasando)</td><td>HumanEval, SWE-bench</td></tr>
+<tr><td>Chat / Conversación</td><td>User satisfaction, task completion rate</td><td>A/B testing con usuarios</td></tr>
+</table></div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="card card-accent">
+<div class="card-title">🧪 Evaluation Methodology</div>
+<ol>
+  <li><strong>Define your task:</strong> Exactly what you need (not "a chatbot," but "a chatbot that answers questions about our internal docs with &gt;95% accuracy")</li>
+  <li><strong>Build a test dataset:</strong> 50-200 representative examples with "ground truth" (ideal answer)</li>
+  <li><strong>Evaluate several models:</strong> Same prompt, same dataset, different models</li>
+  <li><strong>Measure what matters:</strong> Accuracy, latency, cost, hallucination rate</li>
+  <li><strong>Iterate:</strong> Tune the prompt → re-evaluate → compare</li>
+</ol>
+</div>
+
+<h3>Evaluation Types by Task</h3>
+<div class="table-wrap"><table>
+<tr><th>Task type</th><th>Best metric</th><th>Tool</th></tr>
+<tr><td>Classification</td><td>Accuracy, F1, Precision/Recall</td><td>Scikit-learn, scripts</td></tr>
+<tr><td>Data extraction</td><td>Exact Match + Field-level accuracy</td><td>Custom eval scripts</td></tr>
+<tr><td>Text generation</td><td>LLM-as-Judge (GPT-4 eval)</td><td>LangSmith, Braintrust</td></tr>
+<tr><td>RAG / QA</td><td>Answer correctness + citation accuracy</td><td>RAGAS, TruLens</td></tr>
+<tr><td>Code</td><td>pass@k (tests passing)</td><td>HumanEval, SWE-bench</td></tr>
+<tr><td>Chat / Conversation</td><td>User satisfaction, task completion rate</td><td>A/B testing with users</td></tr>
+</table></div>
+
+</div>
+</section>
+
+<section id="s27">
+<h2>6.2 OpenCode — El Agente para DeepSeek</h2>
+<p class="subtitle">El agente open-source (150K+ ⭐) que estás usando ahora mismo</p>
+<div class="lang-block" data-lang="es">
+
+<div class="table-wrap"><table>
+<tr><th>Feature</th><th>Descripción</th></tr>
+<tr><td>LSP Integration</td><td>Carga automática de Language Servers</td></tr>
+<tr><td>Multi-sesión</td><td>Múltiples agentes en paralelo</td></tr>
+<tr><td>75+ proveedores</td><td>Claude, GPT, DeepSeek, Gemini, locales...</td></tr>
+<tr><td>Terminal + Desktop + IDE</td><td>Disponible en las 3 superficies</td></tr>
+<tr><td>AGENTS.md</td><td>Memoria persistente (equivalente a CLAUDE.md)</td></tr>
+<tr><td>Skills</td><td>Carpeta skills/ con SKILL.md</td></tr>
+</table></div>
+
+<pre><code>/help       — Ayuda
+/agents     — Agentes disponibles
+/status     — Estado de la sesión
+/memory     — Abrir MEMORY.md
+/init       — Inicializar AGENTS.md</code></pre>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="table-wrap"><table>
+<tr><th>Feature</th><th>Description</th></tr>
+<tr><td>LSP Integration</td><td>Automatic loading of Language Servers</td></tr>
+<tr><td>Multi-session</td><td>Multiple agents in parallel</td></tr>
+<tr><td>75+ providers</td><td>Claude, GPT, DeepSeek, Gemini, local...</td></tr>
+<tr><td>Terminal + Desktop + IDE</td><td>Available across all 3 surfaces</td></tr>
+<tr><td>AGENTS.md</td><td>Persistent memory (CLAUDE.md equivalent)</td></tr>
+<tr><td>Skills</td><td>skills/ folder with SKILL.md</td></tr>
+</table></div>
+
+<pre><code>/help       — Help
+/agents     — Available agents
+/status     — Session status
+/memory     — Open MEMORY.md
+/init       — Initialize AGENTS.md</code></pre>
+
+</div>
+</section>
+
+<section id="s28">
+<h2>6.3 Configuración AGENTS.md para DeepSeek</h2>
+<div class="lang-block" data-lang="es">
+
+<div class="card card-accent">
+<div class="card-title">📄 Plantilla Optimizada</div>
+<pre><code># AGENTS.md — Plantilla DeepSeek V4 Pro
+
+## Reglas
+- TypeScript strict mode, Prettier, Jest (80%+ coverage)
+- Nunca commitear .env o secretos
+- Usar Trash en vez de rm
+
+## Código
+- NO añadir comentarios (solo si el usuario pide)
+- Seguir convenciones existentes del proyecto
+- Imports relativos dentro del proyecto
+
+## Memoria
+- Notas diarias: memory/YYYY-MM-DD.md
+- Largo plazo: MEMORY.md
+
+## Comunicación
+- Respuestas concisas (1-3 líneas si posible)
+- Sin emojis (a menos que el usuario pida)
+- GitHub-flavored Markdown</code></pre>
+</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="card card-accent">
+<div class="card-title">📄 Optimized Template</div>
+<pre><code># AGENTS.md — DeepSeek V4 Pro Template
+
+## Rules
+- TypeScript strict mode, Prettier, Jest (80%+ coverage)
+- Never commit .env or secrets
+- Use Trash instead of rm
+
+## Code
+- DO NOT add comments (only if user asks)
+- Follow existing project conventions
+- Relative imports inside the project
+
+## Memory
+- Daily notes: memory/YYYY-MM-DD.md
+- Long-term: MEMORY.md
+
+## Communication
+- Concise responses (1-3 lines if possible)
+- No emojis (unless user asks)
+- GitHub-flavored Markdown</code></pre>
+</div>
+
+</div>
+</section>
+
+<section id="s29">
+<h2>6.4 Herramientas y Límites de DeepSeek via OpenCode</h2>
+<div class="lang-block" data-lang="es">
+
+<div class="table-wrap"><table>
+<tr><th>Tool</th><th>Propósito</th></tr>
+<tr><td><code>Read</code></td><td>Leer archivos</td></tr>
+<tr><td><code>Write</code></td><td>Escribir/sobrescribir archivos</td></tr>
+<tr><td><code>Edit</code></td><td>Reemplazar strings exactos</td></tr>
+<tr><td><code>Bash</code></td><td>Ejecutar comandos shell</td></tr>
+<tr><td><code>Glob</code> / <code>Grep</code></td><td>Buscar archivos / contenido</td></tr>
+<tr><td><code>Task</code></td><td>Lanzar sub-agentes</td></tr>
+<tr><td><code>WebFetch</code></td><td>Obtener contenido web</td></tr>
+<tr><td><code>Skill</code></td><td>Cargar skills especializadas</td></tr>
+</table></div>
+
+<div class="card card-orange">
+<div class="card-title">⚠️ Limitaciones vs Claude Code</div>
+<div class="table-wrap"><table>
+<tr><td>Hooks (pre/post tool)</td><td>✅ Claude Code</td><td>⚠️ OpenCode (limitado)</td></tr>
+<tr><td>Auto-memory</td><td>✅ Claude Code</td><td>❌ Manual</td></tr>
+<tr><td>Context awareness nativa</td><td>✅ Claude Code</td><td>❌ OpenCode gestiona</td></tr>
+<tr><td>Computer Use</td><td>✅</td><td>❌</td></tr>
+<tr><td>Precio</td><td>$$$</td><td>$ 🏆</td></tr>
+</table></div>
+</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="table-wrap"><table>
+<tr><th>Tool</th><th>Purpose</th></tr>
+<tr><td><code>Read</code></td><td>Read files</td></tr>
+<tr><td><code>Write</code></td><td>Write/overwrite files</td></tr>
+<tr><td><code>Edit</code></td><td>Replace exact strings</td></tr>
+<tr><td><code>Bash</code></td><td>Run shell commands</td></tr>
+<tr><td><code>Glob</code> / <code>Grep</code></td><td>Search files / content</td></tr>
+<tr><td><code>Task</code></td><td>Spawn sub-agents</td></tr>
+<tr><td><code>WebFetch</code></td><td>Fetch web content</td></tr>
+<tr><td><code>Skill</code></td><td>Load specialized skills</td></tr>
+</table></div>
+
+<div class="card card-orange">
+<div class="card-title">⚠️ Limitations vs Claude Code</div>
+<div class="table-wrap"><table>
+<tr><td>Hooks (pre/post tool)</td><td>✅ Claude Code</td><td>⚠️ OpenCode (limited)</td></tr>
+<tr><td>Auto-memory</td><td>✅ Claude Code</td><td>❌ Manual</td></tr>
+<tr><td>Native context awareness</td><td>✅ Claude Code</td><td>❌ OpenCode manages</td></tr>
+<tr><td>Computer Use</td><td>✅</td><td>❌</td></tr>
+<tr><td>Price</td><td>$$$</td><td>$ 🏆</td></tr>
+</table></div>
+</div>
+
+</div>
+</section>
+
+
+
+<section class="module-references">
+  <h3 data-i18n="ref-header">Referencias</h3>
+  <p style="font-size:13px;color:var(--text-dim);" data-i18n="ref-intro">
+    Documentación oficial y papers consultados durante este módulo. Revísalos para profundizar.
+  </p>
+  <ul class="references-list" data-references="09"></ul>
+</section>
+
+</main>
+</div>
+
+<script src="../js/shared/manifest.js?v=8"></script>
+<script src="../js/shared/sidebar.js?v=8"></script>
+<script src="../js/shared/references.js?v=8"></script>
+<script src="../js/i18n.js?v=8"></script>
+<script src="../js/quiz.js?v=8"></script>
+<script src="../js/glossary.js?v=8"></script>
+<script src="../js/app.js?v=8"></script>
+</body>
+</html>

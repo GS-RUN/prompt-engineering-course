@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Glosario — Prompt Engineering Master Course</title>
+<link rel="stylesheet" href="../css/style.css?v=8">
+<link rel="stylesheet" href="../css/bando-b.css?v=8">
+<script>
+  (function() {
+    try {
+      var t = localStorage.getItem('theme');
+      if (t !== 'dark' && t !== 'light') t = 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+    } catch(e) { document.documentElement.setAttribute('data-theme', 'dark'); }
+  })();
+</script>
+</head>
+<body data-page-block="glossary">
+
+<div class="bg-orb bg-orb-1"></div>
+<div class="bg-orb bg-orb-2"></div>
+<div class="bg-orb bg-orb-3"></div>
+<div class="bg-gradient"></div>
+<div class="bg-grid"></div>
+
+<div id="app">
+<nav id="sidebar"></nav>
+
+<main id="content">
+
+<section class="module-front-matter">
+  <div class="module-meta">
+    <span class="module-icon">📚</span>
+    <span class="module-level level-reference">reference</span>
+  </div>
+  <h1 class="module-title">
+    <span class="lang-block" data-lang="es">Glosario</span>
+    <span class="lang-block" data-lang="en">Glossary</span>
+  </h1>
+  <p class="lang-block" data-lang="es" style="color:var(--text-dim);">Términos técnicos usados a lo largo del curso, con definición precisa y enlace al bloque donde se introducen.</p>
+  <p class="lang-block" data-lang="en" style="color:var(--text-dim);">Technical terms used throughout the course, with precise definitions and links to the block where each is introduced.</p>
+  <div class="glossary-search">
+    <input id="glossary-filter" type="text" placeholder="Buscar término…" autocomplete="off">
+  </div>
+</section>
+
+<section id="glossary-list" class="glossary-list"></section>
+
+</main>
+</div>
+
+<script src="../js/shared/manifest.js?v=8"></script>
+<script src="../js/shared/sidebar.js?v=8"></script>
+<script src="../js/shared/glossary-data.js?v=8"></script>
+<script src="../js/i18n.js?v=8"></script>
+<script src="../js/app.js?v=8"></script>
+</body>
+</html>

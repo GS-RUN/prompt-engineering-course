@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bloque XII — Futuro y frontera de investigación — Prompt Engineering Master Course</title>
+<link rel="stylesheet" href="../css/style.css?v=8">
+<link rel="stylesheet" href="../css/bando-b.css?v=8">
+<script>
+  (function() {
+    try {
+      var t = localStorage.getItem('theme');
+      if (t !== 'dark' && t !== 'light') t = 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+    } catch(e) { document.documentElement.setAttribute('data-theme', 'dark'); }
+  })();
+</script>
+</head>
+<body data-page-block="12">
+
+<div class="bg-orb bg-orb-1"></div>
+<div class="bg-orb bg-orb-2"></div>
+<div class="bg-orb bg-orb-3"></div>
+<div class="bg-gradient"></div>
+<div class="bg-grid"></div>
+<div id="progress-bar"></div>
+
+<div id="app">
+<nav id="sidebar"></nav>
+
+<main id="content">
+
+<section class="module-front-matter" data-module-front>
+  <div class="module-meta">
+    <span class="module-icon">🔮</span>
+    <span class="module-level level-reading">reading</span>
+    <span class="module-time">⏱️ 60 min</span>
+  </div>
+  <h1 class="module-title">
+    <span class="lang-block" data-lang="es">Bloque XII — Futuro y frontera de investigación</span>
+    <span class="lang-block" data-lang="en">Block XII — Future + Research Frontier</span>
+  </h1>
+  <div class="module-objectives">
+    <div class="lang-block" data-lang="es">
+      <h3>Objetivos de aprendizaje</h3>
+      <ul>
+        <li>Conocer las tendencias activas (infinite context, agentes multi-día, AI + ciencia).</li>
+        <li>Anticipar modelos esperados 2026-2030.</li>
+        <li>Leer críticamente el discurso AGI vs realidad técnica.</li>
+      </ul>
+    </div>
+    <div class="lang-block" data-lang="en">
+      <h3>Learning objectives</h3>
+      <ul>
+        <li>Know active trends (infinite context, multi-day agents, AI + science).</li>
+        <li>Anticipate expected models 2026-2030.</li>
+        <li>Critically read the AGI discourse vs technical reality.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="s85">
+<h2>20.1 Lo que se está Cociendo (2026)</h2>
+<p class="subtitle">Lo que los labs están construyendo ahora mismo — no es hype, son papers publicados</p>
+<div class="lang-block" data-lang="es">
+
+<div class="card card-accent">
+<div class="card-title">🔮 Tendencias en Desarrollo Activo</div>
+<div class="table-wrap"><table>
+<tr><th>Tendencia</th><th>Estado</th><th>Qué significa</th></tr>
+<tr><td><strong>Infinite Context</strong></td><td>🔬 Research</td><td>Modelos que no "olvidan" — memoria persistente real, no solo ventanas largas. Google ya tiene 2M+ tokens. El objetivo es contexto ilimitado con atención eficiente.</td></tr>
+<tr><td><strong>Native Multi-Agent</strong></td><td>🚀 Early Product</td><td>Claude Code ya spawnea sub-agentes. Lo próximo: agentes que forman equipos autónomos, se asignan tareas entre sí, y operan durante horas/días sin supervisión.</td></tr>
+<tr><td><strong>AI que Escribe Software Completo</strong></td><td>🚀 Emerging</td><td>De arreglar bugs → a construir features completas → a diseñar y construir apps enteras. SWE-bench pasó de 3% a 68% en 2 años. La tendencia continúa.</td></tr>
+<tr><td><strong>Multi-modal Profundo</strong></td><td>🔬→🚀</td><td>No solo "describir imágenes". Razonar sobre video, audio, PDFs, codebases, todo a la vez. Claude Opus 4.7 ya integra visión + código + texto.</td></tr>
+<tr><td><strong>AI Agents Autónomos</strong></td><td>🚀 Shipping</td><td>Agentes que navegan la web, usan apps, mandan emails, gestionan proyectos. Computer Use + agentes autónomos desdibujan la línea entre "herramienta" y "empleado digital".</td></tr>
+<tr><td><strong>Reasoning a Escala</strong></td><td>🚀 Shipping</td><td>Modelos que "piensan" durante minutos/horas en problemas complejos. DeepSeek R1, OpenAI o3, Opus 4.7 Adaptive Thinking. Test-time compute scaling.</td></tr>
+</table></div>
+</div>
+
+<h3>Lo que Viene: Modelos Esperados</h3>
+<div class="table-wrap"><table>
+<tr><th>Modelo / Proyecto</th><th>Lab</th><th>Qué promete</th><th>Ventana</th></tr>
+<tr><td><strong>Claude Opus 5</strong></td><td>Anthropic 🇺🇸</td><td>Autonomía extrema, agentes multi-día, razonamiento científico</td><td>2026-2027</td></tr>
+<tr><td><strong>GPT-6</strong></td><td>OpenAI 🇺🇸</td><td>Multimodal completo, agentes proactivos, memoria persistente</td><td>2026-2027</td></tr>
+<tr><td><strong>Gemini 3</strong></td><td>Google 🇺🇸</td><td>Contexto ilimitado, integración total con Google ecosystem</td><td>2026-2027</td></tr>
+<tr><td><strong>Grok 5</strong></td><td>xAI 🇺🇸</td><td>Datos en tiempo real masivos, razonamiento científico</td><td>2026-2027</td></tr>
+<tr><td><strong>DeepSeek V5 / R3</strong></td><td>DeepSeek 🇨🇳</td><td>Reasoning avanzado, multimodal nativo, eficiencia extrema MoE</td><td>2026-2027</td></tr>
+<tr><td><strong>Kimi K3</strong></td><td>Moonshot 🇨🇳</td><td>Contexto 5M+, agentes web autónomos multi-día</td><td>2026-2027</td></tr>
+<tr><td><strong>MiniMax M3</strong></td><td>MiniMax 🇨🇳</td><td>Generación de vídeo + chat unificados, audio nativo</td><td>2026-2027</td></tr>
+<tr><td><strong>Qwen 4 / Qwen4-Max</strong></td><td>Alibaba 🇨🇳</td><td>Open-weights SOTA, multilingüe, agentes nativos</td><td>2026-2027</td></tr>
+<tr><td><strong>GLM-6 / AutoGLM Pro</strong></td><td>Zhipu 🇨🇳</td><td>Agente web "todo-hace" con planificación de horas</td><td>2026-2027</td></tr>
+<tr><td><strong>Llama 5</strong></td><td>Meta 🇺🇸</td><td>Open weights SOTA, multi-modal, agentes nativos</td><td>2026</td></tr>
+<tr><td><strong>Gemma 4</strong></td><td>Google 🇺🇸</td><td>Edge optimizado, &lt;1B con calidad de 7B 2024</td><td>2026</td></tr>
+<tr><td><strong>Mistral Large 4</strong></td><td>Mistral 🇪🇺</td><td>Eficiencia europea, datos sintéticos de alta calidad, soberanía UE</td><td>2026</td></tr>
+<tr><td><strong>Apple Intelligence LLM</strong></td><td>Apple 🇺🇸</td><td>On-device first, privacidad total, integración iOS/macOS</td><td>2026-2027</td></tr>
+<tr><td><strong>Phi-5</strong></td><td>Microsoft 🇺🇸</td><td>Pequeños + razonamiento extremo, edge first-class</td><td>2026</td></tr>
+<tr><td><strong>Yi-3</strong></td><td>01.AI 🇨🇳</td><td>Multilingüe ZH/EN, contexto largo eficiente</td><td>2026-2027</td></tr>
+</table></div>
+
+<div class="warn"><strong>⚠️ Fechas especulativas.</strong> Basadas en ciclos de release históricos y anuncios públicos. Los labs de IA son notoriamente impredecibles — pueden adelantarse o retrasarse 6-12 meses. Además, modelos nuevos sin precedente (Sora-style video LLMs, world models tipo Genie 3) seguramente aparecerán que no figuran aquí.</div>
+
+<div class="tip"><strong>💡 Geopolítica del frontier 2026:</strong> El gap entre frontier US (Anthropic, OpenAI, Google, xAI) y frontier China (DeepSeek, Kimi, MiniMax, Qwen, GLM) se ha cerrado a &lt;1 año. Frontier UE (Mistral) sigue 12-18 meses detrás pero ofrece soberanía de datos. Desarrolladores serios en 2026 mezclan modelos de las tres regiones según caso (calidad / coste / privacidad / regulación).</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="card card-accent">
+<div class="card-title">🔮 Trends in Active Development</div>
+<div class="table-wrap"><table>
+<tr><th>Trend</th><th>State</th><th>What it means</th></tr>
+<tr><td><strong>Infinite Context</strong></td><td>🔬 Research</td><td>Models that don't "forget" — true persistent memory, not just long windows. Google already has 2M+ tokens. The goal: unlimited context with efficient attention.</td></tr>
+<tr><td><strong>Native Multi-Agent</strong></td><td>🚀 Early Product</td><td>Claude Code already spawns sub-agents. Next: agents forming autonomous teams, assigning tasks to each other, operating for hours/days unsupervised.</td></tr>
+<tr><td><strong>AI That Writes Complete Software</strong></td><td>🚀 Emerging</td><td>From bug fixing → to building full features → to designing and building entire apps. SWE-bench went from 3% to 68% in 2 years. The trend continues.</td></tr>
+<tr><td><strong>Deep Multi-modal</strong></td><td>🔬→🚀</td><td>Not just "describe images." Reasoning over video, audio, PDFs, codebases, all at once. Claude Opus 4.7 already integrates vision + code + text.</td></tr>
+<tr><td><strong>Autonomous AI Agents</strong></td><td>🚀 Shipping</td><td>Agents that browse the web, use apps, send emails, manage projects. Computer Use + autonomous agents blur the line between "tool" and "digital employee."</td></tr>
+<tr><td><strong>Reasoning at Scale</strong></td><td>🚀 Shipping</td><td>Models that "think" for minutes/hours on complex problems. DeepSeek R1, OpenAI o3, Opus 4.7 Adaptive Thinking. Test-time compute scaling.</td></tr>
+</table></div>
+</div>
+
+<h3>What's Next: Expected Models</h3>
+<div class="table-wrap"><table>
+<tr><th>Model / Project</th><th>Lab</th><th>What it promises</th><th>Window</th></tr>
+<tr><td><strong>Claude Opus 5</strong></td><td>Anthropic 🇺🇸</td><td>Extreme autonomy, multi-day agents, scientific reasoning</td><td>2026-2027</td></tr>
+<tr><td><strong>GPT-6</strong></td><td>OpenAI 🇺🇸</td><td>Full multimodal, proactive agents, persistent memory</td><td>2026-2027</td></tr>
+<tr><td><strong>Gemini 3</strong></td><td>Google 🇺🇸</td><td>Unlimited context, full integration with Google ecosystem</td><td>2026-2027</td></tr>
+<tr><td><strong>Grok 5</strong></td><td>xAI 🇺🇸</td><td>Massive real-time data, scientific reasoning</td><td>2026-2027</td></tr>
+<tr><td><strong>DeepSeek V5 / R3</strong></td><td>DeepSeek 🇨🇳</td><td>Advanced reasoning, native multimodal, extreme MoE efficiency</td><td>2026-2027</td></tr>
+<tr><td><strong>Kimi K3</strong></td><td>Moonshot 🇨🇳</td><td>5M+ context, multi-day autonomous web agents</td><td>2026-2027</td></tr>
+<tr><td><strong>MiniMax M3</strong></td><td>MiniMax 🇨🇳</td><td>Unified video gen + chat, native audio</td><td>2026-2027</td></tr>
+<tr><td><strong>Qwen 4 / Qwen4-Max</strong></td><td>Alibaba 🇨🇳</td><td>SOTA open-weights, multilingual, native agents</td><td>2026-2027</td></tr>
+<tr><td><strong>GLM-6 / AutoGLM Pro</strong></td><td>Zhipu 🇨🇳</td><td>"Does-it-all" web agent with hours-long planning</td><td>2026-2027</td></tr>
+<tr><td><strong>Llama 5</strong></td><td>Meta 🇺🇸</td><td>SOTA open weights, multi-modal, native agents</td><td>2026</td></tr>
+<tr><td><strong>Gemma 4</strong></td><td>Google 🇺🇸</td><td>Edge-optimized, &lt;1B with 2024 7B-quality</td><td>2026</td></tr>
+<tr><td><strong>Mistral Large 4</strong></td><td>Mistral 🇪🇺</td><td>European efficiency, high-quality synthetic data, EU sovereignty</td><td>2026</td></tr>
+<tr><td><strong>Apple Intelligence LLM</strong></td><td>Apple 🇺🇸</td><td>On-device first, full privacy, iOS/macOS integration</td><td>2026-2027</td></tr>
+<tr><td><strong>Phi-5</strong></td><td>Microsoft 🇺🇸</td><td>Tiny + extreme reasoning, edge first-class</td><td>2026</td></tr>
+<tr><td><strong>Yi-3</strong></td><td>01.AI 🇨🇳</td><td>ZH/EN multilingual, efficient long context</td><td>2026-2027</td></tr>
+</table></div>
+
+<div class="warn"><strong>⚠️ Speculative dates.</strong> Based on historical release cycles and public announcements. AI labs are notoriously unpredictable — they can ship 6-12 months earlier or later. Also, completely novel models (Sora-style video LLMs, Genie 3-style world models) will likely appear that aren't listed here.</div>
+
+<div class="tip"><strong>💡 Frontier geopolitics in 2026:</strong> The gap between US frontier (Anthropic, OpenAI, Google, xAI) and Chinese frontier (DeepSeek, Kimi, MiniMax, Qwen, GLM) has shrunk to &lt;1 year. EU frontier (Mistral) is 12-18 months behind but offers data sovereignty. Serious developers in 2026 mix models from all three regions case by case (quality / cost / privacy / regulation).</div>
+
+</div>
+</section>
+
+<section id="s86">
+<h2>20.2 Timeline: De Hoy a 2030</h2>
+<div class="lang-block" data-lang="es">
+
+<div class="card card-accent">
+<div class="card-title">📅 El Camino Hacia AGI (según los propios labs)</div>
+
+<div style="border-left:3px solid var(--accent);padding-left:16px;margin:16px 0;">
+<h4 style="color:var(--accent);margin:0;">2026 — Ahora</h4>
+<p style="font-size:13px;color:var(--text-dim);">
+  Agentes de código autónomos (Claude Code, OpenCode, Codex).<br>
+  Modelos que razonan durante minutos (Opus 4.7, DeepSeek V4 Pro, GPT-5.5).<br>
+  Computer Use beta. Contexto de 200K-2M tokens. Multi-modal integrado.<br>
+  SWE-bench ~68%. Los agentes ya hacen trabajo real de programación.
+</p>
+</div>
+
+<div style="border-left:3px solid var(--accent2);padding-left:16px;margin:16px 0;">
+<h4 style="color:var(--accent2);margin:0;">2027 — Inminente</h4>
+<p style="font-size:13px;color:var(--text-dim);">
+  Agentes autónomos multi-día — asignas una tarea el lunes, está lista el miércoles.<br>
+  Código generado por IA >50% del nuevo código en producción.<br>
+  Modelos que se auto-mejoran (self-play, Constitutional AI avanzado).<br>
+  Robótica + LLMs: manipuladores que entienden lenguaje natural.<br>
+  Primeros "AI coworkers" en empresas tech — no herramientas, colegas.
+</p>
+</div>
+
+<div style="border-left:3px solid var(--orange);padding-left:16px;margin:16px 0;">
+<h4 style="color:var(--orange);margin:0;">2028-2029 — Medium Term</h4>
+<p style="font-size:13px;color:var(--text-dim);">
+  IA que escribe y mantiene codebases completas con mínima supervisión.<br>
+  Científicos de IA automatizados: formulan hipótesis, diseñan experimentos, analizan.<br>
+  Agentes que operan en el mundo físico (drones, coches autónomos L5, fábricas).<br>
+  Modelos que aprenden en tiempo real (no solo inference).<br>
+  <strong>Debate AGI:</strong> Algunos investigadores creen que llegaremos aquí.
+</p>
+</div>
+
+<div style="border-left:3px solid var(--pink);padding-left:16px;margin:16px 0;">
+<h4 style="color:var(--pink);margin:0;">2030+ — Más Allá</h4>
+<p style="font-size:13px;color:var(--text-dim);">
+  Sistemas que igualan o superan a humanos en la mayoría de tareas intelectuales.<br>
+  Descubrimientos científicos acelerados por IA (materiales, fármacos, energía).<br>
+  Interfaces cerebro-computadora + IA. Computación ubicua con IA.<br>
+  <strong>El debate:</strong> ¿Será AGI real o seguiremos moviendo el goalpost?
+</p>
+</div>
+</div>
+
+<h3>¿Qué Dicen los Expertos?</h3>
+<div class="table-wrap"><table>
+<tr><th>Quién</th><th>Predicción AGI</th><th>Confianza</th></tr>
+<tr><td><strong>Dario Amodei</strong> (CEO Anthropic)</td><td>2026-2028</td><td>"Powerful AI" que supera humanos en la mayoría de tareas</td></tr>
+<tr><td><strong>Sam Altman</strong> (CEO OpenAI)</td><td>2027-2029</td><td>AGI que transforma la economía y la ciencia</td></tr>
+<tr><td><strong>Demis Hassabis</strong> (CEO DeepMind)</td><td>2030+</td><td>AGI requiere avances fundamentales aún pendientes</td></tr>
+<tr><td><strong>Yann LeCun</strong> (Meta AI)</td><td>2035+</td><td>Los LLMs solos no alcanzan AGI — falta arquitectura</td></tr>
+<tr><td><strong>Encuesta expertos</strong> (2024, 2800+ investigadores)</td><td>2047 (mediana)</td><td>50% de probabilidad de AGI para 2047</td></tr>
+</table></div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="card card-accent">
+<div class="card-title">📅 The Path to AGI (according to the labs themselves)</div>
+
+<div style="border-left:3px solid var(--accent);padding-left:16px;margin:16px 0;">
+<h4 style="color:var(--accent);margin:0;">2026 — Now</h4>
+<p style="font-size:13px;color:var(--text-dim);">
+  Autonomous code agents (Claude Code, OpenCode, Codex).<br>
+  Models that reason for minutes (Opus 4.7, DeepSeek V4 Pro, GPT-5.5).<br>
+  Computer Use beta. 200K-2M token context. Integrated multi-modal.<br>
+  SWE-bench ~68%. Agents already do real programming work.
+</p>
+</div>
+
+<div style="border-left:3px solid var(--accent2);padding-left:16px;margin:16px 0;">
+<h4 style="color:var(--accent2);margin:0;">2027 — Imminent</h4>
+<p style="font-size:13px;color:var(--text-dim);">
+  Multi-day autonomous agents — assign a task Monday, it's done by Wednesday.<br>
+  AI-generated code &gt;50% of new production code.<br>
+  Self-improving models (self-play, advanced Constitutional AI).<br>
+  Robotics + LLMs: manipulators that understand natural language.<br>
+  First "AI coworkers" at tech companies — not tools, colleagues.
+</p>
+</div>
+
+<div style="border-left:3px solid var(--orange);padding-left:16px;margin:16px 0;">
+<h4 style="color:var(--orange);margin:0;">2028-2029 — Medium Term</h4>
+<p style="font-size:13px;color:var(--text-dim);">
+  AI that writes and maintains entire codebases with minimal supervision.<br>
+  Automated AI scientists: formulate hypotheses, design experiments, analyze.<br>
+  Agents that operate in the physical world (drones, L5 self-driving cars, factories).<br>
+  Models that learn in real time (not just inference).<br>
+  <strong>AGI debate:</strong> Some researchers believe we'll get here.
+</p>
+</div>
+
+<div style="border-left:3px solid var(--pink);padding-left:16px;margin:16px 0;">
+<h4 style="color:var(--pink);margin:0;">2030+ — Beyond</h4>
+<p style="font-size:13px;color:var(--text-dim);">
+  Systems that match or exceed humans on most intellectual tasks.<br>
+  AI-accelerated scientific discoveries (materials, drugs, energy).<br>
+  Brain-computer interfaces + AI. Ubiquitous computing with AI.<br>
+  <strong>The debate:</strong> Will it be real AGI, or will we keep moving the goalposts?
+</p>
+</div>
+</div>
+
+<h3>What Do the Experts Say?</h3>
+<div class="table-wrap"><table>
+<tr><th>Who</th><th>AGI Prediction</th><th>Confidence</th></tr>
+<tr><td><strong>Dario Amodei</strong> (CEO Anthropic)</td><td>2026-2028</td><td>"Powerful AI" that surpasses humans on most tasks</td></tr>
+<tr><td><strong>Sam Altman</strong> (CEO OpenAI)</td><td>2027-2029</td><td>AGI that transforms the economy and science</td></tr>
+<tr><td><strong>Demis Hassabis</strong> (CEO DeepMind)</td><td>2030+</td><td>AGI requires fundamental advances still pending</td></tr>
+<tr><td><strong>Yann LeCun</strong> (Meta AI)</td><td>2035+</td><td>LLMs alone don't reach AGI — architecture is missing</td></tr>
+<tr><td><strong>Expert survey</strong> (2024, 2800+ researchers)</td><td>2047 (median)</td><td>50% probability of AGI by 2047</td></tr>
+</table></div>
+
+</div>
+</section>
+
+<section id="s87">
+<h2>20.3 IA + Ciencia y Robótica</h2>
+<div class="lang-block" data-lang="es">
+
+<h3>🧪 IA en la Ciencia</h3>
+<div class="table-wrap"><table>
+<tr><th>Campo</th><th>Qué está pasando</th><th>Impacto</th></tr>
+<tr><td><strong>Biología</strong></td><td>AlphaFold 3 predice estructura de TODAS las biomoléculas. Modelos generativos diseñan proteínas que no existen en la naturaleza.</td><td>Descubrimiento de fármacos 10x más rápido. Nuevos antibióticos, enzimas industriales.</td></tr>
+<tr><td><strong>Matemáticas</strong></td><td>FunSearch (DeepMind) descubre nuevos algoritmos. FormalProof con Lean + AI. AlphaGeometry resuelve problemas de olimpiada.</td><td>Demostraciones matemáticas que llevaban décadas abiertas, resueltas.</td></tr>
+<tr><td><strong>Materiales</strong></td><td>GNoME (DeepMind) descubrió 2.2M de nuevos cristales estables. 380K son candidatos para sintetizar en laboratorio.</td><td>Baterías mejores, superconductores, paneles solares más eficientes.</td></tr>
+<tr><td><strong>Clima</strong></td><td>GraphCast, GenCast, NeuralGCM — predicción meteorológica mejor que supercomputadoras tradicionales.</td><td>Predicciones más precisas, más baratas, 1000x más rápidas.</td></tr>
+<tr><td><strong>Fusión Nuclear</strong></td><td>DeepMind controla el plasma en tokamaks con RL. Predicción de inestabilidades.</td><td>Un paso más cerca de energía limpia ilimitada.</td></tr>
+</table></div>
+
+<h3>🤖 IA + Robótica</h3>
+<div class="table-wrap"><table>
+<tr><th>Empresa</th><th>Qué están haciendo</th></tr>
+<tr><td><strong>Figure AI</strong> + OpenAI</td><td>Robots humanoides que entienden lenguaje natural. "Figure 02" trabaja en fábricas de BMW.</td></tr>
+<tr><td><strong>Tesla Optimus</strong></td><td>Robot humanoide para tareas repetitivas/peligrosas. Producción limitada ya en 2026.</td></tr>
+<tr><td><strong>Boston Dynamics</strong> + LLMs</td><td>Atlas + Spot controlados por lenguaje natural. "Ve a la puerta, abre, inspecciona la sala."</td></tr>
+<tr><td><strong>RT-2 / PaLM-E</strong> (Google)</td><td>Modelos visión-lenguaje-acción. El robot "ve" y "razona" sobre objetos.</td></tr>
+<tr><td><strong>Physical Intelligence</strong></td><td>Modelo fundacional universal para robótica. Un solo modelo controla cualquier robot.</td></tr>
+</table></div>
+
+<div class="tip"><strong>💡 El "momento ChatGPT" de la robótica:</strong> Está a punto de llegar. Cuando los LLMs se integren completamente con robótica, pasaremos de robots pre-programados a robots que entienden "ordena el almacén" y lo hacen.</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<h3>🧪 AI in Science</h3>
+<div class="table-wrap"><table>
+<tr><th>Field</th><th>What's happening</th><th>Impact</th></tr>
+<tr><td><strong>Biology</strong></td><td>AlphaFold 3 predicts the structure of ALL biomolecules. Generative models design proteins that don't exist in nature.</td><td>Drug discovery 10× faster. New antibiotics, industrial enzymes.</td></tr>
+<tr><td><strong>Mathematics</strong></td><td>FunSearch (DeepMind) discovers new algorithms. FormalProof with Lean + AI. AlphaGeometry solves olympiad problems.</td><td>Decades-old open math proofs solved.</td></tr>
+<tr><td><strong>Materials</strong></td><td>GNoME (DeepMind) discovered 2.2M new stable crystals. 380K are candidates for lab synthesis.</td><td>Better batteries, superconductors, more efficient solar panels.</td></tr>
+<tr><td><strong>Climate</strong></td><td>GraphCast, GenCast, NeuralGCM — weather prediction better than traditional supercomputers.</td><td>More accurate predictions, cheaper, 1000× faster.</td></tr>
+<tr><td><strong>Nuclear Fusion</strong></td><td>DeepMind controls plasma in tokamaks with RL. Instability prediction.</td><td>One step closer to unlimited clean energy.</td></tr>
+</table></div>
+
+<h3>🤖 AI + Robotics</h3>
+<div class="table-wrap"><table>
+<tr><th>Company</th><th>What they're doing</th></tr>
+<tr><td><strong>Figure AI</strong> + OpenAI</td><td>Humanoid robots that understand natural language. "Figure 02" works in BMW factories.</td></tr>
+<tr><td><strong>Tesla Optimus</strong></td><td>Humanoid robot for repetitive/dangerous tasks. Limited production already in 2026.</td></tr>
+<tr><td><strong>Boston Dynamics</strong> + LLMs</td><td>Atlas + Spot controlled by natural language. "Go to the door, open it, inspect the room."</td></tr>
+<tr><td><strong>RT-2 / PaLM-E</strong> (Google)</td><td>Vision-language-action models. The robot "sees" and "reasons" about objects.</td></tr>
+<tr><td><strong>Physical Intelligence</strong></td><td>Universal foundation model for robotics. A single model controls any robot.</td></tr>
+</table></div>
+
+<div class="tip"><strong>💡 Robotics' "ChatGPT moment":</strong> It's about to arrive. When LLMs fully integrate with robotics, we go from pre-programmed robots to robots that understand "tidy up the warehouse" and do it.</div>
+
+</div>
+</section>
+
+
+
+<section class="module-references">
+  <h3 data-i18n="ref-header">Referencias</h3>
+  <p style="font-size:13px;color:var(--text-dim);" data-i18n="ref-intro">
+    Documentación oficial y papers consultados durante este módulo. Revísalos para profundizar.
+  </p>
+  <ul class="references-list" data-references="12"></ul>
+</section>
+
+</main>
+</div>
+
+<script src="../js/shared/manifest.js?v=8"></script>
+<script src="../js/shared/sidebar.js?v=8"></script>
+<script src="../js/shared/references.js?v=8"></script>
+<script src="../js/i18n.js?v=8"></script>
+<script src="../js/quiz.js?v=8"></script>
+<script src="../js/glossary.js?v=8"></script>
+<script src="../js/app.js?v=8"></script>
+</body>
+</html>

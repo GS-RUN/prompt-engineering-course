@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Herramientas — Prompt Engineering Master Course</title>
+<link rel="stylesheet" href="../css/style.css?v=8">
+<link rel="stylesheet" href="../css/bando-b.css?v=8">
+<script>
+  (function() {
+    try {
+      var t = localStorage.getItem('theme');
+      if (t !== 'dark' && t !== 'light') t = 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+    } catch(e) { document.documentElement.setAttribute('data-theme', 'dark'); }
+  })();
+</script>
+</head>
+<body data-page-block="tools">
+
+<div class="bg-orb bg-orb-1"></div>
+<div class="bg-orb bg-orb-2"></div>
+<div class="bg-orb bg-orb-3"></div>
+<div class="bg-gradient"></div>
+<div class="bg-grid"></div>
+<div id="progress-bar"></div>
+
+<div id="app">
+<nav id="sidebar"></nav>
+
+<main id="content">
+
+<section class="module-front-matter" data-module-front>
+  <div class="module-meta">
+    <span class="module-icon">🧰</span>
+    <span class="module-level level-all">all</span>
+    <span class="module-time">⏱️ 30 min</span>
+  </div>
+  <h1 class="module-title">
+    <span class="lang-block" data-lang="es">Herramientas</span>
+    <span class="lang-block" data-lang="en">Tools</span>
+  </h1>
+  <div class="module-objectives">
+    <div class="lang-block" data-lang="es">
+      <h3>Objetivos de aprendizaje</h3>
+      <ul>
+        <li>Estimar tokens y coste por modelo.</li>
+        <li>Comparar dos prompts con scoring multi-criterio.</li>
+      </ul>
+    </div>
+    <div class="lang-block" data-lang="en">
+      <h3>Learning objectives</h3>
+      <ul>
+        <li>Estimate tokens and cost per model.</li>
+        <li>Compare two prompts with multi-criteria scoring.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="s52">
+<h2>🔢 Token Counter</h2>
+<p class="subtitle">Estima tokens de tu prompt en tiempo real</p>
+<div class="lang-block" data-lang="es">
+
+<div class="exercise-panel">
+<div class="editor-container">
+<textarea class="ex-editor" id="tc-input" style="min-height:150px;" placeholder="Pega tu prompt aquí para contar palabras, caracteres y estimar tokens...">You are a senior Python developer. Write a function that:
+
+1. Takes a list of dictionaries as input
+2. Sorts them by a specified key
+3. Handles missing keys gracefully
+4. Returns a new sorted list (don't mutate the original)
+5. Includes type hints and a docstring
+
+Example input: [{"name": "Alice", "age": 30}, {"name": "Bob"}]
+Sort by "age" → [{"name": "Bob"}, {"name": "Alice", "age": 30}]</textarea>
+</div>
+<div id="tc-output" style="margin-top:12px;"></div>
+</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="exercise-panel">
+<div class="tip">The Token Counter input is available in <strong>Spanish mode</strong>. Switch to ES to paste a prompt and see word, character, and estimated token counts in real time.</div>
+</div>
+
+</div>
+</section>
+
+<section id="s53">
+<h2>💵 Cost Calculator</h2>
+<p class="subtitle">Calcula el coste de tus llamadas API por modelo</p>
+<div class="lang-block" data-lang="es">
+
+<div class="exercise-panel">
+<div class="sim-controls">
+  <div class="sim-control">
+    <label>Modelo</label>
+    <select id="cc-model">
+      <optgroup label="Anthropic 🇺🇸">
+        <option value="claude-opus-4-7">Claude Opus 4.7</option>
+        <option value="claude-sonnet-4-6">Claude Sonnet 4.6</option>
+        <option value="claude-haiku-4-5">Claude Haiku 4.5</option>
+      </optgroup>
+      <optgroup label="OpenAI 🇺🇸">
+        <option value="gpt-5-5">GPT-5.5</option>
+        <option value="gpt-5">GPT-5</option>
+        <option value="gpt-5-mini">GPT-5 Mini</option>
+      </optgroup>
+      <optgroup label="Google 🇺🇸">
+        <option value="gemini-2-5-pro">Gemini 2.5 Pro</option>
+        <option value="gemini-2-5-flash">Gemini 2.5 Flash</option>
+      </optgroup>
+      <optgroup label="xAI 🇺🇸">
+        <option value="grok-4">Grok 4</option>
+      </optgroup>
+      <optgroup label="China 🇨🇳">
+        <option value="deepseek-v4-pro" selected>DeepSeek V4 Pro</option>
+        <option value="deepseek-v4-flash">DeepSeek V4 Flash</option>
+        <option value="deepseek-r2">DeepSeek R2</option>
+        <option value="kimi-k2">Kimi K2</option>
+        <option value="minimax-m2">MiniMax M2</option>
+        <option value="qwen3-max">Qwen3-Max</option>
+        <option value="glm-5">GLM-5</option>
+      </optgroup>
+      <optgroup label="Otros">
+        <option value="mistral-large-3">Mistral Large 3</option>
+        <option value="cohere-command-r-plus">Cohere Command R+</option>
+      </optgroup>
+    </select>
+  </div>
+  <div class="sim-control">
+    <label>Tokens por llamada</label>
+    <input type="number" id="cc-tokens" value="4000" min="100" step="100">
+  </div>
+</div>
+<label style="margin-top:10px;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-dim);">
+  <input type="checkbox" id="cc-cache"> ¿Usando Prompt Caching?
+</label>
+<div id="cc-output" style="margin-top:16px;"></div>
+<div style="margin-top:12px;font-size:11px;color:var(--text-muted);text-align:center;">
+  Coste por 1 llamada individual. Multiplica por llamadas/día para ver coste diario/mensual.
+</div>
+</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="exercise-panel">
+<div class="tip">The Cost Calculator runs in <strong>Spanish mode</strong>. Switch to ES to pick a model, set tokens per call, and see per-call cost (with optional Prompt Caching).</div>
+</div>
+
+</div>
+</section>
+
+<section id="s54">
+<h2>⚔️ Prompt Diff Comparator</h2>
+<p class="subtitle">Compara dos versiones de un prompt y ve cuál es mejor</p>
+<div class="lang-block" data-lang="es">
+
+<div class="exercise-panel">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+  <div>
+    <h4 style="font-size:13px;color:var(--accent);margin-bottom:8px;">Prompt A</h4>
+    <textarea class="ex-editor" id="diff-left" style="min-height:140px;" placeholder="Escribe tu prompt original aquí...">Write code for a login page</textarea>
+  </div>
+  <div>
+    <h4 style="font-size:13px;color:var(--accent2);margin-bottom:8px;">Prompt B</h4>
+    <textarea class="ex-editor" id="diff-right" style="min-height:140px;" placeholder="Escribe tu prompt mejorado aquí...">Create a React login page with:
+- Email + password form validation
+- "Remember me" checkbox
+- Error handling for invalid credentials
+- Loading state during authentication
+- Responsive design (mobile-first)
+- Dark mode support
+Use TypeScript, React Hook Form, and Zod for validation.</textarea>
+  </div>
+</div>
+<button class="btn btn-primary" id="diff-compare" style="margin-top:12px;">⚔️ Comparar Prompts</button>
+<div class="ex-output" id="diff-output" style="margin-top:16px;"></div>
+</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="exercise-panel">
+<div class="tip">The Prompt Diff Comparator runs in <strong>Spanish mode</strong>. Switch to ES to paste two prompt versions side by side and see which is stronger.</div>
+</div>
+
+</div>
+</section>
+
+
+
+<section class="module-references">
+  <h3 data-i18n="ref-header">Referencias</h3>
+  <p style="font-size:13px;color:var(--text-dim);" data-i18n="ref-intro">
+    Documentación oficial y papers consultados durante este módulo. Revísalos para profundizar.
+  </p>
+  <ul class="references-list" data-references="tools"></ul>
+</section>
+
+</main>
+</div>
+
+<script src="../js/shared/manifest.js?v=8"></script>
+<script src="../js/shared/sidebar.js?v=8"></script>
+<script src="../js/shared/references.js?v=8"></script>
+<script src="../js/i18n.js?v=8"></script>
+<script src="../js/token-tools.js?v=8"></script>
+<script src="../js/prompt-diff.js?v=8"></script>
+<script src="../js/quiz.js?v=8"></script>
+<script src="../js/glossary.js?v=8"></script>
+<script src="../js/app.js?v=8"></script>
+</body>
+</html>

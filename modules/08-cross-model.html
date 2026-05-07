@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bloque VIII — Patrones cross-model — Prompt Engineering Master Course</title>
+<link rel="stylesheet" href="../css/style.css?v=8">
+<link rel="stylesheet" href="../css/bando-b.css?v=8">
+<script>
+  (function() {
+    try {
+      var t = localStorage.getItem('theme');
+      if (t !== 'dark' && t !== 'light') t = 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+    } catch(e) { document.documentElement.setAttribute('data-theme', 'dark'); }
+  })();
+</script>
+</head>
+<body data-page-block="08">
+
+<div class="bg-orb bg-orb-1"></div>
+<div class="bg-orb bg-orb-2"></div>
+<div class="bg-orb bg-orb-3"></div>
+<div class="bg-gradient"></div>
+<div class="bg-grid"></div>
+<div id="progress-bar"></div>
+
+<div id="app">
+<nav id="sidebar"></nav>
+
+<main id="content">
+
+<section class="module-front-matter" data-module-front>
+  <div class="module-meta">
+    <span class="module-icon">🔀</span>
+    <span class="module-level level-advanced">advanced</span>
+    <span class="module-time">⏱️ 60 min</span>
+  </div>
+  <h1 class="module-title">
+    <span class="lang-block" data-lang="es">Bloque VIII — Patrones cross-model</span>
+    <span class="lang-block" data-lang="en">Block VIII — Cross-Model Patterns</span>
+  </h1>
+  <div class="module-objectives">
+    <div class="lang-block" data-lang="es">
+      <h3>Objetivos de aprendizaje</h3>
+      <ul>
+        <li>Escribir prompts portables entre Claude, GPT, Gemini, DeepSeek, Kimi, Qwen, GLM.</li>
+        <li>Implementar fallback chains y routing por coste/calidad.</li>
+        <li>Evaluar la misma tarea en varios modelos (cross-model eval).</li>
+      </ul>
+    </div>
+    <div class="lang-block" data-lang="en">
+      <h3>Learning objectives</h3>
+      <ul>
+        <li>Write prompts portable across Claude, GPT, Gemini, DeepSeek, Kimi, Qwen, GLM.</li>
+        <li>Implement fallback chains and cost/quality routing.</li>
+        <li>Evaluate the same task across multiple models (cross-model eval).</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="s26">
+<h2>6.1 Frontier Models 2026 — Comparativa Completa</h2>
+<p class="subtitle">Claude, GPT, Gemini, DeepSeek, Kimi, MiniMax, Qwen, GLM, Grok, Mistral — qué pedir a cada uno</p>
+<div class="lang-block" data-lang="es">
+
+<div class="table-wrap"><table>
+<tr><th>Modelo</th><th>Precio in/out 1M tok</th><th>Contexto</th><th>Reasoning</th><th>Multimodal</th><th>Tool / Agent</th></tr>
+<tr><td><span class="badge badge-claude">Claude Opus 4.7</span></td><td>$15 / $75</td><td>200K</td><td>Adaptive Thinking</td><td>Vision + PDF</td><td>Claude Code, Computer Use</td></tr>
+<tr><td>Claude Sonnet 4.6</td><td>$3 / $15</td><td>200K</td><td>Adaptive</td><td>Vision</td><td>Claude Code</td></tr>
+<tr><td>Claude Haiku 4.5</td><td>$0.80 / $4</td><td>200K</td><td>Off por defecto</td><td>Vision</td><td>Claude Code</td></tr>
+<tr><td>GPT-5.5</td><td>$3.75 / $15</td><td>256K</td><td>Reasoning effort</td><td>Vision + Audio</td><td>Codex, Operator (web)</td></tr>
+<tr><td>GPT-5 Mini</td><td>$0.25 / $1</td><td>128K</td><td>Reasoning effort</td><td>Vision</td><td>Function calling</td></tr>
+<tr><td>Gemini 2.5 Pro</td><td>$1.25 / $5</td><td>1M+</td><td>Thinking auto</td><td>Vision + Audio + Vídeo</td><td>Gemini CLI, Vertex agents</td></tr>
+<tr><td>Gemini 2.5 Flash</td><td>$0.30 / $2.50</td><td>1M</td><td>Thinking auto</td><td>Multimodal nativo</td><td>Function calling</td></tr>
+<tr><td><span class="badge badge-ds">DeepSeek V4 Pro</span></td><td>$0.50 / $2 🏆</td><td>128K</td><td>Manual on/off</td><td>Vision (Pro)</td><td>OpenCode</td></tr>
+<tr><td>DeepSeek R2</td><td>$0.55 / $2.20</td><td>128K</td><td>Reasoning extendido</td><td>Texto</td><td>OpenAI-compatible</td></tr>
+<tr><td>Kimi K2</td><td>$0.60 / $2.50</td><td>2M 🏆</td><td>Thinking</td><td>Vision + Documentos</td><td>Kimi Agents (búsqueda nativa)</td></tr>
+<tr><td>MiniMax M2</td><td>$0.30 / $1.20</td><td>1M</td><td>Adaptive</td><td>Vision + Audio + Vídeo</td><td>Function calling</td></tr>
+<tr><td>Qwen3-Max</td><td>$0.80 / $3.20</td><td>262K</td><td>Thinking</td><td>Vision (Qwen-VL)</td><td>Function calling, Qwen Agent</td></tr>
+<tr><td>GLM-5</td><td>$0.40 / $1.80</td><td>128K</td><td>Reasoning</td><td>Vision (GLM-V)</td><td>AutoGLM (web nativo)</td></tr>
+<tr><td>Grok 4</td><td>$3 / $15</td><td>256K</td><td>Reasoning</td><td>Vision</td><td>X data en tiempo real</td></tr>
+<tr><td>Mistral Large 3</td><td>$2 / $6</td><td>256K</td><td>Limitado</td><td>Pixtral (Vision)</td><td>Function calling</td></tr>
+</table></div>
+
+<h3>🎯 Cuándo usar cada uno</h3>
+<div class="table-wrap"><table>
+<tr><th>Caso de uso</th><th>Recomendación primaria</th><th>Alternativa OSS</th></tr>
+<tr><td><strong>Code review riguroso, agentes largos</strong></td><td>Claude Opus 4.7 (Claude Code)</td><td>DeepSeek V4 Pro + OpenCode</td></tr>
+<tr><td><strong>Coding diario alto volumen</strong></td><td>DeepSeek V4 Pro / GPT-5 Mini</td><td>Qwen3-Coder local</td></tr>
+<tr><td><strong>Documentos enormes (libros, codebases completos)</strong></td><td>Gemini 2.5 Pro (1M+) / Kimi K2 (2M)</td><td>—</td></tr>
+<tr><td><strong>Razonamiento matemático / científico</strong></td><td>Claude Opus 4.7 / GPT-5.5 / DeepSeek R2</td><td>Qwen3 + thinking</td></tr>
+<tr><td><strong>Multimodal con vídeo / audio</strong></td><td>Gemini 2.5 / MiniMax M2</td><td>Qwen2.5-VL local</td></tr>
+<tr><td><strong>Agentes web autónomos</strong></td><td>GLM-5 (AutoGLM) / GPT-5.5 (Operator)</td><td>Browser-Use + DeepSeek</td></tr>
+<tr><td><strong>Datos en tiempo real (red social, news)</strong></td><td>Grok 4 / Gemini con Search</td><td>—</td></tr>
+<tr><td><strong>Multilingüe (CJK, árabe, indostaníes)</strong></td><td>Qwen3-Max / GLM-5 / Gemini</td><td>Qwen 3 local, Aya Expanse</td></tr>
+<tr><td><strong>Privacidad total (datos sensibles)</strong></td><td>Llama 4 / Qwen 3 / DeepSeek V3 local</td><td>Gemma 3 si caben</td></tr>
+<tr><td><strong>Edge / móvil / offline</strong></td><td>Gemma 3 / Phi-4 / Llama 3.2</td><td>—</td></tr>
+</table></div>
+
+<div class="card card-green">
+<div class="card-title">💡 Estrategia mixta recomendada</div>
+<p>Pocos proyectos serios usan UN solo modelo. Patrón típico 2026:</p>
+<ul>
+  <li><strong>Tareas críticas + razonamiento profundo:</strong> Claude Opus 4.7 o GPT-5.5</li>
+  <li><strong>Coding y agentes diarios:</strong> DeepSeek V4 Pro o Claude Sonnet 4.6 (10× más barato)</li>
+  <li><strong>Contexto enorme:</strong> Gemini 2.5 Pro o Kimi K2 (cuando 200K se queda corto)</li>
+  <li><strong>Datos sensibles:</strong> Qwen 3 o Llama 4 self-hosted (privacidad)</li>
+  <li><strong>Edge / latencia &lt; 100ms:</strong> Gemma 3 o Phi-4 cuantizado</li>
+</ul>
+<p>Un router (LLM o reglas) clasifica el request → despacha al modelo adecuado. Coste medio cae 5-10× sin perder calidad en lo crítico.</p>
+</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="table-wrap"><table>
+<tr><th>Model</th><th>Price in/out 1M tok</th><th>Context</th><th>Reasoning</th><th>Multimodal</th><th>Tool / Agent</th></tr>
+<tr><td><span class="badge badge-claude">Claude Opus 4.7</span></td><td>$15 / $75</td><td>200K</td><td>Adaptive Thinking</td><td>Vision + PDF</td><td>Claude Code, Computer Use</td></tr>
+<tr><td>Claude Sonnet 4.6</td><td>$3 / $15</td><td>200K</td><td>Adaptive</td><td>Vision</td><td>Claude Code</td></tr>
+<tr><td>Claude Haiku 4.5</td><td>$0.80 / $4</td><td>200K</td><td>Off by default</td><td>Vision</td><td>Claude Code</td></tr>
+<tr><td>GPT-5.5</td><td>$3.75 / $15</td><td>256K</td><td>Reasoning effort</td><td>Vision + Audio</td><td>Codex, Operator (web)</td></tr>
+<tr><td>GPT-5 Mini</td><td>$0.25 / $1</td><td>128K</td><td>Reasoning effort</td><td>Vision</td><td>Function calling</td></tr>
+<tr><td>Gemini 2.5 Pro</td><td>$1.25 / $5</td><td>1M+</td><td>Auto thinking</td><td>Vision + Audio + Video</td><td>Gemini CLI, Vertex agents</td></tr>
+<tr><td>Gemini 2.5 Flash</td><td>$0.30 / $2.50</td><td>1M</td><td>Auto thinking</td><td>Native multimodal</td><td>Function calling</td></tr>
+<tr><td><span class="badge badge-ds">DeepSeek V4 Pro</span></td><td>$0.50 / $2 🏆</td><td>128K</td><td>Manual on/off</td><td>Vision (Pro)</td><td>OpenCode</td></tr>
+<tr><td>DeepSeek R2</td><td>$0.55 / $2.20</td><td>128K</td><td>Extended reasoning</td><td>Text</td><td>OpenAI-compatible</td></tr>
+<tr><td>Kimi K2</td><td>$0.60 / $2.50</td><td>2M 🏆</td><td>Thinking</td><td>Vision + Docs</td><td>Kimi Agents (native search)</td></tr>
+<tr><td>MiniMax M2</td><td>$0.30 / $1.20</td><td>1M</td><td>Adaptive</td><td>Vision + Audio + Video</td><td>Function calling</td></tr>
+<tr><td>Qwen3-Max</td><td>$0.80 / $3.20</td><td>262K</td><td>Thinking</td><td>Vision (Qwen-VL)</td><td>Function calling, Qwen Agent</td></tr>
+<tr><td>GLM-5</td><td>$0.40 / $1.80</td><td>128K</td><td>Reasoning</td><td>Vision (GLM-V)</td><td>AutoGLM (native web)</td></tr>
+<tr><td>Grok 4</td><td>$3 / $15</td><td>256K</td><td>Reasoning</td><td>Vision</td><td>Real-time X data</td></tr>
+<tr><td>Mistral Large 3</td><td>$2 / $6</td><td>256K</td><td>Limited</td><td>Pixtral (Vision)</td><td>Function calling</td></tr>
+</table></div>
+
+<h3>🎯 When to use each</h3>
+<div class="table-wrap"><table>
+<tr><th>Use case</th><th>Primary recommendation</th><th>OSS alternative</th></tr>
+<tr><td><strong>Rigorous code review, long-running agents</strong></td><td>Claude Opus 4.7 (Claude Code)</td><td>DeepSeek V4 Pro + OpenCode</td></tr>
+<tr><td><strong>Daily high-volume coding</strong></td><td>DeepSeek V4 Pro / GPT-5 Mini</td><td>Qwen3-Coder local</td></tr>
+<tr><td><strong>Huge documents (books, full codebases)</strong></td><td>Gemini 2.5 Pro (1M+) / Kimi K2 (2M)</td><td>—</td></tr>
+<tr><td><strong>Math / scientific reasoning</strong></td><td>Claude Opus 4.7 / GPT-5.5 / DeepSeek R2</td><td>Qwen3 + thinking</td></tr>
+<tr><td><strong>Multimodal with video / audio</strong></td><td>Gemini 2.5 / MiniMax M2</td><td>Qwen2.5-VL local</td></tr>
+<tr><td><strong>Autonomous web agents</strong></td><td>GLM-5 (AutoGLM) / GPT-5.5 (Operator)</td><td>Browser-Use + DeepSeek</td></tr>
+<tr><td><strong>Real-time data (social, news)</strong></td><td>Grok 4 / Gemini with Search</td><td>—</td></tr>
+<tr><td><strong>Multilingual (CJK, Arabic, Indic)</strong></td><td>Qwen3-Max / GLM-5 / Gemini</td><td>Qwen 3 local, Aya Expanse</td></tr>
+<tr><td><strong>Total privacy (sensitive data)</strong></td><td>Llama 4 / Qwen 3 / DeepSeek V3 local</td><td>Gemma 3 if it fits</td></tr>
+<tr><td><strong>Edge / mobile / offline</strong></td><td>Gemma 3 / Phi-4 / Llama 3.2</td><td>—</td></tr>
+</table></div>
+
+<div class="card card-green">
+<div class="card-title">💡 Recommended mixed strategy</div>
+<p>Few serious projects use a SINGLE model. Typical 2026 pattern:</p>
+<ul>
+  <li><strong>Critical tasks + deep reasoning:</strong> Claude Opus 4.7 or GPT-5.5</li>
+  <li><strong>Daily coding and agents:</strong> DeepSeek V4 Pro or Claude Sonnet 4.6 (10× cheaper)</li>
+  <li><strong>Huge context:</strong> Gemini 2.5 Pro or Kimi K2 (when 200K runs short)</li>
+  <li><strong>Sensitive data:</strong> Qwen 3 or Llama 4 self-hosted (privacy)</li>
+  <li><strong>Edge / latency &lt; 100ms:</strong> Gemma 3 or Phi-4 quantized</li>
+</ul>
+<p>A router (LLM or rules) classifies the request → dispatches to the right model. Average cost drops 5-10× without losing quality where it matters.</p>
+</div>
+
+</div>
+</section>
+
+
+
+<section class="module-references">
+  <h3 data-i18n="ref-header">Referencias</h3>
+  <p style="font-size:13px;color:var(--text-dim);" data-i18n="ref-intro">
+    Documentación oficial y papers consultados durante este módulo. Revísalos para profundizar.
+  </p>
+  <ul class="references-list" data-references="08"></ul>
+</section>
+
+</main>
+</div>
+
+<script src="../js/shared/manifest.js?v=8"></script>
+<script src="../js/shared/sidebar.js?v=8"></script>
+<script src="../js/shared/references.js?v=8"></script>
+<script src="../js/i18n.js?v=8"></script>
+<script src="../js/quiz.js?v=8"></script>
+<script src="../js/glossary.js?v=8"></script>
+<script src="../js/app.js?v=8"></script>
+</body>
+</html>

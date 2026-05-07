@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bloque III — Razonamiento avanzado y Tools — Prompt Engineering Master Course</title>
+<link rel="stylesheet" href="../css/style.css?v=8">
+<link rel="stylesheet" href="../css/bando-b.css?v=8">
+<script>
+  (function() {
+    try {
+      var t = localStorage.getItem('theme');
+      if (t !== 'dark' && t !== 'light') t = 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+    } catch(e) { document.documentElement.setAttribute('data-theme', 'dark'); }
+  })();
+</script>
+</head>
+<body data-page-block="03">
+
+<div class="bg-orb bg-orb-1"></div>
+<div class="bg-orb bg-orb-2"></div>
+<div class="bg-orb bg-orb-3"></div>
+<div class="bg-gradient"></div>
+<div class="bg-grid"></div>
+<div id="progress-bar"></div>
+
+<div id="app">
+<nav id="sidebar"></nav>
+
+<main id="content">
+
+<section class="module-front-matter" data-module-front>
+  <div class="module-meta">
+    <span class="module-icon">🧠</span>
+    <span class="module-level level-intermediate">intermediate</span>
+    <span class="module-time">⏱️ 150 min</span>
+  </div>
+  <h1 class="module-title">
+    <span class="lang-block" data-lang="es">Bloque III — Razonamiento avanzado y Tools</span>
+    <span class="lang-block" data-lang="en">Block III — Advanced Reasoning + Tools</span>
+  </h1>
+  <div class="module-objectives">
+    <div class="lang-block" data-lang="es">
+      <h3>Objetivos de aprendizaje</h3>
+      <ul>
+        <li>Activar y dimensionar reasoning/thinking en cada API frontier.</li>
+        <li>Diseñar prompt chains y patrones ReAct con tool use.</li>
+        <li>Trabajar con documentos largos (200K-2M tokens) sin perder calidad.</li>
+        <li>Construir prompts multimodales (visión, audio, vídeo).</li>
+      </ul>
+    </div>
+    <div class="lang-block" data-lang="en">
+      <h3>Learning objectives</h3>
+      <ul>
+        <li>Enable and size reasoning/thinking in every frontier API.</li>
+        <li>Design prompt chains and ReAct patterns with tool use.</li>
+        <li>Work with long documents (200K-2M tokens) without losing quality.</li>
+        <li>Build multimodal prompts (vision, audio, video).</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="s12">
+<h2>3.1 Thinking / Reasoning</h2>
+<p class="subtitle">Tokens de razonamiento interno que mejoran la calidad sin mostrarse al usuario</p>
+<div class="lang-block" data-lang="es">
+
+<div class="compare">
+<div><h4><span class="badge badge-claude">Claude — Adaptive Thinking</span></h4>
+<pre><code>thinking={"type": "adaptive"}
+output_config={"effort": "high"}
+# El modelo decide cuándo pensar
+# Basado en complejidad + effort</code></pre></div>
+<div><h4><span class="badge badge-ds">DeepSeek — Thinking Mode</span></h4>
+<pre><code>thinking={"type": "enabled"}
+reasoning_effort="high"
+# Thinking on/off manual
+# Tokens de razonamiento internos</code></pre></div>
+</div>
+
+<h3>¿Cuándo activar Thinking?</h3>
+<div class="card card-green"><ul>
+  <li>✅ Tareas multi-step complejas (debugging, arquitectura)</li>
+  <li>✅ Matemáticas, lógica formal, planificación</li>
+  <li>✅ Agentes autónomos de larga duración</li>
+  <li>❌ Clasificación simple, extracción directa</li>
+  <li>❌ Tareas de muy baja latencia</li>
+</ul></div>
+<div class="warn"><strong>⚠️ Coste:</strong> Los tokens de thinking se facturan. Con <code>effort: max</code>, Claude puede consumir hasta 64K tokens de thinking. Ajusta según necesidad.</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="compare">
+<div><h4><span class="badge badge-claude">Claude — Adaptive Thinking</span></h4>
+<pre><code>thinking={"type": "adaptive"}
+output_config={"effort": "high"}
+# The model decides when to think
+# Based on complexity + effort</code></pre></div>
+<div><h4><span class="badge badge-ds">DeepSeek — Thinking Mode</span></h4>
+<pre><code>thinking={"type": "enabled"}
+reasoning_effort="high"
+# Manual thinking on/off
+# Internal reasoning tokens</code></pre></div>
+</div>
+
+<h3>When to enable Thinking?</h3>
+<div class="card card-green"><ul>
+  <li>✅ Complex multi-step tasks (debugging, architecture)</li>
+  <li>✅ Math, formal logic, planning</li>
+  <li>✅ Long-running autonomous agents</li>
+  <li>❌ Simple classification, direct extraction</li>
+  <li>❌ Very low latency tasks</li>
+</ul></div>
+<div class="warn"><strong>⚠️ Cost:</strong> Thinking tokens are billed. With <code>effort: max</code>, Claude can consume up to 64K thinking tokens. Tune to need.</div>
+
+</div>
+</section>
+
+<section id="s13">
+<h2>3.2 Prompt Chaining</h2>
+<div class="lang-block" data-lang="es">
+<p>Dividir tareas complejas en múltiples llamadas API secuenciales.</p>
+
+<div class="table-wrap"><table>
+<tr><th>Patrón</th><th>Flujo</th><th>Ejemplo</th></tr>
+<tr><td>Extraer → Transformar</td><td>Prompt 1 extrae → Prompt 2 estructura</td><td>PDF → JSON</td></tr>
+<tr><td>Generar → Revisar → Refinar</td><td>Crear → Criticar → Mejorar</td><td>Copywriting</td></tr>
+<tr><td>Planificar → Ejecutar</td><td>Crear plan → Ejecutar pasos</td><td>Agentes autónomos</td></tr>
+<tr><td>Clasificar → Responder</td><td>Detectar intención → Respuesta específica</td><td>Chatbots</td></tr>
+</table></div>
+
+<div class="tip"><strong>💡 Claude Opus 4.7:</strong> Con Adaptive Thinking ya maneja mucho razonamiento multi-step internamente. Usa chaining cuando necesites inspeccionar pasos intermedios.</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+<p>Split complex tasks into multiple sequential API calls.</p>
+
+<div class="table-wrap"><table>
+<tr><th>Pattern</th><th>Flow</th><th>Example</th></tr>
+<tr><td>Extract → Transform</td><td>Prompt 1 extracts → Prompt 2 structures</td><td>PDF → JSON</td></tr>
+<tr><td>Generate → Review → Refine</td><td>Create → Critique → Improve</td><td>Copywriting</td></tr>
+<tr><td>Plan → Execute</td><td>Create plan → Execute steps</td><td>Autonomous agents</td></tr>
+<tr><td>Classify → Respond</td><td>Detect intent → Specific response</td><td>Chatbots</td></tr>
+</table></div>
+
+<div class="tip"><strong>💡 Claude Opus 4.7:</strong> With Adaptive Thinking it already handles a lot of multi-step reasoning internally. Use chaining when you need to inspect intermediate steps.</div>
+
+</div>
+</section>
+
+<section id="s14">
+<h2>3.3 ReAct & Tool Use</h2>
+<p class="subtitle">Reasoning + Acting — el patrón base de todos los agentes AI</p>
+<div class="lang-block" data-lang="es">
+
+<pre><code>🤔 Thought: Necesito leer el archivo de configuración
+🔧 Action: read_file("config.py")
+📋 Observation: PORT=8080, DB_URL=postgres://...
+🤔 Thought: Debo cambiar el puerto a 3000
+🔧 Action: edit_file("config.py", "PORT=8080", "PORT=3000")
+📋 Observation: Archivo modificado exitosamente
+🤔 Thought: Tarea completada</code></pre>
+
+<h3>Parallel Tool Calling</h3>
+<pre><code>&lt;use_parallel_tool_calls&gt;
+If you intend to call multiple tools and there are no
+dependencies between them, make ALL independent tool
+calls in parallel. For example, when reading 3 files,
+run 3 Read calls simultaneously.
+&lt;/use_parallel_tool_calls&gt;</code></pre>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<pre><code>🤔 Thought: I need to read the configuration file
+🔧 Action: read_file("config.py")
+📋 Observation: PORT=8080, DB_URL=postgres://...
+🤔 Thought: I should change the port to 3000
+🔧 Action: edit_file("config.py", "PORT=8080", "PORT=3000")
+📋 Observation: File modified successfully
+🤔 Thought: Task complete</code></pre>
+
+<h3>Parallel Tool Calling</h3>
+<pre><code>&lt;use_parallel_tool_calls&gt;
+If you intend to call multiple tools and there are no
+dependencies between them, make ALL independent tool
+calls in parallel. For example, when reading 3 files,
+run 3 Read calls simultaneously.
+&lt;/use_parallel_tool_calls&gt;</code></pre>
+
+</div>
+</section>
+
+<section id="s15">
+<h2>3.4 Documentos Largos (20K+ tokens)</h2>
+<div class="lang-block" data-lang="es">
+
+<div class="card card-accent">
+<div class="card-title">📋 Estrategia Recomendada por Anthropic</div>
+<ol>
+  <li><strong>Documentos ARRIBA</strong> — Contenido largo al principio</li>
+  <li><strong>Query al FINAL</strong> — Instrucciones al final (+30% calidad)</li>
+  <li><strong>Estructura XML</strong> — <code>&lt;document index="n"&gt;</code></li>
+  <li><strong>Cita primero</strong> — Extraer quotes relevantes antes de analizar</li>
+  <li><strong>Metadatos</strong> — fuente, fecha, tipo en atributos XML</li>
+</ol>
+</div>
+
+<div class="tip"><strong>💡 DeepSeek:</strong> Con 128K de contexto, usa la misma estrategia. Para documentos que excedan el contexto, considera RAG (Retrieval Augmented Generation).</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="card card-accent">
+<div class="card-title">📋 Strategy Recommended by Anthropic</div>
+<ol>
+  <li><strong>Documents UP TOP</strong> — Long content at the start</li>
+  <li><strong>Query at the END</strong> — Instructions last (+30% quality)</li>
+  <li><strong>XML structure</strong> — <code>&lt;document index="n"&gt;</code></li>
+  <li><strong>Quote first</strong> — Extract relevant quotes before analyzing</li>
+  <li><strong>Metadata</strong> — source, date, type as XML attributes</li>
+</ol>
+</div>
+
+<div class="tip"><strong>💡 DeepSeek:</strong> With 128K of context, use the same strategy. For documents that exceed the context window, consider RAG (Retrieval Augmented Generation).</div>
+
+</div>
+</section>
+
+<section id="s22">
+<h2>5.1 Effort Levels (Claude Opus 4.7)</h2>
+<div class="lang-block" data-lang="es">
+
+<div class="table-wrap"><table>
+<tr><th>Nivel</th><th>Uso</th><th>Tokens</th><th>Recomendado para</th></tr>
+<tr><td><code>max</code></td><td>Máxima inteligencia</td><td>Muy alto</td><td>Tareas extremadamente complejas</td></tr>
+<tr><td><code>xhigh</code> ✨</td><td><strong>Mejor balance</strong></td><td>Alto</td><td>Coding, agentes, tareas complejas</td></tr>
+<tr><td><code>high</code></td><td>Mínimo para tasks sensibles</td><td>Medio</td><td>Uso general inteligente</td></tr>
+<tr><td><code>medium</code></td><td>Balance coste/inteligencia</td><td>Medio-bajo</td><td>Tareas moderadas</td></tr>
+<tr><td><code>low</code></td><td>Solo tareas simples</td><td>Bajo</td><td>Clasificación, extracción, latencia crítica</td></tr>
+</table></div>
+
+<pre><code># API configuration
+client.messages.create(
+    model="claude-opus-4-7",
+    max_tokens=64000,
+    thinking={"type": "adaptive"},
+    output_config={"effort": "xhigh"},
+    messages=[{"role": "user", "content": "..."}],
+)</code></pre>
+
+<div class="warn"><strong>⚠️ Opus 4.7 respeta effort levels mucho más estrictamente.</strong> En <code>low</code> puede "under-think". Si ves razonamiento superficial, sube a <code>high</code> o <code>xhigh</code>.</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="table-wrap"><table>
+<tr><th>Level</th><th>Use</th><th>Tokens</th><th>Recommended for</th></tr>
+<tr><td><code>max</code></td><td>Maximum intelligence</td><td>Very high</td><td>Extremely complex tasks</td></tr>
+<tr><td><code>xhigh</code> ✨</td><td><strong>Best balance</strong></td><td>High</td><td>Coding, agents, complex tasks</td></tr>
+<tr><td><code>high</code></td><td>Minimum for sensitive tasks</td><td>Medium</td><td>Smart general use</td></tr>
+<tr><td><code>medium</code></td><td>Cost/intelligence balance</td><td>Medium-low</td><td>Moderate tasks</td></tr>
+<tr><td><code>low</code></td><td>Simple tasks only</td><td>Low</td><td>Classification, extraction, latency-critical</td></tr>
+</table></div>
+
+<pre><code># API configuration
+client.messages.create(
+    model="claude-opus-4-7",
+    max_tokens=64000,
+    thinking={"type": "adaptive"},
+    output_config={"effort": "xhigh"},
+    messages=[{"role": "user", "content": "..."}],
+)</code></pre>
+
+<div class="warn"><strong>⚠️ Opus 4.7 respects effort levels much more strictly.</strong> At <code>low</code> it can "under-think". If you see superficial reasoning, raise to <code>high</code> or <code>xhigh</code>.</div>
+
+</div>
+</section>
+
+<section id="s23">
+<h2>5.2 Adaptive Thinking</h2>
+<div class="lang-block" data-lang="es">
+<p>Claude Opus 4.7 decide dinámicamente cuándo pensar, basado en complejidad + effort.</p>
+
+<pre><code># Si piensa DEMASIADO (sube latencia sin justificarlo):
+"Pensar añade latencia. Úsalo solo cuando mejore
+significativamente la calidad de la respuesta. Si dudas, responde directamente."
+
+# Si piensa POCO (sube primero el effort, luego refuerza por prompt):
+"Tras recibir resultados de herramientas, reflexiona con cuidado
+sobre su calidad y decide los próximos pasos óptimos antes de continuar."</code></pre>
+
+<div class="tip"><strong>💡 Migración:</strong> el antiguo <code>thinking={"type":"enabled","budget_tokens":32000}</code> se reemplaza por <code>thinking={"type":"adaptive"}</code> + <code>output_config={"effort":"xhigh"}</code>.</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+<p>Claude Opus 4.7 dynamically decides when to think, based on complexity + effort.</p>
+
+<pre><code># If it thinks TOO MUCH:
+"Thinking adds latency. Only use it when it meaningfully
+improves answer quality. When in doubt, respond directly."
+
+# If it thinks TOO LITTLE (raise effort first, then prompt):
+"After receiving tool results, carefully reflect on their
+quality and determine optimal next steps before proceeding."</code></pre>
+
+<div class="tip"><strong>💡 Migration:</strong> The old <code>thinking={"type":"enabled","budget_tokens":32000}</code> is replaced by <code>thinking={"type":"adaptive"}</code> + <code>output_config={"effort":"xhigh"}</code>.</div>
+
+</div>
+</section>
+
+<section id="s24">
+<h2>5.3 Tool Use & Sub-agentes en Opus 4.7</h2>
+<div class="lang-block" data-lang="es">
+
+<div class="card">
+<div class="card-title">🔧 Tool Use Triggering</div>
+<p>Opus 4.7 usa <strong>menos herramientas</strong> que Opus 4.6 y más razonamiento. Para más tool use: sube effort a <code>xhigh</code> o sé explícito.</p>
+</div>
+
+<div class="card card-orange">
+<div class="card-title">👥 Sub-agent Spawning</div>
+<pre><code>Do not spawn a subagent for work you can complete directly.
+Spawn multiple subagents when fanning out across items
+or reading multiple files.</code></pre>
+</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="card">
+<div class="card-title">🔧 Tool Use Triggering</div>
+<p>Opus 4.7 uses <strong>fewer tools</strong> than Opus 4.6 and more reasoning. For more tool use: raise effort to <code>xhigh</code> or be explicit.</p>
+</div>
+
+<div class="card card-orange">
+<div class="card-title">👥 Sub-agent Spawning</div>
+<pre><code>Do not spawn a subagent for work you can complete directly.
+Spawn multiple subagents when fanning out across items
+or reading multiple files.</code></pre>
+</div>
+
+</div>
+</section>
+
+<section id="s25">
+<h2>5.4 Frontend Design & Code Review</h2>
+<div class="lang-block" data-lang="es">
+
+<h3>Frontend — Evitar el "estilo por defecto"</h3>
+<p>Opus 4.7 tiene un default fuerte (fondos crema, serif, terracota). Para variar:</p>
+<pre><code># Opción 1: Especificar dirección concreta
+Design with cold monochrome palette: #E9ECEC → #11171B.
+Use square sans-serif, generous spacing, 4px radius.
+
+# Opción 2: Pedir opciones antes de construir
+Before building, propose 4 distinct visual directions.
+Ask the user to pick one, then implement that direction.</code></pre>
+
+<h3>Code Review — Máxima Cobertura</h3>
+<pre><code>Report EVERY issue you find, including uncertain or
+low-severity ones. Include confidence and severity for
+each finding. Coverage over filtering at this stage.</code></pre>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<h3>Frontend — Avoid the "default style"</h3>
+<p>Opus 4.7 has a strong default (cream backgrounds, serif, terracotta). To break it:</p>
+<pre><code># Option 1: Specify a concrete direction
+Design with cold monochrome palette: #E9ECEC → #11171B.
+Use square sans-serif, generous spacing, 4px radius.
+
+# Option 2: Ask for options before building
+Before building, propose 4 distinct visual directions.
+Ask the user to pick one, then implement that direction.</code></pre>
+
+<h3>Code Review — Maximum Coverage</h3>
+<pre><code>Report EVERY issue you find, including uncertain or
+low-severity ones. Include confidence and severity for
+each finding. Coverage over filtering at this stage.</code></pre>
+
+</div>
+</section>
+
+<section id="s44">
+<h2>10.2 Multimodal Prompting</h2>
+<p class="subtitle">Imágenes, audio, video — los LLMs ya no son solo texto</p>
+<div class="lang-block" data-lang="es">
+
+<div class="compare">
+<div><h4><span class="badge badge-claude">Claude Vision</span></h4>
+<pre><code># Claude Opus 4.7 soporta imágenes
+content: [
+  {"type": "text", "text": "Describe this chart"},
+  {"type": "image", "source": {
+    "type": "base64",
+    "media_type": "image/png",
+    "data": "iVBORw0KG..."
+  }}
+]</code></pre></div>
+<div><h4><span class="badge badge-ds">DeepSeek Vision</span></h4>
+<pre><code># DeepSeek V4 Pro (modo visión)
+messages: [{
+  "role": "user",
+  "content": [
+    {"type": "text", "text": "..."},
+    {"type": "image_url", "image_url": {
+      "url": "data:image/png;base64,..."
+    }}
+  ]
+}]</code></pre></div>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">🖼️ Técnicas para Vision Prompts</div>
+<ul>
+  <li><strong>Sé espacialmente específico:</strong> "En la esquina superior derecha..."</li>
+  <li><strong>Describe el contexto esperado:</strong> "Esto es un recibo médico de 2024"</li>
+  <li><strong>Pide coordenadas:</strong> "Lista los elementos y su posición (x, y)"</li>
+  <li><strong>PDFs = imágenes:</strong> Claude ve PDFs página por página como imágenes</li>
+  <li><strong>Multimodal Chain of Thought:</strong> "Describe la imagen → analiza → responde"</li>
+</ul>
+</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="compare">
+<div><h4><span class="badge badge-claude">Claude Vision</span></h4>
+<pre><code># Claude Opus 4.7 supports images
+content: [
+  {"type": "text", "text": "Describe this chart"},
+  {"type": "image", "source": {
+    "type": "base64",
+    "media_type": "image/png",
+    "data": "iVBORw0KG..."
+  }}
+]</code></pre></div>
+<div><h4><span class="badge badge-ds">DeepSeek Vision</span></h4>
+<pre><code># DeepSeek V4 Pro (vision mode)
+messages: [{
+  "role": "user",
+  "content": [
+    {"type": "text", "text": "..."},
+    {"type": "image_url", "image_url": {
+      "url": "data:image/png;base64,..."
+    }}
+  ]
+}]</code></pre></div>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">🖼️ Vision Prompt Techniques</div>
+<ul>
+  <li><strong>Be spatially specific:</strong> "In the upper-right corner..."</li>
+  <li><strong>Describe the expected context:</strong> "This is a 2024 medical receipt"</li>
+  <li><strong>Ask for coordinates:</strong> "List elements and their position (x, y)"</li>
+  <li><strong>PDFs = images:</strong> Claude reads PDFs page by page as images</li>
+  <li><strong>Multimodal Chain of Thought:</strong> "Describe the image → analyze → answer"</li>
+</ul>
+</div>
+
+</div>
+</section>
+
+
+
+<section class="module-references">
+  <h3 data-i18n="ref-header">Referencias</h3>
+  <p style="font-size:13px;color:var(--text-dim);" data-i18n="ref-intro">
+    Documentación oficial y papers consultados durante este módulo. Revísalos para profundizar.
+  </p>
+  <ul class="references-list" data-references="03"></ul>
+</section>
+
+</main>
+</div>
+
+<script src="../js/shared/manifest.js?v=8"></script>
+<script src="../js/shared/sidebar.js?v=8"></script>
+<script src="../js/shared/references.js?v=8"></script>
+<script src="../js/i18n.js?v=8"></script>
+<script src="../js/quiz.js?v=8"></script>
+<script src="../js/glossary.js?v=8"></script>
+<script src="../js/app.js?v=8"></script>
+</body>
+</html>

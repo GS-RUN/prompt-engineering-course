@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bloque XI — Aplicaciones por industria y rol — Prompt Engineering Master Course</title>
+<link rel="stylesheet" href="../css/style.css?v=8">
+<link rel="stylesheet" href="../css/bando-b.css?v=8">
+<script>
+  (function() {
+    try {
+      var t = localStorage.getItem('theme');
+      if (t !== 'dark' && t !== 'light') t = 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+    } catch(e) { document.documentElement.setAttribute('data-theme', 'dark'); }
+  })();
+</script>
+</head>
+<body data-page-block="11">
+
+<div class="bg-orb bg-orb-1"></div>
+<div class="bg-orb bg-orb-2"></div>
+<div class="bg-orb bg-orb-3"></div>
+<div class="bg-gradient"></div>
+<div class="bg-grid"></div>
+<div id="progress-bar"></div>
+
+<div id="app">
+<nav id="sidebar"></nav>
+
+<main id="content">
+
+<section class="module-front-matter" data-module-front>
+  <div class="module-meta">
+    <span class="module-icon">🏢</span>
+    <span class="module-level level-intermediate">intermediate</span>
+    <span class="module-time">⏱️ 200 min</span>
+  </div>
+  <h1 class="module-title">
+    <span class="lang-block" data-lang="es">Bloque XI — Aplicaciones por industria y rol</span>
+    <span class="lang-block" data-lang="en">Block XI — Applied Industry + Roles</span>
+  </h1>
+  <div class="module-objectives">
+    <div class="lang-block" data-lang="es">
+      <h3>Objetivos de aprendizaje</h3>
+      <ul>
+        <li>Implementar code review automatizado, soporte al cliente, extracción de datos y generación de docs.</li>
+        <li>Adaptar prompts a healthcare, finanzas, legal, gaming, educación, retail.</li>
+        <li>Diseñar workflows AI según el rol (dev, design, PM, exec).</li>
+      </ul>
+    </div>
+    <div class="lang-block" data-lang="en">
+      <h3>Learning objectives</h3>
+      <ul>
+        <li>Implement automated code review, customer support, data extraction and doc generation.</li>
+        <li>Adapt prompts to healthcare, finance, legal, gaming, education, retail.</li>
+        <li>Design AI workflows by role (dev, design, PM, exec).</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="s48">
+<h2>11.1 Caso Real: Code Review Pipeline</h2>
+<div class="lang-block" data-lang="es">
+
+<pre><code># System Prompt para Code Review Automático
+Eres un revisor de código sénior especializado en seguridad.
+Para cada PR, analiza e informa:
+
+&lt;instructions&gt;
+1. SEGURIDAD: OWASP Top 10, inyección, autenticación, exposición de datos.
+2. CORRECCIÓN: Errores lógicos, edge cases, race conditions.
+3. RENDIMIENTO: Queries N+1, memory leaks, operaciones bloqueantes.
+4. ESTILO: Solo señala problemas que puedan causar bugs.
+&lt;/instructions&gt;
+
+&lt;format&gt;
+&lt;finding severity="critical|high|medium|low"&gt;
+  &lt;file&gt;ruta/al/archivo.ts&lt;/file&gt;
+  &lt;line&gt;42&lt;/line&gt;
+  &lt;issue&gt;Descripción del problema&lt;/issue&gt;
+  &lt;fix&gt;Sugerencia concreta de código&lt;/fix&gt;
+&lt;/finding&gt;
+&lt;/format&gt;
+
+Reporta TODOS los problemas. Cobertura sobre filtrado.
+Incluye nivel de confianza (0-100%) para cada hallazgo.</code></pre>
+
+<div class="card card-green"><div class="card-title">📈 Resultados típicos</div>
+<p>Con Claude Opus 4.7: 11pp más recall que modelos anteriores. 94% precisión en hallazgos críticos. Tiempo de review: de 45 min a 3 min por PR.</p></div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<pre><code># System Prompt for Automated Code Review
+You are a senior security-focused code reviewer.
+For each PR, analyze and report:
+
+&lt;instructions&gt;
+1. SECURITY: OWASP Top 10, injection, auth, data exposure
+2. CORRECTNESS: Logic errors, edge cases, race conditions
+3. PERFORMANCE: N+1 queries, memory leaks, blocking ops
+4. STYLE: Only flag issues that could cause bugs
+&lt;/instructions&gt;
+
+&lt;format&gt;
+&lt;finding severity="critical|high|medium|low"&gt;
+  &lt;file&gt;path/to/file.ts&lt;/file&gt;
+  &lt;line&gt;42&lt;/line&gt;
+  &lt;issue&gt;Description&lt;/issue&gt;
+  &lt;fix&gt;Concrete code suggestion&lt;/fix&gt;
+&lt;/finding&gt;
+&lt;/format&gt;
+
+Report EVERY issue. Coverage over filtering.
+Include confidence level (0-100%) for each finding.</code></pre>
+
+<div class="card card-green"><div class="card-title">📈 Typical results</div>
+<p>With Claude Opus 4.7: 11pp more recall than previous models. 94% precision on critical findings. Review time: from 45 min to 3 min per PR.</p></div>
+
+</div>
+</section>
+
+<section id="s49">
+<h2>11.2 Caso Real: Soporte al Cliente</h2>
+<div class="lang-block" data-lang="es">
+
+<pre><code># Chatbot de Soporte Técnico — System Prompt
+Eres TechSupport AI para CloudSync Inc.
+
+&lt;persona&gt;
+Amable, paciente, orientado a soluciones. NUNCA digas "no lo sé" —
+di "Déjame buscarte el recurso adecuado".
+&lt;/persona&gt;
+
+&lt;escalation_rules&gt;
+- Problemas de cuenta/facturación → Transferir a humano (proporciona nº de ticket).
+- Pérdida de datos → CRÍTICO — escalar inmediatamente.
+- Solicitudes de features → Registrar en el sistema de feedback.
+- Preguntas "¿cómo hago…?" → Responder con enlaces a la documentación.
+&lt;/escalation_rules&gt;
+
+&lt;examples&gt;
+&lt;example&gt;
+Usuario: "Mis archivos no se están sincronizando".
+Asistente: "¡Veamos! Primero comprueba:
+1. ¿Está CloudSync corriendo? (busca el icono en la bandeja).
+2. ¿Tienes conexión a internet?
+3. ¿Qué archivos concretos no se sincronizan?
+[Si todo lo anterior es correcto → comprueba el estado del servidor → escala si hace falta]".
+&lt;/example&gt;
+&lt;/examples&gt;</code></pre>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<pre><code># Tech Support Chatbot — System Prompt
+You are TechSupport AI for CloudSync Inc.
+
+&lt;persona&gt;
+Friendly, patient, solution-oriented. NEVER say "I don't know" —
+say "Let me find the right resource for you."
+&lt;/persona&gt;
+
+&lt;escalation_rules&gt;
+- Account/billing issues → Transfer to human (provide ticket #)
+- Data loss → CRITICAL — escalate immediately
+- Feature requests → Log in feedback system
+- How-to questions → Answer with docs links
+&lt;/escalation_rules&gt;
+
+&lt;examples&gt;
+&lt;example&gt;
+User: "My files aren't syncing"
+Assistant: "Let's troubleshoot! First, check:
+1. Is CloudSync running? (look for the tray icon)
+2. Are you connected to internet?
+3. Which specific files aren't syncing?
+[If all checks pass → check server status → escalate if needed]"
+&lt;/example&gt;
+&lt;/examples&gt;</code></pre>
+
+</div>
+</section>
+
+<section id="s50">
+<h2>11.3 Caso Real: Extracción de Datos</h2>
+<div class="lang-block" data-lang="es">
+
+<pre><code># Pipeline de Extracción de Facturas
+# Paso 1: Output estructurado
+Extrae de esta factura los siguientes campos:
+{
+  "invoice_number": "string",
+  "date": "YYYY-MM-DD",
+  "vendor": {"name": "string", "tax_id": "string"},
+  "line_items": [{"description": "string", "quantity": number, "unit_price": number, "total": number}],
+  "subtotal": number, "tax": number, "total": number,
+  "currency": "string (ISO 4217)"
+}
+
+# Paso 2: Prompt de validación
+Valida los datos extraídos:
+- ¿Coincide invoice_number con el formato ABC-####?
+- ¿Suman line_items igual al subtotal? (tolerancia ±0.01).
+- ¿Está la fecha dentro del rango válido (2020-2026)?
+- Marca cualquier anomalía dentro de etiquetas &lt;anomalies&gt;.</code></pre>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<pre><code># Invoice Extraction Pipeline
+# Step 1: Structured Output
+Extract from this invoice:
+{
+  "invoice_number": "string",
+  "date": "YYYY-MM-DD",
+  "vendor": {"name": "string", "tax_id": "string"},
+  "line_items": [{"description": "string", "quantity": number, "unit_price": number, "total": number}],
+  "subtotal": number, "tax": number, "total": number,
+  "currency": "string (ISO 4217)"
+}
+
+# Step 2: Validation Prompt
+Validate the extracted data:
+- Does invoice_number match format ABC-####?
+- Do line_items sum up to subtotal? (±0.01 tolerance)
+- Is date within valid range (2020-2026)?
+- Flag any anomalies in &lt;anomalies&gt; tags.</code></pre>
+
+</div>
+</section>
+
+<section id="s51">
+<h2>11.4 Caso Real: Generador de Documentación</h2>
+<div class="lang-block" data-lang="es">
+
+<pre><code># System Prompt — Generador de Documentación
+Eres un redactor técnico. Genera documentación a partir del código.
+
+&lt;rules&gt;
+- Extrae signatures de funciones, params, return types y excepciones.
+- Añade un ejemplo de uso para cada función pública.
+- Indica cualquier efecto secundario u operación mutante.
+- Usa el estilo de documentación existente del proyecto (JSDoc / docstring / etc.).
+&lt;/rules&gt;
+
+&lt;template&gt;
+## `nombreFuncion(params)`
+**Descripción:** qué hace la función.
+**Parámetros:** | Nombre | Tipo | Descripción |
+**Retorna:** tipo — descripción.
+**Lanza:** TipoError — cuándo ocurre.
+**Ejemplo:**
+```language
+// Ejemplo funcional con su salida esperada
+```
+**Efectos secundarios:** [ninguno | descripción]
+&lt;/template&gt;</code></pre>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<pre><code># Doc Generator System Prompt
+You are a technical writer. Generate documentation from code.
+
+&lt;rules&gt;
+- Extract function signatures, params, return types, exceptions
+- Add a usage example for each public function
+- Note any side effects or mutating operations
+- Use the project's existing doc style (JSDoc / docstring / etc.)
+&lt;/rules&gt;
+
+&lt;template&gt;
+## `functionName(params)`
+**Description:** What this function does
+**Parameters:** | Name | Type | Description |
+**Returns:** Type — description
+**Throws:** ErrorType — when this happens
+**Example:**
+```language
+// Working example with expected output
+```
+**Side Effects:** [none | description]
+&lt;/template&gt;</code></pre>
+
+</div>
+</section>
+
+<section id="s69">
+<h2>15.1 AI en Healthcare & Biotech</h2>
+<div class="lang-block" data-lang="es">
+
+<div class="card card-accent">
+<div class="card-title">🏥 Casos de Uso con Ejemplos Reales</div>
+<div class="table-wrap"><table>
+<tr><th>Caso</th><th>Qué hace la IA</th><th>Modelo típico</th></tr>
+<tr><td><strong>Diagnóstico por imagen</strong></td><td>Radiografías, TC, RMN → detecta tumores, fracturas, anomalías</td><td>Claude Vision, Med-PaLM 3</td></tr>
+<tr><td><strong>Notas clínicas → Datos estructurados</strong></td><td>Extrae medicamentos, dosis, síntomas de texto libre médico</td><td>Claude Opus + Structured Outputs</td></tr>
+<tr><td><strong>Chatbot de triaje</strong></td><td>Pregunta síntomas → sugiere nivel de urgencia → recomienda acción</td><td>Claude/DeepSeek + system prompt médico</td></tr>
+<tr><td><strong>Descubrimiento de fármacos</strong></td><td>Predice interacciones proteína-fármaco, genera moléculas candidatas</td><td>AlphaFold 3, modelos especializados</td></tr>
+<tr><td><strong>Resumen de historial clínico</strong></td><td>Condensa 50 páginas de historial en 1 página para el médico</td><td>Claude Opus (200K contexto)</td></tr>
+</table></div>
+</div>
+
+<pre><code># System Prompt: Asistente de Diagnóstico Diferencial
+You are a clinical decision support tool for physicians.
+CRITICAL: You suggest, you do NOT diagnose. ALWAYS recommend
+consulting a specialist.
+
+&lt;instructions&gt;
+1. Analyze reported symptoms and patient history
+2. List 3-5 differential diagnoses ranked by probability
+3. For each: explain why it fits, what contradicts it
+4. Suggest next tests/exams to narrow down
+5. Flag any RED FLAGS requiring immediate attention
+6. Cite relevant medical literature when possible
+&lt;/instructions&gt;
+
+&lt;safety&gt;
+- If symptoms suggest emergency (stroke, MI, sepsis): say CALL 911
+- Never suggest specific medication dosages
+- Always note: "This is a decision support tool, not a diagnosis"
+&lt;/safety&gt;</code></pre>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="card card-accent">
+<div class="card-title">🏥 Use Cases with Real Examples</div>
+<div class="table-wrap"><table>
+<tr><th>Case</th><th>What the AI does</th><th>Typical model</th></tr>
+<tr><td><strong>Imaging diagnosis</strong></td><td>X-rays, CT, MRI → detects tumors, fractures, anomalies</td><td>Claude Vision, Med-PaLM 3</td></tr>
+<tr><td><strong>Clinical notes → Structured data</strong></td><td>Extracts medications, dosages, symptoms from medical free text</td><td>Claude Opus + Structured Outputs</td></tr>
+<tr><td><strong>Triage chatbot</strong></td><td>Asks symptoms → suggests urgency level → recommends action</td><td>Claude/DeepSeek + medical system prompt</td></tr>
+<tr><td><strong>Drug discovery</strong></td><td>Predicts protein-drug interactions, generates candidate molecules</td><td>AlphaFold 3, specialized models</td></tr>
+<tr><td><strong>Clinical history summary</strong></td><td>Condenses 50 pages of history into 1 page for the physician</td><td>Claude Opus (200K context)</td></tr>
+</table></div>
+</div>
+
+<pre><code># System Prompt: Differential Diagnosis Assistant
+You are a clinical decision support tool for physicians.
+CRITICAL: You suggest, you do NOT diagnose. ALWAYS recommend
+consulting a specialist.
+
+&lt;instructions&gt;
+1. Analyze reported symptoms and patient history
+2. List 3-5 differential diagnoses ranked by probability
+3. For each: explain why it fits, what contradicts it
+4. Suggest next tests/exams to narrow down
+5. Flag any RED FLAGS requiring immediate attention
+6. Cite relevant medical literature when possible
+&lt;/instructions&gt;
+
+&lt;safety&gt;
+- If symptoms suggest emergency (stroke, MI, sepsis): say CALL 911
+- Never suggest specific medication dosages
+- Always note: "This is a decision support tool, not a diagnosis"
+&lt;/safety&gt;</code></pre>
+
+</div>
+</section>
+
+<section id="s70">
+<h2>15.2 AI en Finance & Banking</h2>
+<div class="lang-block" data-lang="es">
+
+<div class="table-wrap"><table>
+<tr><th>Caso</th><th>Prompt / Técnica</th><th>Resultado</th></tr>
+<tr><td><strong>Análisis de sentimiento de mercado</strong></td><td>Procesar noticias financieras + earnings calls → score bullish/bearish</td><td>Señales de trading automatizadas</td></tr>
+<tr><td><strong>Detección de fraude</strong></td><td>Analizar patrones de transacciones → flag anomalías con explicación</td><td>95% menos falsos positivos vs reglas estáticas</td></tr>
+<tr><td><strong>Extracción de SEC filings</strong></td><td>10-K/10-Q → extraer riesgos, revenue breakdown, segment data</td><td>Horas → segundos por documento</td></tr>
+<tr><td><strong>Reporting financiero</strong></td><td>Datos crudos → narrativa ejecutiva + gráficos + recomendaciones</td><td>Reportes mensuales automatizados</td></tr>
+<tr><td><strong>KYC / AML compliance</strong></td><td>Analizar documentos de identidad + listas de sanciones → risk score</td><td>Compliance 10x más rápido</td></tr>
+</table></div>
+
+<pre><code># Prompt: Análisis de Sentimiento Financiero
+Analyze the following earnings call transcript.
+Return a structured assessment:
+
+&lt;output_format&gt;
+{
+  "overall_sentiment": "bullish|neutral|bearish",
+  "confidence": 0-100,
+  "key_positive_signals": ["..."],
+  "key_negative_signals": ["..."],
+  "forward_guidance": "summary of future outlook",
+  "risk_factors": ["..."],
+  "tone_shift_from_previous": "more optimistic|similar|more cautious"
+}
+&lt;/output_format&gt;
+
+Earnings Call Transcript:
+{{TRANSCRIPT}}</code></pre>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="table-wrap"><table>
+<tr><th>Case</th><th>Prompt / Technique</th><th>Result</th></tr>
+<tr><td><strong>Market sentiment analysis</strong></td><td>Process financial news + earnings calls → bullish/bearish score</td><td>Automated trading signals</td></tr>
+<tr><td><strong>Fraud detection</strong></td><td>Analyze transaction patterns → flag anomalies with explanation</td><td>95% fewer false positives vs static rules</td></tr>
+<tr><td><strong>SEC filings extraction</strong></td><td>10-K/10-Q → extract risks, revenue breakdown, segment data</td><td>Hours → seconds per document</td></tr>
+<tr><td><strong>Financial reporting</strong></td><td>Raw data → executive narrative + charts + recommendations</td><td>Automated monthly reports</td></tr>
+<tr><td><strong>KYC / AML compliance</strong></td><td>Analyze identity docs + sanctions lists → risk score</td><td>10x faster compliance</td></tr>
+</table></div>
+
+<pre><code># Prompt: Financial Sentiment Analysis
+Analyze the following earnings call transcript.
+Return a structured assessment:
+
+&lt;output_format&gt;
+{
+  "overall_sentiment": "bullish|neutral|bearish",
+  "confidence": 0-100,
+  "key_positive_signals": ["..."],
+  "key_negative_signals": ["..."],
+  "forward_guidance": "summary of future outlook",
+  "risk_factors": ["..."],
+  "tone_shift_from_previous": "more optimistic|similar|more cautious"
+}
+&lt;/output_format&gt;
+
+Earnings Call Transcript:
+{{TRANSCRIPT}}</code></pre>
+
+</div>
+</section>
+
+<section id="s71">
+<h2>15.3 AI en Legal & Compliance</h2>
+<div class="lang-block" data-lang="es">
+
+<div class="table-wrap"><table>
+<tr><th>Caso</th><th>Prompt / Técnica</th></tr>
+<tr><td><strong>Revisión de contratos</strong></td><td>Identificar cláusulas abusivas, missing terms, conflictos con ley aplicable</td></tr>
+<tr><td><strong>eDiscovery</strong></td><td>Revisar millones de documentos → encontrar los 100 relevantes al caso</td></tr>
+<tr><td><strong>Análisis de jurisprudencia</strong></td><td>"Encuentra casos similares en este circuito sobre X en los últimos 5 años"</td></tr>
+<tr><td><strong>Redacción de documentos legales</strong></td><td>Generar NDAs, términos de servicio, políticas de privacidad desde templates</td></tr>
+<tr><td><strong>Due diligence M&A</strong></td><td>Analizar contratos, IP, litigios de la empresa objetivo → risk report</td></tr>
+</table></div>
+
+<pre><code># System Prompt: Contract Reviewer
+You are a senior contract attorney. Review the following contract
+and identify:
+
+&lt;analysis_sections&gt;
+1. RISK ASSESSMENT: Unusual or one-sided clauses favoring either party
+2. MISSING TERMS: Standard clauses that are absent (indemnification,
+   termination, governing law, dispute resolution, force majeure)
+3. CONTRADICTIONS: Clauses that conflict with each other
+4. COMPLIANCE: Issues with GDPR/CCPA (data), employment law, etc.
+5. NEGOTIATION POINTS: Clauses to negotiate and suggested language
+&lt;/analysis_sections&gt;
+
+&lt;format&gt;
+For each finding: [Section] [Severity: Critical/High/Medium/Low]
+→ Current language: "..."
+→ Issue: "..."
+→ Recommended: "..."
+&lt;/format&gt;
+
+Contract: {{CONTRACT_TEXT}}</code></pre>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="table-wrap"><table>
+<tr><th>Case</th><th>Prompt / Technique</th></tr>
+<tr><td><strong>Contract review</strong></td><td>Identify abusive clauses, missing terms, conflicts with applicable law</td></tr>
+<tr><td><strong>eDiscovery</strong></td><td>Review millions of documents → find the 100 relevant to the case</td></tr>
+<tr><td><strong>Case law analysis</strong></td><td>"Find similar cases in this circuit on X over the last 5 years"</td></tr>
+<tr><td><strong>Legal document drafting</strong></td><td>Generate NDAs, terms of service, privacy policies from templates</td></tr>
+<tr><td><strong>M&A due diligence</strong></td><td>Analyze contracts, IP, litigation of the target company → risk report</td></tr>
+</table></div>
+
+<pre><code># System Prompt: Contract Reviewer
+You are a senior contract attorney. Review the following contract
+and identify:
+
+&lt;analysis_sections&gt;
+1. RISK ASSESSMENT: Unusual or one-sided clauses favoring either party
+2. MISSING TERMS: Standard clauses that are absent (indemnification,
+   termination, governing law, dispute resolution, force majeure)
+3. CONTRADICTIONS: Clauses that conflict with each other
+4. COMPLIANCE: Issues with GDPR/CCPA (data), employment law, etc.
+5. NEGOTIATION POINTS: Clauses to negotiate and suggested language
+&lt;/analysis_sections&gt;
+
+&lt;format&gt;
+For each finding: [Section] [Severity: Critical/High/Medium/Low]
+→ Current language: "..."
+→ Issue: "..."
+→ Recommended: "..."
+&lt;/format&gt;
+
+Contract: {{CONTRACT_TEXT}}</code></pre>
+
+</div>
+</section>
+
+<section id="s72">
+<h2>15.4 AI en Gaming, Media, Education & Retail</h2>
+<div class="lang-block" data-lang="es">
+
+<div class="table-wrap"><table>
+<tr><th>Industria</th><th>Caso</th><th>Técnica</th></tr>
+<tr><td><strong>🎮 Gaming</strong></td><td>NPCs con diálogo dinámico (no pre-escrito)</td><td>LLM local (Ollama) + RAG con lore del juego</td></tr>
+<tr><td><strong>🎮 Gaming</strong></td><td>Generación procedural de quests y narrativa</td><td>Claude/DeepSeek con templates estructurados</td></tr>
+<tr><td><strong>📺 Media</strong></td><td>Resúmenes automáticos de artículos</td><td>Chain: extract → summarize → headline</td></tr>
+<tr><td><strong>📺 Media</strong></td><td>Moderación de comentarios (toxicidad, spam)</td><td>Classification prompt + moderation API</td></tr>
+<tr><td><strong>📚 Education</strong></td><td>Tutor personalizado que se adapta al nivel</td><td>System prompt de profesor + adaptive difficulty</td></tr>
+<tr><td><strong>📚 Education</strong></td><td>Generación de exámenes y ejercicios</td><td>Structured outputs + difficulty params</td></tr>
+<tr><td><strong>🛒 Retail</strong></td><td>Chatbot de atención al cliente</td><td>RAG sobre catálogo + políticas de devolución</td></tr>
+<tr><td><strong>🛒 Retail</strong></td><td>Generación de descripciones de producto</td><td>Template + bullet points → copy persuasivo</td></tr>
+</table></div>
+
+<div class="card card-green">
+<div class="card-title">📚 Ejemplo: Tutor Adaptativo</div>
+<pre><code>You are a math tutor for a {{STUDENT_LEVEL}} student.
+Current topic: {{TOPIC}}. Past mistakes: {{MISTAKES}}.
+
+&lt;teaching_method&gt;
+1. Start with a quick warm-up question
+2. If correct: praise + slightly harder question
+3. If incorrect: DON'T give the answer. Give a hint.
+   Then ask them to try again.
+4. After 2 failed attempts: walk through the solution
+   step by step, asking them to fill in each step.
+5. End with: "Can you explain back to me what you learned?"
+&lt;/teaching_method&gt;
+
+&lt;style&gt;
+- Encouraging but not condescending
+- Use concrete examples, not abstract formulas
+- Celebrate "aha!" moments
+&lt;/style&gt;</code></pre>
+</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="table-wrap"><table>
+<tr><th>Industry</th><th>Case</th><th>Technique</th></tr>
+<tr><td><strong>🎮 Gaming</strong></td><td>NPCs with dynamic dialogue (not pre-scripted)</td><td>Local LLM (Ollama) + RAG with game lore</td></tr>
+<tr><td><strong>🎮 Gaming</strong></td><td>Procedural quest and narrative generation</td><td>Claude/DeepSeek with structured templates</td></tr>
+<tr><td><strong>📺 Media</strong></td><td>Automatic article summaries</td><td>Chain: extract → summarize → headline</td></tr>
+<tr><td><strong>📺 Media</strong></td><td>Comment moderation (toxicity, spam)</td><td>Classification prompt + moderation API</td></tr>
+<tr><td><strong>📚 Education</strong></td><td>Personalized tutor that adapts to level</td><td>Teacher system prompt + adaptive difficulty</td></tr>
+<tr><td><strong>📚 Education</strong></td><td>Exam and exercise generation</td><td>Structured outputs + difficulty params</td></tr>
+<tr><td><strong>🛒 Retail</strong></td><td>Customer support chatbot</td><td>RAG over catalog + return policies</td></tr>
+<tr><td><strong>🛒 Retail</strong></td><td>Product description generation</td><td>Template + bullet points → persuasive copy</td></tr>
+</table></div>
+
+<div class="card card-green">
+<div class="card-title">📚 Example: Adaptive Tutor</div>
+<pre><code>You are a math tutor for a {{STUDENT_LEVEL}} student.
+Current topic: {{TOPIC}}. Past mistakes: {{MISTAKES}}.
+
+&lt;teaching_method&gt;
+1. Start with a quick warm-up question
+2. If correct: praise + slightly harder question
+3. If incorrect: DON'T give the answer. Give a hint.
+   Then ask them to try again.
+4. After 2 failed attempts: walk through the solution
+   step by step, asking them to fill in each step.
+5. End with: "Can you explain back to me what you learned?"
+&lt;/teaching_method&gt;
+
+&lt;style&gt;
+- Encouraging but not condescending
+- Use concrete examples, not abstract formulas
+- Celebrate "aha!" moments
+&lt;/style&gt;</code></pre>
+</div>
+
+</div>
+</section>
+
+<section id="s82">
+<h2>19.1 AI para Developers</h2>
+<div class="lang-block" data-lang="es">
+
+<div class="table-wrap"><table>
+<tr><th>Tarea</th><th>Prompt / Herramienta</th><th>Resultado típico</th></tr>
+<tr><td><strong>Generar boilerplate</strong></td><td>"Create a FastAPI app with /users CRUD + SQLAlchemy + tests"</td><td>~200 líneas en 15 segundos</td></tr>
+<tr><td><strong>Explicar código legacy</strong></td><td>"Explain what this 500-line function does, line by line"</td><td>Documentación + diagrama</td></tr>
+<tr><td><strong>Refactorizar</strong></td><td>"Refactor this to use async/await and add type hints"</td><td>Código modernizado + sin bugs</td></tr>
+<tr><td><strong>Debugear</strong></td><td>"This function returns None when it should return a list. Why?" + stack trace</td><td>Root cause + fix en segundos</td></tr>
+<tr><td><strong>Escribir tests</strong></td><td>"Write unit tests covering edge cases for this function"</td><td>80-95% coverage en 30 segundos</td></tr>
+<tr><td><strong>Code review</strong></td><td>"Review this PR for bugs, security issues, and performance problems"</td><td>Review completo en 1 minuto</td></tr>
+<tr><td><strong>Migrar frameworks</strong></td><td>"Migrate this React class component to functional + hooks"</td><td>Migración sintácticamente correcta</td></tr>
+<tr><td><strong>SQL queries</strong></td><td>"Write a query: top 10 customers by revenue in Q3, with their top product"</td><td>Query optimizada + índices sugeridos</td></tr>
+</table></div>
+
+<div class="tip"><strong>💡 El stack ideal del developer 2026:</strong> Claude Code/OpenCode + GitHub Copilot + un buen AGENTS.md. Los agentes manejan el 60-80% del código boilerplate, tests, y refactors. Tú te enfocas en arquitectura y decisiones de diseño.</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="table-wrap"><table>
+<tr><th>Task</th><th>Prompt / Tool</th><th>Typical result</th></tr>
+<tr><td><strong>Generate boilerplate</strong></td><td>"Create a FastAPI app with /users CRUD + SQLAlchemy + tests"</td><td>~200 lines in 15 seconds</td></tr>
+<tr><td><strong>Explain legacy code</strong></td><td>"Explain what this 500-line function does, line by line"</td><td>Documentation + diagram</td></tr>
+<tr><td><strong>Refactor</strong></td><td>"Refactor this to use async/await and add type hints"</td><td>Modernized, bug-free code</td></tr>
+<tr><td><strong>Debug</strong></td><td>"This function returns None when it should return a list. Why?" + stack trace</td><td>Root cause + fix in seconds</td></tr>
+<tr><td><strong>Write tests</strong></td><td>"Write unit tests covering edge cases for this function"</td><td>80-95% coverage in 30 seconds</td></tr>
+<tr><td><strong>Code review</strong></td><td>"Review this PR for bugs, security issues, and performance problems"</td><td>Full review in 1 minute</td></tr>
+<tr><td><strong>Migrate frameworks</strong></td><td>"Migrate this React class component to functional + hooks"</td><td>Syntactically correct migration</td></tr>
+<tr><td><strong>SQL queries</strong></td><td>"Write a query: top 10 customers by revenue in Q3, with their top product"</td><td>Optimized query + suggested indexes</td></tr>
+</table></div>
+
+<div class="tip"><strong>💡 The 2026 developer's ideal stack:</strong> Claude Code/OpenCode + GitHub Copilot + a good AGENTS.md. Agents handle 60-80% of boilerplate, tests, and refactors. You focus on architecture and design decisions.</div>
+
+</div>
+</section>
+
+<section id="s83">
+<h2>19.2 AI para Designers</h2>
+<div class="lang-block" data-lang="es">
+
+<div class="table-wrap"><table>
+<tr><th>Tarea</th><th>Prompt Ejemplo</th></tr>
+<tr><td><strong>UI Generation</strong></td><td>"Design a SaaS dashboard: sidebar nav, KPI cards, real-time chart, dark mode. Use cold monochrome palette: #E9ECEC → #11171B. Fraunces for headings, Söhne for body."</td></tr>
+<tr><td><strong>Design critique</strong></td><td>"Review this landing page for visual hierarchy, accessibility (WCAG AA), and conversion optimization. Flag any issues with contrast, spacing, or information architecture."</td></tr>
+<tr><td><strong>Design system</strong></td><td>"Generate a design system token file: colors (primary, secondary, neutral, semantic), typography scale (12px-56px), spacing scale (4px grid), border-radius tokens, shadow tokens."</td></tr>
+<tr><td><strong>Wireframe → Code</strong></td><td>"Convert this wireframe sketch into a responsive HTML/CSS prototype. Keep it minimal, use CSS Grid, mobile-first."</td></tr>
+<tr><td><strong>Copywriting UX</strong></td><td>"Write 5 variants of a 404 error page message. Tone: friendly, slightly humorous, helpful. Include a CTA to go back home."</td></tr>
+</table></div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="table-wrap"><table>
+<tr><th>Task</th><th>Example Prompt</th></tr>
+<tr><td><strong>UI Generation</strong></td><td>"Design a SaaS dashboard: sidebar nav, KPI cards, real-time chart, dark mode. Use cold monochrome palette: #E9ECEC → #11171B. Fraunces for headings, Söhne for body."</td></tr>
+<tr><td><strong>Design critique</strong></td><td>"Review this landing page for visual hierarchy, accessibility (WCAG AA), and conversion optimization. Flag any issues with contrast, spacing, or information architecture."</td></tr>
+<tr><td><strong>Design system</strong></td><td>"Generate a design system token file: colors (primary, secondary, neutral, semantic), typography scale (12px-56px), spacing scale (4px grid), border-radius tokens, shadow tokens."</td></tr>
+<tr><td><strong>Wireframe → Code</strong></td><td>"Convert this wireframe sketch into a responsive HTML/CSS prototype. Keep it minimal, use CSS Grid, mobile-first."</td></tr>
+<tr><td><strong>UX Copywriting</strong></td><td>"Write 5 variants of a 404 error page message. Tone: friendly, slightly humorous, helpful. Include a CTA to go back home."</td></tr>
+</table></div>
+
+</div>
+</section>
+
+<section id="s84">
+<h2>19.3 AI para Product Managers y Executives</h2>
+<div class="lang-block" data-lang="es">
+
+<div class="table-wrap"><table>
+<tr><th>Rol</th><th>Tarea</th><th>Prompt Ejemplo</th></tr>
+<tr><td><strong>PM</strong></td><td>PRD (Product Requirements Doc)</td><td>"Write a PRD for a real-time collaboration feature in our document editor. Include: problem statement, user stories, success metrics, MVP scope, technical constraints, timeline estimate."</td></tr>
+<tr><td><strong>PM</strong></td><td>Competitive analysis</td><td>"Analyze our top 3 competitors (X, Y, Z). Compare: pricing, features, market positioning, strengths/weaknesses. Identify 3 opportunities where we can differentiate."</td></tr>
+<tr><td><strong>PM</strong></td><td>User story mapping</td><td>"Given this product vision: [X], generate a user story map organized by epics → features → stories. Prioritize using MoSCoW (Must/Should/Could/Won't)."</td></tr>
+<tr><td><strong>PM</strong></td><td>Meeting → Decision log</td><td>"Extract decisions, action items, and owners from this meeting transcript. Format as: Decision | Owner | Deadline"</td></tr>
+<tr><td><strong>Executive</strong></td><td>Strategy analysis</td><td>"Given these Q4 metrics: [data], write an executive summary: 3 key wins, 3 areas of concern, 3 recommended actions for Q1. Keep it under 500 words."</td></tr>
+<tr><td><strong>Executive</strong></td><td>Board presentation</td><td>"Create a board deck outline for our Series B pitch. 10-12 slides. Include: problem, solution, traction, market, competition, team, financials, ask."</td></tr>
+<tr><td><strong>Executive</strong></td><td>Email drafting</td><td>"Draft a company-wide email announcing our new remote work policy. Tone: warm, transparent, inspiring. Address potential concerns proactively."</td></tr>
+</table></div>
+
+<div class="card card-green">
+<div class="card-title">📋 Template: PRD Generator</div>
+<pre><code>You are a senior PM at a {{COMPANY_TYPE}} company.
+Write a Product Requirements Document for: {{FEATURE}}
+
+&lt;sections&gt;
+1. Executive Summary (2-3 sentences)
+2. Problem Statement (what pain does this solve?)
+3. User Stories (as a [user], I want [goal], so that [reason])
+4. Success Metrics (3-5 measurable KPIs)
+5. MVP Scope (what's in / out for v1?)
+6. Technical Constraints (platform, integrations, limits)
+7. Timeline Estimate (weeks, phases)
+8. Risks & Mitigations
+9. Open Questions (what needs research?)
+&lt;/sections&gt;
+
+Use the company's existing product context:
+{{PRODUCT_CONTEXT}}</code></pre>
+</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="table-wrap"><table>
+<tr><th>Role</th><th>Task</th><th>Example Prompt</th></tr>
+<tr><td><strong>PM</strong></td><td>PRD (Product Requirements Doc)</td><td>"Write a PRD for a real-time collaboration feature in our document editor. Include: problem statement, user stories, success metrics, MVP scope, technical constraints, timeline estimate."</td></tr>
+<tr><td><strong>PM</strong></td><td>Competitive analysis</td><td>"Analyze our top 3 competitors (X, Y, Z). Compare: pricing, features, market positioning, strengths/weaknesses. Identify 3 opportunities where we can differentiate."</td></tr>
+<tr><td><strong>PM</strong></td><td>User story mapping</td><td>"Given this product vision: [X], generate a user story map organized by epics → features → stories. Prioritize using MoSCoW (Must/Should/Could/Won't)."</td></tr>
+<tr><td><strong>PM</strong></td><td>Meeting → Decision log</td><td>"Extract decisions, action items, and owners from this meeting transcript. Format as: Decision | Owner | Deadline"</td></tr>
+<tr><td><strong>Executive</strong></td><td>Strategy analysis</td><td>"Given these Q4 metrics: [data], write an executive summary: 3 key wins, 3 areas of concern, 3 recommended actions for Q1. Keep it under 500 words."</td></tr>
+<tr><td><strong>Executive</strong></td><td>Board presentation</td><td>"Create a board deck outline for our Series B pitch. 10-12 slides. Include: problem, solution, traction, market, competition, team, financials, ask."</td></tr>
+<tr><td><strong>Executive</strong></td><td>Email drafting</td><td>"Draft a company-wide email announcing our new remote work policy. Tone: warm, transparent, inspiring. Address potential concerns proactively."</td></tr>
+</table></div>
+
+<div class="card card-green">
+<div class="card-title">📋 Template: PRD Generator</div>
+<pre><code>You are a senior PM at a {{COMPANY_TYPE}} company.
+Write a Product Requirements Document for: {{FEATURE}}
+
+&lt;sections&gt;
+1. Executive Summary (2-3 sentences)
+2. Problem Statement (what pain does this solve?)
+3. User Stories (as a [user], I want [goal], so that [reason])
+4. Success Metrics (3-5 measurable KPIs)
+5. MVP Scope (what's in / out for v1?)
+6. Technical Constraints (platform, integrations, limits)
+7. Timeline Estimate (weeks, phases)
+8. Risks & Mitigations
+9. Open Questions (what needs research?)
+&lt;/sections&gt;
+
+Use the company's existing product context:
+{{PRODUCT_CONTEXT}}</code></pre>
+</div>
+
+</div>
+</section>
+
+
+
+<section class="module-references">
+  <h3 data-i18n="ref-header">Referencias</h3>
+  <p style="font-size:13px;color:var(--text-dim);" data-i18n="ref-intro">
+    Documentación oficial y papers consultados durante este módulo. Revísalos para profundizar.
+  </p>
+  <ul class="references-list" data-references="11"></ul>
+</section>
+
+</main>
+</div>
+
+<script src="../js/shared/manifest.js?v=8"></script>
+<script src="../js/shared/sidebar.js?v=8"></script>
+<script src="../js/shared/references.js?v=8"></script>
+<script src="../js/i18n.js?v=8"></script>
+<script src="../js/quiz.js?v=8"></script>
+<script src="../js/glossary.js?v=8"></script>
+<script src="../js/app.js?v=8"></script>
+</body>
+</html>

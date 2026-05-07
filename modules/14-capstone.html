@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bloque XIV — Capstone Projects · Prompt Engineering Master Course</title>
+<link rel="stylesheet" href="../css/style.css?v=8">
+<link rel="stylesheet" href="../css/bando-b.css?v=8">
+<script>
+  (function() {
+    try {
+      var t = localStorage.getItem('theme');
+      if (t !== 'dark' && t !== 'light') t = 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+    } catch(e) { document.documentElement.setAttribute('data-theme', 'dark'); }
+  })();
+</script>
+</head>
+<body data-page-block="14">
+
+<div class="bg-orb bg-orb-1"></div>
+<div class="bg-orb bg-orb-2"></div>
+<div class="bg-orb bg-orb-3"></div>
+<div class="bg-gradient"></div>
+<div class="bg-grid"></div>
+
+<div id="app">
+<nav id="sidebar"></nav>
+
+<main id="content">
+
+<section class="module-front-matter">
+  <div class="module-meta">
+    <span class="module-icon">🎓</span>
+    <span class="module-level level-capstone">capstone</span>
+    <span class="module-time">⏱️ ~10 horas / proyecto</span>
+  </div>
+  <h1 class="module-title">
+    <span class="lang-block" data-lang="es">Bloque XIV — Proyectos Capstone</span>
+    <span class="lang-block" data-lang="en">Block XIV — Capstone Projects</span>
+  </h1>
+</section>
+
+<section class="card card-orange">
+  <div class="lang-block" data-lang="es">
+    <h3>🚧 Próximamente</h3>
+    <p>Los proyectos capstone son la pieza más demandante del curso y están en desarrollo activo. Cada uno incluirá: <strong>starter repo</strong> con esqueleto reproducible, <strong>especificación detallada</strong> con criterios de aceptación, <strong>solución de referencia</strong> y <strong>rúbrica de evaluación</strong> para auto-evaluarte.</p>
+
+    <h4>Proyecto A — Code Review Bot end-to-end</h4>
+    <p>Bot que revisa Pull Requests automáticamente: integración con GitHub Actions, system prompt robusto, structured outputs, JSON Schema, prompt caching, evals automatizados con golden dataset de 50 PRs reales. Stack: Python + Anthropic API + GitHub API.</p>
+
+    <h4>Proyecto B — RAG Knowledge Assistant</h4>
+    <p>Asistente que responde sobre tu base de conocimiento (Confluence, Notion, Google Drive, mil PDFs). Pipeline RAG completo: ingesta + chunking + embeddings + vector DB + retrieval + augmented generation + citation. Stack: Python + LangChain + Qdrant + Cohere/OpenAI embeddings + Claude.</p>
+
+    <h4>Proyecto C — Local Self-Hosted Assistant</h4>
+    <p>Asistente 100% local con privacidad total: Qwen3-32B Q5 vía Ollama + RAG con ChromaDB + frontend Next.js. Métricas: latencia, calidad, cumplimiento GDPR. Hardware target: RTX 4090 / 5090 o Mac M3/M4 Pro.</p>
+
+    <h4>Proyecto D — Multi-Agent Research Team</h4>
+    <p>Equipo de agentes que investiga un tema y escribe un informe: researcher (busca en web), analyst (sintetiza), critic (red-teams), writer (redacta). Patrón supervisor-worker con LangGraph + Claude Code skills + MCP tools. Métricas: cobertura, accuracy factual vs golden answers, coste total.</p>
+
+    <p><strong>Cuándo:</strong> primer proyecto disponible Q3 2026. Si quieres priorizar uno, abre issue en GitHub con la propuesta.</p>
+  </div>
+  <div class="lang-block" data-lang="en">
+    <h3>🚧 Coming soon</h3>
+    <p>The capstone projects are the most demanding piece of the course and are in active development. Each will include: <strong>starter repo</strong> with reproducible skeleton, <strong>detailed spec</strong> with acceptance criteria, <strong>reference solution</strong> and <strong>evaluation rubric</strong> for self-assessment.</p>
+
+    <h4>Project A — Code Review Bot end-to-end</h4>
+    <p>Bot that reviews Pull Requests automatically: GitHub Actions integration, robust system prompt, structured outputs, JSON Schema, prompt caching, automated evals with a golden dataset of 50 real PRs. Stack: Python + Anthropic API + GitHub API.</p>
+
+    <h4>Project B — RAG Knowledge Assistant</h4>
+    <p>Assistant that answers questions over your knowledge base (Confluence, Notion, Google Drive, thousands of PDFs). Full RAG pipeline: ingest + chunking + embeddings + vector DB + retrieval + augmented generation + citation. Stack: Python + LangChain + Qdrant + Cohere/OpenAI embeddings + Claude.</p>
+
+    <h4>Project C — Local Self-Hosted Assistant</h4>
+    <p>100% local assistant with full privacy: Qwen3-32B Q5 via Ollama + RAG with ChromaDB + Next.js frontend. Metrics: latency, quality, GDPR compliance. Target hardware: RTX 4090 / 5090 or Mac M3/M4 Pro.</p>
+
+    <h4>Project D — Multi-Agent Research Team</h4>
+    <p>Team of agents that researches a topic and writes a report: researcher (searches the web), analyst (synthesizes), critic (red-teams), writer (drafts). Supervisor-worker pattern with LangGraph + Claude Code skills + MCP tools. Metrics: coverage, factual accuracy vs golden answers, total cost.</p>
+
+    <p><strong>When:</strong> first project available Q3 2026. To prioritize one, open a GitHub issue with the proposal.</p>
+  </div>
+</section>
+
+</main>
+</div>
+
+<script src="../js/shared/manifest.js?v=8"></script>
+<script src="../js/shared/sidebar.js?v=8"></script>
+<script src="../js/i18n.js?v=8"></script>
+<script src="../js/app.js?v=8"></script>
+</body>
+</html>
