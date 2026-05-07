@@ -2,6 +2,110 @@
 
 All notable changes to this course are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.2.0] — 2026-05-08
+
+### Added — closing the deferred items from v2.0/v2.1
+
+This release closes everything in the "deferred" list short of an
+in-course AI tutor (which intentionally stays out — it would require
+API key handling, billing, and infra beyond a static site's scope).
+
+#### Project C and D rubrics
+
+Block XIV's Projects C (Local Self-Hosted Assistant) and D (Multi-Agent
+Research Team) had specs and known traps but no rubrics. Added:
+
+- Project C: deliverables list (7 items including Docker compose,
+  COMPLIANCE.md mapping GDPR Art. 32, network monitor evidence) +
+  scoring rubric (8 criteria, 100 pts total).
+- Project D: suggested stack (5-agent topology with tier-mixing per
+  agent), deliverables (6 items), scoring rubric (8 criteria, 100 pts).
+
+Both projects are now portfolio-actionable end-to-end.
+
+#### Block I — Foundations math/conceptual deep-dive
+
+New section 1.0 "How does an LLM really work?" (~600 LOC ES+EN) added
+BEFORE the existing 1.1. Covers tokenization with examples, embeddings,
+the transformer block (self-attention + FFN with intuitions, no
+equations), the three training phases (pre-training / SFT / RLHF-DPO-CAI)
+with cost ranges, sampling, thinking/reasoning tokens (mechanism +
+cost), and "what an LLM is NOT" (six common misconceptions). Designed
+as the layer of mechanical intuition that prompt engineering decisions
+need to rest on.
+
+#### Knowledge checks per block
+
+Added 70 multiple-choice questions (5 per block × 14 blocks: kc-01
+through kc-14) to js/quiz.js. Each question has 4 options, the correct
+answer, and an explanation that adds didactic value beyond a binary
+right/wrong. Coverage:
+
+- kc-01 Foundations: tokens, context windows, local vs cloud, quant
+  sweet spot, VLM mechanics.
+- kc-02 Prompt Core: temperature semantics, few-shot count, XML
+  rationale, CoT use cases, system prompt placement.
+- kc-03 Advanced Reasoning: effort levels, ReAct pattern, doc ordering,
+  tool-use naming, thinking quality lift.
+- kc-04 Production: structured outputs in Claude, caching savings,
+  injection defense, eval-first principle, multi-turn statelessness.
+- kc-05 Agents: workflow vs agent, SKILL.md format, MCP scope,
+  supervisor-worker, AGENTS.md.
+- kc-06 Infrastructure: chunk size, vector DB choice, vLLM positioning,
+  re-ranker gain, production metrics.
+- kc-07 Local + Quant: GPTQ vs AWQ, LoRA/QLoRA, fine-tuning vs RAG,
+  truly-OSS models, GDPR compliance.
+- kc-08 Cross-Model: lock-in cost, OpenAI function calling as standard,
+  LiteLLM vs OpenRouter, fallback design, LLM-as-Judge bias.
+- kc-09 Benchmarks: saturation reading, eval N, GPQA Google-proof,
+  RAGAS, LMSys Arena meaning.
+- kc-10 Safety: hallucination mitigation, EU AI Act tiers, ASL-3,
+  Constitutional AI, jailbreak patterns.
+- kc-11 Industry: code review thresholds, structured outputs vs
+  semantics, escalation rules, medical diagnosis constitution, PM role.
+- kc-12 Future: multi-day agents, US-China gap, LeCun thesis,
+  GraphCast/GenCast, robotics + LLMs.
+- kc-13 Workshop: project iteration, linter scope, anti-patterns,
+  prompt library, prompt evolution.
+- kc-14 Capstone: writeup primacy, cost target, citation accuracy,
+  zero-leak verification, iteration cap.
+
+The existing 22 ad-hoc quizzes scattered through sections remain;
+knowledge checks are end-of-block summative, the inline ones formative.
+
+#### Anchors automated
+
+`scripts/add_knowledge_checks.js` (one-shot, idempotent) inserted
+`<section id="kc-NN" class="knowledge-check">` into all 14 module pages
+right before `<section class="module-references">`. Re-runnable safely.
+
+### Changed
+
+- `js/quiz.js`: cache buster bumped to v=9 across every page that loads
+  it (14 modules + 14-capstone newly added).
+- `modules/14-capstone.html`: now loads quiz.js so kc-14 renders.
+- `js/shared/manifest.js`: course version 2.1.0 → 2.2.0.
+
+### Intentionally NOT done (with rationale)
+
+- **AI tutor of the course.** Would require API key handling, cost
+  monitoring, abuse protection, and an inference proxy. Out of scope
+  for a static-site course; the existing token counter + cost calculator
+  already let a learner reason about cost, and any frontier API console
+  serves as ad-hoc tutor.
+- **Vídeos.** High effort, high signal but separate medium. The course
+  remains text + interactive. Future contributors welcome to record.
+- **Auto-grading of capstone code.** Project rubrics are designed for
+  self-evaluation against objective metrics; auto-grading would lock in
+  one solution shape and limit pedagogical value.
+
+The deferred list is now closed. Future work (e.g. translating remaining
+inline code comments in ES blocks, expanding industry case studies,
+adding more Chinese-frontier-specific examples) belongs to ongoing
+maintenance, not "missing".
+
+---
+
 ## [2.1.0] — 2026-05-08
 
 ### Added — Block VIII fully written

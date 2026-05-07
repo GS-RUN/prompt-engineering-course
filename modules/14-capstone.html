@@ -420,7 +420,34 @@
 </ul>
 </div>
 
-<p><strong>Rúbrica completa y reference solution:</strong> próximamente Q3 2026. Si quieres priorizarlo, abre issue en el repo.</p>
+<div class="card card-accent">
+<div class="card-title">📦 Deliverables</div>
+<ol>
+  <li><code>local-assistant/</code> repo con: Docker compose para Ollama + ChromaDB + frontend Next.js + nginx reverse proxy.</li>
+  <li>Script <code>ingest.py</code> que procesa documentos en local sin tocar nube.</li>
+  <li>API <code>POST /query</code> con autenticación básica.</li>
+  <li>Frontend con login, búsqueda y respuestas con citas.</li>
+  <li>Eval suite contra el mismo dataset que Proyecto B + tabla comparativa cloud-vs-local.</li>
+  <li>Documento <code>COMPLIANCE.md</code> mapeando GDPR Art. 32 (cifrado, control de acceso, logs auditables, retention).</li>
+  <li>Monitor de red corriendo durante 1h de uso real, con captura mostrando cero llamadas externas.</li>
+</ol>
+</div>
+
+<div class="card card-green">
+<div class="card-title">📏 Rúbrica de auto-evaluación</div>
+<div class="table-wrap"><table>
+<tr><th>Criterio</th><th>Puntos</th><th>Cómo se mide</th></tr>
+<tr><td>Pipeline 100% local funcional end-to-end</td><td>20</td><td>Ingesta + query + frontend en hardware target</td></tr>
+<tr><td>Quality ≥ 75% del baseline cloud</td><td>20</td><td>Eval comparativo sobre mismo dataset Proyecto B</td></tr>
+<tr><td>Latencia p95 ≤ 8s en hardware documentado</td><td>15</td><td>Bench real, no simulado</td></tr>
+<tr><td>Cero llamadas externas verificadas</td><td>15</td><td>tcpdump / Wireshark capturas durante 1h uso</td></tr>
+<tr><td>COMPLIANCE.md completa GDPR Art. 32</td><td>10</td><td>Auditor pro forma puede usarlo como evidencia</td></tr>
+<tr><td>Docker compose reproducible (1 comando arranca todo)</td><td>10</td><td><code>docker compose up</code> sin errores</td></tr>
+<tr><td>README + writeup (decisiones HW, modelo, cuantización)</td><td>5</td><td>Decisiones razonadas honestamente</td></tr>
+<tr><td>Bonus: comparativa de 3 quants (Q3/Q4/Q5) con calidad y latencia</td><td>5</td><td>Tabla con números reales</td></tr>
+</table></div>
+<p>Ranking: 90+ producible enterprise · 70-89 demo viable · &lt;70 itera setup HW.</p>
+</div>
 </div>
 
 <div class="lang-block" data-lang="en">
@@ -459,7 +486,34 @@
 </ul>
 </div>
 
-<p><strong>Full rubric and reference solution:</strong> coming Q3 2026. To prioritize, open an issue.</p>
+<div class="card card-accent">
+<div class="card-title">📦 Deliverables</div>
+<ol>
+  <li><code>local-assistant/</code> repo with: Docker compose for Ollama + ChromaDB + Next.js frontend + nginx reverse proxy.</li>
+  <li>Script <code>ingest.py</code> processing documents locally with no cloud touch.</li>
+  <li>API <code>POST /query</code> with basic auth.</li>
+  <li>Frontend with login, search and answers with citations.</li>
+  <li>Eval suite against the same dataset as Project B + cloud-vs-local comparison table.</li>
+  <li><code>COMPLIANCE.md</code> document mapping GDPR Art. 32 (encryption, access control, auditable logs, retention).</li>
+  <li>Network monitor running during 1h of real usage, with capture showing zero external calls.</li>
+</ol>
+</div>
+
+<div class="card card-green">
+<div class="card-title">📏 Self-evaluation rubric</div>
+<div class="table-wrap"><table>
+<tr><th>Criterion</th><th>Points</th><th>How measured</th></tr>
+<tr><td>End-to-end pipeline 100% local</td><td>20</td><td>Ingest + query + frontend on target hardware</td></tr>
+<tr><td>Quality ≥ 75% of cloud baseline</td><td>20</td><td>Comparative eval on same Project B dataset</td></tr>
+<tr><td>Latency p95 ≤ 8s on documented hardware</td><td>15</td><td>Real bench, not simulated</td></tr>
+<tr><td>Zero external calls verified</td><td>15</td><td>tcpdump / Wireshark captures during 1h usage</td></tr>
+<tr><td>COMPLIANCE.md covers GDPR Art. 32</td><td>10</td><td>Auditor pro forma can use it as evidence</td></tr>
+<tr><td>Reproducible Docker compose (one command boots everything)</td><td>10</td><td><code>docker compose up</code> with no errors</td></tr>
+<tr><td>README + writeup (HW, model, quantization decisions)</td><td>5</td><td>Decisions explained honestly</td></tr>
+<tr><td>Bonus: 3-quant comparison (Q3/Q4/Q5) with quality and latency</td><td>5</td><td>Table with real numbers</td></tr>
+</table></div>
+<p>Ranking: 90+ enterprise-deployable · 70-89 viable demo · &lt;70 iterate HW setup.</p>
+</div>
 </div>
 </section>
 
@@ -504,7 +558,46 @@
 </ul>
 </div>
 
-<p><strong>Rúbrica completa y reference solution:</strong> próximamente Q3 2026.</p>
+<div class="card card-accent">
+<div class="card-title">🛠️ Stack sugerido</div>
+<ul>
+  <li><strong>Orquestación:</strong> LangGraph (mejor para grafos con condiciones) o CrewAI (más simple).</li>
+  <li><strong>Researcher:</strong> Claude Haiku 4.5 (barato, ágil) + Tavily Search API o Brave Search API.</li>
+  <li><strong>Analyst:</strong> Claude Sonnet 4.6 (síntesis sólida).</li>
+  <li><strong>Critic:</strong> Claude Opus 4.7 (necesita el modelo más capaz para encontrar fallos sutiles).</li>
+  <li><strong>Writer:</strong> Claude Sonnet 4.6 o GPT-5.5.</li>
+  <li><strong>Supervisor:</strong> reglas determinista en lugar de LLM (más barato, más predecible).</li>
+  <li><strong>Memory:</strong> archivos markdown en disco entre agentes — auditable, reproducible.</li>
+</ul>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">📦 Deliverables</div>
+<ol>
+  <li><code>research-team/</code> repo con: definición de los 5 agentes, grafo LangGraph, system prompts versionados.</li>
+  <li>CLI <code>research.py "tu pregunta"</code> que arranca el pipeline y produce <code>output/&lt;timestamp&gt;.md</code>.</li>
+  <li>5 informes de prueba sobre las 5 preguntas del eval set.</li>
+  <li>Rúbrica RAGAS + manual: coverage vs golden + factual accuracy + URL validity.</li>
+  <li>Logs estructurados de cada agente con coste y latencia desglosados.</li>
+  <li>README con flujo del grafo + decisiones de tier-mixing por agente.</li>
+</ol>
+</div>
+
+<div class="card card-green">
+<div class="card-title">📏 Rúbrica de auto-evaluación</div>
+<div class="table-wrap"><table>
+<tr><th>Criterio</th><th>Puntos</th><th>Cómo se mide</th></tr>
+<tr><td>Pipeline 5-agente funciona sobre las 5 preguntas test</td><td>15</td><td>5/5 informes generados sin crashes</td></tr>
+<tr><td>Coverage ≥ 75% sobre golden reports</td><td>20</td><td>Manual: qué fuentes/datos clave aparecen</td></tr>
+<tr><td>Factual accuracy ≥ 90%</td><td>20</td><td>Verificación URL → afirmación cita</td></tr>
+<tr><td>Cero URLs alucinadas</td><td>10</td><td>Validador automático: cada URL devuelve 200</td></tr>
+<tr><td>Coste total ≤ $5 por informe</td><td>10</td><td>Logs de billing por proveedor</td></tr>
+<tr><td>Tiempo total ≤ 30 min por informe</td><td>10</td><td>Wall clock medido</td></tr>
+<tr><td>Critic encuentra ≥ 1 issue real en cada draft</td><td>10</td><td>Smoke test con drafts manualmente flawed</td></tr>
+<tr><td>Bonus: comparativa de 3 grafos (lineal / supervisor / debate)</td><td>5</td><td>Tabla con métricas para cada topología</td></tr>
+</table></div>
+<p>Ranking: 90+ herramienta usable · 70-89 prototipo válido · &lt;70 cap de iteraciones, system prompts.</p>
+</div>
 </div>
 
 <div class="lang-block" data-lang="en">
@@ -542,8 +635,56 @@
 </ul>
 </div>
 
-<p><strong>Full rubric and reference solution:</strong> coming Q3 2026.</p>
+<div class="card card-accent">
+<div class="card-title">🛠️ Suggested stack</div>
+<ul>
+  <li><strong>Orchestration:</strong> LangGraph (better for conditional graphs) or CrewAI (simpler).</li>
+  <li><strong>Researcher:</strong> Claude Haiku 4.5 (cheap, fast) + Tavily Search API or Brave Search API.</li>
+  <li><strong>Analyst:</strong> Claude Sonnet 4.6 (solid synthesis).</li>
+  <li><strong>Critic:</strong> Claude Opus 4.7 (needs the most capable model to catch subtle flaws).</li>
+  <li><strong>Writer:</strong> Claude Sonnet 4.6 or GPT-5.5.</li>
+  <li><strong>Supervisor:</strong> deterministic rules instead of an LLM (cheaper, more predictable).</li>
+  <li><strong>Memory:</strong> markdown files on disk between agents — auditable, reproducible.</li>
+</ul>
 </div>
+
+<div class="card card-accent">
+<div class="card-title">📦 Deliverables</div>
+<ol>
+  <li><code>research-team/</code> repo with: 5-agent definitions, LangGraph graph, versioned system prompts.</li>
+  <li>CLI <code>research.py "your question"</code> that runs the pipeline and produces <code>output/&lt;timestamp&gt;.md</code>.</li>
+  <li>5 sample reports on the 5 questions of the eval set.</li>
+  <li>Rubric: RAGAS + manual coverage vs golden + factual accuracy + URL validity.</li>
+  <li>Structured logs per agent with cost and latency broken down.</li>
+  <li>README with the graph flow + tier-mixing rationale per agent.</li>
+</ol>
+</div>
+
+<div class="card card-green">
+<div class="card-title">📏 Self-evaluation rubric</div>
+<div class="table-wrap"><table>
+<tr><th>Criterion</th><th>Points</th><th>How measured</th></tr>
+<tr><td>5-agent pipeline runs over the 5 test questions</td><td>15</td><td>5/5 reports generated without crashes</td></tr>
+<tr><td>Coverage ≥ 75% vs golden reports</td><td>20</td><td>Manual: which key sources/data appear</td></tr>
+<tr><td>Factual accuracy ≥ 90%</td><td>20</td><td>URL → cited claim verification</td></tr>
+<tr><td>Zero hallucinated URLs</td><td>10</td><td>Automated validator: every URL returns 200</td></tr>
+<tr><td>Total cost ≤ $5 per report</td><td>10</td><td>Per-provider billing logs</td></tr>
+<tr><td>Total time ≤ 30 min per report</td><td>10</td><td>Wall clock measured</td></tr>
+<tr><td>Critic catches ≥ 1 real issue in each draft</td><td>10</td><td>Smoke test with manually flawed drafts</td></tr>
+<tr><td>Bonus: comparison of 3 graphs (linear / supervisor / debate)</td><td>5</td><td>Table with metrics per topology</td></tr>
+</table></div>
+<p>Ranking: 90+ usable tool · 70-89 valid prototype · &lt;70 cap iterations, tune system prompts.</p>
+</div>
+</div>
+</section>
+
+<section id="kc-14" class="knowledge-check">
+  <h2>
+    <span class="lang-block" data-lang="es">📋 Knowledge check</span>
+    <span class="lang-block" data-lang="en">📋 Knowledge check</span>
+  </h2>
+  <p class="lang-block" data-lang="es" style="color:var(--text-dim);">Cinco preguntas para verificar tu comprensión del bloque. Cada respuesta se guarda en localStorage; puedes volver más tarde y recordar tu progreso.</p>
+  <p class="lang-block" data-lang="en" style="color:var(--text-dim);">Five questions to verify your understanding of the block. Each answer is saved in localStorage; you can return later and recall your progress.</p>
 </section>
 
 <section class="module-references">
@@ -567,6 +708,7 @@
 <script src="../js/shared/manifest.js?v=8"></script>
 <script src="../js/shared/sidebar.js?v=8"></script>
 <script src="../js/i18n.js?v=8"></script>
+<script src="../js/quiz.js?v=9"></script>
 <script src="../js/app.js?v=8"></script>
 </body>
 </html>

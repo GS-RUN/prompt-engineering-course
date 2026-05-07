@@ -62,6 +62,173 @@
   </div>
 </section>
 
+<section id="b1-0">
+<h2>
+  <span class="lang-block" data-lang="es">1.0 ¿Cómo funciona realmente un LLM?</span>
+  <span class="lang-block" data-lang="en">1.0 How does an LLM really work?</span>
+</h2>
+<p class="subtitle">
+  <span class="lang-block" data-lang="es">Intuición técnica suficiente para tomar decisiones informadas, sin matemáticas formales.</span>
+  <span class="lang-block" data-lang="en">Enough technical intuition for informed decisions, without formal math.</span>
+</p>
+
+<div class="lang-block" data-lang="es">
+<p>Antes de entrar a prompt engineering, conviene entender la maquinaria. No para derivar las ecuaciones — para eso lee Vaswani 2017 — sino para que las decisiones de diseño que tomas en producción tengan base mecánica, no superstición.</p>
+
+<h3>De caracteres a tokens</h3>
+<div class="card">
+<p>Un LLM no procesa letras ni palabras: procesa <strong>tokens</strong>, sub-palabras estadísticamente útiles aprendidas durante el entrenamiento. El tokenizador (BPE byte-level en Claude/GPT/Llama, SentencePiece en Gemma/Qwen) descompone el texto en piezas que el modelo conoce.</p>
+<pre><code>"prompt engineering" → ["prompt", " engineering"]    (2 tokens)
+"prompt engineering."→ ["prompt", " engineering", "."] (3 tokens)
+"propmt engineering" → ["pro", "p", "mt", " engineering"] (4 tokens, typo más caro)
+"反对prompt engineering" → ["反", "对", "prompt", " engineering"] (4 tokens, CJK 1 char/token)
+"🚀 prompt"          → ["🚀", " prompt"]           (5 bytes encoded, ~3 tokens)</code></pre>
+<p><strong>Implicación práctica:</strong> idiomas con alfabeto latino son ~4 chars/token, código ~2.5 chars/token, CJK 1.5-2 chars/token, emojis y caracteres raros pueden costar 3-5 tokens cada uno. Tu factura paga el coste real, no el coste "intuitivo".</p>
+</div>
+
+<h3>Embedding: del token al vector</h3>
+<div class="card">
+<p>Cada token se convierte en un vector denso de dimensión <em>d</em> (típicamente 4096 en modelos 7-13B, 8192-12288 en modelos 70-405B). Ese vector codifica el "significado" del token aprendido durante el pre-training: tokens con uso semántico similar (rey/reina, ejecutar/correr) acaban cerca en ese espacio vectorial.</p>
+<p>Tu prompt completo se convierte en una matriz de <code>(longitud_tokens × d)</code> floats antes de que pase nada más. Ese tensor es lo que el transformer manipula.</p>
+</div>
+
+<h3>El transformer: atención + FFN repetidos N veces</h3>
+<div class="card card-accent">
+<p>Un transformer decoder (la arquitectura de TODOS los LLMs modernos, 2017-2026) repite el mismo bloque <em>N</em> veces (32 capas en un 7B, 80+ en un 70B). Cada bloque hace dos cosas:</p>
+
+<h4>1. Self-attention</h4>
+<p>Para cada token, calcula a qué OTROS tokens del contexto debería "atender" para producir su siguiente representación. Es esencialmente una suma ponderada: <em>"este token toma el 30% de contexto del token 5, 25% del token 12, 10% del 47..."</em>. Los pesos se calculan con tres matrices aprendidas (Q, K, V).</p>
+<p><strong>Por qué importa:</strong> es lo que permite que un modelo "razone" sobre relaciones entre conceptos lejanos en el texto. Es también lo que cuesta caro: el coste computacional crece <em>O(n²)</em> con la longitud de contexto. Un prompt de 2× tokens cuesta 4× compute en attention. Por eso los modelos con 1M+ contexto (Gemini, Kimi) usan tricks como sliding window attention o sparse attention.</p>
+
+<h4>2. Feed-forward network (FFN / MLP)</h4>
+<p>Una red neuronal pequeña (típicamente 4× más ancha que el embedding) que se aplica a cada token independientemente. Aquí es donde se almacena la mayoría del "conocimiento" del modelo — los hechos, las asociaciones, los patrones aprendidos de internet.</p>
+<p><strong>Por qué importa:</strong> es por qué los modelos pueden completar "La capital de Francia es ___" sin haber visto exactamente esa frase: el FFN tiene aprendido que "Francia" + "capital" → distribución que pone "París" en top-1.</p>
+
+<p>Repite ambas operaciones N veces. Tras la última capa, una proyección final convierte el vector del último token en una distribución de probabilidad sobre el vocabulario entero (típicamente 32K-256K tokens). El sampler elige el siguiente token según esa distribución.</p>
+</div>
+
+<h3>Las tres fases del entrenamiento</h3>
+<div class="table-wrap"><table>
+<tr><th>Fase</th><th>Objetivo</th><th>Datos</th><th>Coste</th><th>Qué se aprende</th></tr>
+<tr><td><strong>Pre-training</strong></td><td>Predecir siguiente token</td><td>10-30 trillones de tokens (web, libros, código)</td><td>$10M-$500M+</td><td>Gramática, hechos, razonamiento básico, patrones</td></tr>
+<tr><td><strong>Post-training (SFT)</strong></td><td>Seguir instrucciones</td><td>~1M conversaciones humano-asistente</td><td>$10K-$1M</td><td>Cómo responder a preguntas, formato útil</td></tr>
+<tr><td><strong>RLHF / DPO / Constitutional AI</strong></td><td>Alineación con preferencias</td><td>~100K-1M juicios humanos sobre pares de respuestas</td><td>$100K-$10M</td><td>Ser útil, honesto, inofensivo</td></tr>
+</table></div>
+
+<div class="tip"><strong>💡 Por qué importa para prompt engineering:</strong> el pre-training enseña <em>qué</em> sabe el modelo. El post-training enseña <em>cómo</em> responde. Si pides al modelo algo que <em>no</em> está en su pre-training, no hay prompt que lo arregle — necesitas RAG o fine-tuning. Si lo que pides está en pre-training pero el modelo no lo accede bien, prompt engineering puede sacarlo. Distinguir entre los dos casos es la habilidad clave del profesional 2026.</div>
+
+<h3>Sampling: del logits al token</h3>
+<div class="card">
+<p>Tras la última capa, el modelo emite un vector de logits (uno por cada token del vocabulario). El sampler los convierte en una decisión:</p>
+<ol>
+  <li><strong>Softmax con temperature:</strong> divide logits por T y aplica softmax → probabilidades.</li>
+  <li><strong>Filtrado top_p / top_k:</strong> recorta tokens improbables.</li>
+  <li><strong>Muestreo:</strong> elige aleatoriamente según las probabilidades restantes (o el más probable si T=0).</li>
+</ol>
+<p>Esa elección del siguiente token se concatena al input y vuelta a empezar. Por eso es <strong>autoregresivo</strong>: cada nueva predicción condiciona la siguiente.</p>
+</div>
+
+<h3>Thinking / reasoning tokens (2024+)</h3>
+<div class="card card-accent">
+<p>Los modelos modernos (Claude Opus, GPT-5, Gemini 2.5, DeepSeek R2) tienen una fase EXTRA antes de la respuesta visible: generan tokens de "razonamiento interno" que el usuario no ve. Esos tokens son texto normal generado autoregresivamente — el modelo se está hablando a sí mismo, planificando, verificando.</p>
+<p>Mecánicamente no es magia: es el mismo transformer generando tokens, solo que están envueltos en tags especiales (<code>&lt;thinking&gt;…&lt;/thinking&gt;</code> en Claude) que el SDK filtra antes de devolver al cliente.</p>
+<p><strong>Por qué funciona:</strong> el modelo escribe su razonamiento intermedio, lo "lee" en attention en pasos siguientes, y eso le permite razonar multi-step de forma robusta. Es Chain-of-Thought hecho explícito y entrenado.</p>
+<p><strong>Coste:</strong> esos tokens internos se facturan. Con effort=high un Claude Opus puede consumir 10-30K tokens de thinking por respuesta. Activar reasoning sube calidad 5-30% en problemas complejos a cambio de 5-50× latencia y coste.</p>
+</div>
+
+<h3>Lo que NO es un LLM</h3>
+<div class="card card-orange">
+<p>Para tomar buenas decisiones, conviene saber qué un LLM <strong>no</strong> es:</p>
+<ul>
+  <li><strong>No es una base de datos.</strong> No "consulta" información — la regenera. Por eso alucina: si la red no tiene un patrón claro para tu pregunta, inventa uno plausible.</li>
+  <li><strong>No tiene estado entre llamadas.</strong> Cada API call es independiente. La "memoria" en un chatbot es el historial que tú reenvías cada vez.</li>
+  <li><strong>No razona simbólicamente.</strong> Cuando "razona", lo hace generando texto que parece razonamiento. A veces falla en aritmética básica que cualquier calculadora resuelve trivialmente.</li>
+  <li><strong>No tiene intuición espacial nativa.</strong> Trabaja con secuencias, no con imágenes mentales. Cuando un VLM "ve" una imagen, la convierte en tokens visuales y los procesa con los mismos transformers.</li>
+  <li><strong>No es determinista por defecto.</strong> Mismo input → distinto output salvo que fijes <code>temperature=0</code> + <code>seed</code> + misma versión del modelo.</li>
+  <li><strong>No "entiende" en el sentido fuerte.</strong> Es un simulador estadístico extremadamente sofisticado. Si eso es "entender" o no, es debate filosófico abierto. En la práctica: trátalo como herramienta probabilística, no como persona.</li>
+</ul>
+</div>
+</div>
+
+<div class="lang-block" data-lang="en">
+<p>Before diving into prompt engineering, it pays to understand the machinery. Not to derive the equations — read Vaswani 2017 for that — but so that the design decisions you make in production are mechanically grounded, not superstition.</p>
+
+<h3>From characters to tokens</h3>
+<div class="card">
+<p>An LLM doesn't process letters or words: it processes <strong>tokens</strong>, statistically useful sub-words learned during training. The tokenizer (byte-level BPE in Claude/GPT/Llama, SentencePiece in Gemma/Qwen) breaks text into pieces the model knows.</p>
+<pre><code>"prompt engineering" → ["prompt", " engineering"]    (2 tokens)
+"prompt engineering."→ ["prompt", " engineering", "."] (3 tokens)
+"propmt engineering" → ["pro", "p", "mt", " engineering"] (4 tokens, typo costs more)
+"反对prompt engineering" → ["反", "对", "prompt", " engineering"] (4 tokens, CJK 1 char/token)
+"🚀 prompt"          → ["🚀", " prompt"]           (5 encoded bytes, ~3 tokens)</code></pre>
+<p><strong>Practical implication:</strong> Latin-alphabet languages run ~4 chars/token, code ~2.5 chars/token, CJK 1.5-2 chars/token, emojis and rare characters can cost 3-5 tokens each. Your bill pays the real cost, not the "intuitive" cost.</p>
+</div>
+
+<h3>Embedding: from token to vector</h3>
+<div class="card">
+<p>Each token becomes a dense vector of dimension <em>d</em> (typically 4096 in 7-13B models, 8192-12288 in 70-405B models). That vector encodes the token's "meaning" learned during pre-training: tokens with similar semantic use (king/queen, run/jog) end up close in that vector space.</p>
+<p>Your full prompt becomes a <code>(token_count × d)</code> matrix of floats before anything else happens. That tensor is what the transformer manipulates.</p>
+</div>
+
+<h3>The transformer: attention + FFN repeated N times</h3>
+<div class="card card-accent">
+<p>A decoder transformer (the architecture behind EVERY modern LLM, 2017-2026) repeats the same block <em>N</em> times (32 layers in a 7B, 80+ in a 70B). Each block does two things:</p>
+
+<h4>1. Self-attention</h4>
+<p>For each token, it computes which OTHER tokens in the context it should "attend" to in producing its next representation. It's essentially a weighted sum: <em>"this token takes 30% context from token 5, 25% from token 12, 10% from token 47..."</em>. The weights are computed with three learned matrices (Q, K, V).</p>
+<p><strong>Why it matters:</strong> this is what lets a model "reason" about relationships between distant concepts in the text. It's also what costs a lot: compute scales <em>O(n²)</em> with context length. A 2× longer prompt costs 4× attention compute. That's why 1M+ context models (Gemini, Kimi) use tricks like sliding window or sparse attention.</p>
+
+<h4>2. Feed-forward network (FFN / MLP)</h4>
+<p>A small neural network (typically 4× wider than the embedding) applied to each token independently. This is where most of the model's "knowledge" is stored — facts, associations, patterns learned from the internet.</p>
+<p><strong>Why it matters:</strong> it's why models can complete "The capital of France is ___" without having seen exactly that sentence: the FFN learned that "France" + "capital" → distribution that puts "Paris" at top-1.</p>
+
+<p>Repeat both operations N times. After the last layer, a final projection turns the last token's vector into a probability distribution over the entire vocabulary (typically 32K-256K tokens). The sampler picks the next token according to that distribution.</p>
+</div>
+
+<h3>The three training phases</h3>
+<div class="table-wrap"><table>
+<tr><th>Phase</th><th>Goal</th><th>Data</th><th>Cost</th><th>What's learned</th></tr>
+<tr><td><strong>Pre-training</strong></td><td>Predict next token</td><td>10-30 trillion tokens (web, books, code)</td><td>$10M-$500M+</td><td>Grammar, facts, basic reasoning, patterns</td></tr>
+<tr><td><strong>Post-training (SFT)</strong></td><td>Follow instructions</td><td>~1M human-assistant conversations</td><td>$10K-$1M</td><td>How to answer questions, useful format</td></tr>
+<tr><td><strong>RLHF / DPO / Constitutional AI</strong></td><td>Preference alignment</td><td>~100K-1M human judgements over response pairs</td><td>$100K-$10M</td><td>Be helpful, honest, harmless</td></tr>
+</table></div>
+
+<div class="tip"><strong>💡 Why this matters for prompt engineering:</strong> pre-training teaches <em>what</em> the model knows. Post-training teaches <em>how</em> it answers. If you ask the model something that's <em>not</em> in pre-training, no prompt fixes it — you need RAG or fine-tuning. If what you ask IS in pre-training but the model doesn't access it well, prompt engineering can extract it. Distinguishing those two cases is the key 2026 skill.</div>
+
+<h3>Sampling: from logits to token</h3>
+<div class="card">
+<p>After the last layer, the model emits a logits vector (one entry per vocabulary token). The sampler turns those into a decision:</p>
+<ol>
+  <li><strong>Softmax with temperature:</strong> divides logits by T and applies softmax → probabilities.</li>
+  <li><strong>Top_p / top_k filtering:</strong> trims unlikely tokens.</li>
+  <li><strong>Sampling:</strong> draws randomly per the remaining probabilities (or picks the most likely if T=0).</li>
+</ol>
+<p>That next-token choice is concatenated to the input and the loop restarts. That's why it's <strong>autoregressive</strong>: each new prediction conditions the next.</p>
+</div>
+
+<h3>Thinking / reasoning tokens (2024+)</h3>
+<div class="card card-accent">
+<p>Modern models (Claude Opus, GPT-5, Gemini 2.5, DeepSeek R2) have an EXTRA phase before the visible answer: they generate "internal reasoning" tokens the user doesn't see. Those tokens are normal text generated autoregressively — the model is talking to itself, planning, verifying.</p>
+<p>Mechanically it's not magic: same transformer generating tokens, just wrapped in special tags (<code>&lt;thinking&gt;…&lt;/thinking&gt;</code> in Claude) that the SDK strips before returning to the client.</p>
+<p><strong>Why it works:</strong> the model writes its intermediate reasoning, "reads" it via attention in subsequent steps, and that lets it reason multi-step robustly. It's explicit, trained Chain-of-Thought.</p>
+<p><strong>Cost:</strong> those internal tokens are billed. With effort=high a Claude Opus can burn 10-30K thinking tokens per answer. Enabling reasoning lifts quality 5-30% on hard problems in exchange for 5-50× latency and cost.</p>
+</div>
+
+<h3>What an LLM is NOT</h3>
+<div class="card card-orange">
+<p>To make good decisions, it's worth knowing what an LLM <strong>isn't</strong>:</p>
+<ul>
+  <li><strong>It's not a database.</strong> It doesn't "look up" information — it regenerates it. That's why it hallucinates: if the network has no clear pattern for your question, it invents a plausible one.</li>
+  <li><strong>It has no state between calls.</strong> Each API call is independent. The "memory" in a chatbot is the history you re-send every time.</li>
+  <li><strong>It doesn't reason symbolically.</strong> When it "reasons", it does so by generating text that looks like reasoning. It sometimes fails on basic arithmetic that any calculator solves trivially.</li>
+  <li><strong>It has no native spatial intuition.</strong> It works on sequences, not mental images. When a VLM "sees" an image, it converts it to visual tokens and processes them with the same transformers.</li>
+  <li><strong>It's not deterministic by default.</strong> Same input → different output unless you fix <code>temperature=0</code> + <code>seed</code> + same model version.</li>
+  <li><strong>It doesn't "understand" in the strong sense.</strong> It's an extremely sophisticated statistical simulator. Whether that's "understanding" is open philosophical debate. In practice: treat it as a probabilistic tool, not a person.</li>
+</ul>
+</div>
+</div>
+</section>
+
 <section id="s1">
 <h2>1.1 ¿Qué es un LLM?</h2>
 <p class="subtitle">Large Language Models — El cerebro detrás de la IA generativa</p>
@@ -710,6 +877,15 @@
 
 
 
+<section id="kc-01" class="knowledge-check">
+  <h2>
+    <span class="lang-block" data-lang="es">📋 Knowledge check</span>
+    <span class="lang-block" data-lang="en">📋 Knowledge check</span>
+  </h2>
+  <p class="lang-block" data-lang="es" style="color:var(--text-dim);">Cinco preguntas para verificar tu comprensión del bloque. Cada respuesta se guarda en localStorage; puedes volver más tarde y recordar tu progreso.</p>
+  <p class="lang-block" data-lang="en" style="color:var(--text-dim);">Five questions to verify your understanding of the block. Each answer is saved in localStorage; you can return later and recall your progress.</p>
+</section>
+
 <section class="module-references">
   <h3 data-i18n="ref-header">Referencias</h3>
   <p style="font-size:13px;color:var(--text-dim);" data-i18n="ref-intro">
@@ -725,7 +901,7 @@
 <script src="../js/shared/sidebar.js?v=8"></script>
 <script src="../js/shared/references.js?v=8"></script>
 <script src="../js/i18n.js?v=8"></script>
-<script src="../js/quiz.js?v=8"></script>
+<script src="../js/quiz.js?v=9"></script>
 <script src="../js/glossary.js?v=8"></script>
 <script src="../js/app.js?v=8"></script>
 </body>
