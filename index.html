@@ -281,15 +281,117 @@
 </div>
 
 <h3>Parámetros Clave de Configuración</h3>
-<div class="table-wrap">
-<table>
-<tr><th>Parámetro</th><th>Qué hace</th><th>Rango</th></tr>
-<tr><td><code>temperature</code></td><td>Aleatoriedad (↑ creativo, ↓ determinista)</td><td>0.0 – 2.0</td></tr>
-<tr><td><code>top_p</code></td><td>Nucleus sampling — filtra tokens de baja probabilidad</td><td>0.0 – 1.0</td></tr>
-<tr><td><code>effort</code> <span class="badge badge-claude">Claude</span></td><td>Cuánto razona el modelo (low→max)</td><td>low – max</td></tr>
-<tr><td><code>reasoning_effort</code> <span class="badge badge-ds">DeepSeek</span></td><td>Nivel de razonamiento interno</td><td>none – high</td></tr>
-</table>
+<p style="font-size:13px;color:var(--text-dim);">Cada API usa un nombre ligeramente distinto, pero los conceptos son universales. Esta es la lista práctica de parámetros que tocas en el 95% de los casos.</p>
+
+<div class="card card-accent">
+<div class="card-title">🌡️ <code>temperature</code> — aleatoriedad del muestreo</div>
+<p>Controla cuánta aleatoriedad introduce el sampler al elegir el siguiente token. Internamente divide los logits por T antes del softmax: T baja agudiza la distribución (el token top siempre gana), T alta la aplana (todos los tokens viables tienen oportunidad).</p>
+<p><strong>Rango típico:</strong> <code>0.0 – 2.0</code> (la mayoría de APIs limitan a 2.0; valores &gt;1.5 producen alucinación e incoherencia).</p>
+<p><strong>Cuándo usar qué:</strong></p>
+<ul>
+  <li><code>0.0</code> — Determinista. Mismo input → mismo output. Code generation, extracción de datos, clasificación, evals reproducibles.</li>
+  <li><code>0.2 – 0.4</code> — Casi determinista con un poco de variedad. Refactoring, traducción, summarization fiel.</li>
+  <li><code>0.5 – 0.7</code> — Equilibrio. Conversación general, asistente, tutorial. Es el default sensato.</li>
+  <li><code>0.8 – 1.0</code> — Creativo. Brainstorming, copywriting, ficción, generación de variantes.</li>
+  <li><code>1.0 – 1.5</code> — Muy aleatorio. Solo casos donde quieres explorar el espacio de salida (p.ej. self-consistency CoT).</li>
+</ul>
 </div>
+
+<div class="card card-accent">
+<div class="card-title">🎯 <code>top_p</code> — nucleus sampling</div>
+<p>Recorta la cola de la distribución: en cada paso solo se consideran los tokens cuyas probabilidades acumuladas suman <code>p</code>. Si <code>top_p=0.9</code>, descartamos el 10% menos probable de cada decisión. Es complementario a <code>temperature</code> — Anthropic recomienda tocar uno u otro, no ambos a la vez.</p>
+<p><strong>Rango típico:</strong> <code>0.7 – 1.0</code>. Por debajo de 0.5 el modelo se vuelve repetitivo.</p>
+<p><strong>Defaults sensatos:</strong> <code>top_p=1.0</code> y subir <code>temperature</code>, o <code>temperature=1.0</code> y bajar <code>top_p</code>.</p>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">🔝 <code>top_k</code> — corte por número de candidatos</div>
+<p>Solo considera los <code>k</code> tokens más probables en cada paso. Más burdo que <code>top_p</code> (no se adapta a la forma de la distribución). Útil cuando quieres garantizar diversidad acotada. Algunos APIs (Google, DeepSeek) lo exponen; Anthropic no.</p>
+<p><strong>Rango:</strong> <code>1 – 50</code>. <code>k=1</code> es greedy (equivalente a <code>temperature=0</code>).</p>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">📏 <code>max_tokens</code> — tope de salida</div>
+<p>Número máximo de tokens que el modelo puede generar antes de detenerse forzosamente. Es un cap duro, no una sugerencia. Si el modelo iba a producir más, su respuesta se trunca abruptamente (a menudo dejando JSON malformado).</p>
+<p><strong>Reglas prácticas:</strong></p>
+<ul>
+  <li>Respuesta corta esperada: <code>256 – 1024</code>.</li>
+  <li>Respuesta media (artículo, función completa): <code>2048 – 4096</code>.</li>
+  <li>Respuesta larga (código grande, ensayo): <code>8192 – 16384</code>.</li>
+  <li>Tareas con thinking activo: subir a <code>32k – 64k</code> (los thinking tokens cuentan).</li>
+</ul>
+<p>Cap por modelo: Claude 4.x 64k, GPT-5 16k, Gemini 2.5 Pro 64k, DeepSeek 8k.</p>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">🛑 <code>stop_sequences</code> / <code>stop</code> — paradas explícitas</div>
+<p>Lista de strings que, si aparecen en la salida, hacen que el modelo se detenga inmediatamente. Útil cuando estás haciendo few-shot con un delimitador propio (<code>###</code>, <code>END</code>, <code>&lt;/answer&gt;</code>) y no quieres que el modelo continúe alucinando un siguiente ejemplo.</p>
+<p>Hasta 4 secuencias en la mayoría de APIs. La secuencia consumida NO aparece en la respuesta final.</p>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">🔁 <code>frequency_penalty</code> y <code>presence_penalty</code> (OpenAI / DeepSeek)</div>
+<p>Reducen la probabilidad de que el modelo repita tokens.</p>
+<ul>
+  <li><code>frequency_penalty</code> — penaliza tokens proporcionalmente a cuántas veces ya han aparecido (más apariciones, más penalty). Combate bucles literales.</li>
+  <li><code>presence_penalty</code> — penaliza cualquier token que ya haya aparecido al menos una vez (penalty plana). Empuja a explorar vocabulario nuevo.</li>
+</ul>
+<p><strong>Rango:</strong> <code>-2.0 – 2.0</code>. Default <code>0.0</code>. Subir a <code>0.3 – 0.7</code> si ves repeticiones; pasar de 1.0 introduce ruido. Anthropic no los expone (Claude tiene anti-repetición interna).</p>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">🎲 <code>seed</code> — reproducibilidad</div>
+<p>Fija el RNG del sampler. Mismo seed + mismos parámetros + misma versión del modelo → misma salida (con asterisco: la mayoría de proveedores no garantizan determinismo bit-exact entre versiones de infraestructura).</p>
+<p>Crítico para evals automatizados, debugging de prompts y reproducibilidad de papers. OpenAI y DeepSeek lo exponen; Anthropic no.</p>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">🧠 <code>thinking</code> / <code>reasoning_effort</code> — razonamiento interno</div>
+<p>Activa los tokens de razonamiento internos antes de la respuesta visible. El modelo razona "para sí mismo" durante segundos o minutos, y luego entrega la respuesta final más sólida. Estos tokens se facturan.</p>
+<div class="table-wrap"><table>
+<tr><th>API</th><th>Parámetro</th><th>Valores</th></tr>
+<tr><td><span class="badge badge-claude">Claude</span></td><td><code>thinking={"type":"adaptive"}</code> + <code>output_config.effort</code></td><td><code>low / medium / high / xhigh / max</code></td></tr>
+<tr><td>OpenAI (o-series, GPT-5)</td><td><code>reasoning_effort</code></td><td><code>minimal / low / medium / high</code></td></tr>
+<tr><td>Gemini 2.5</td><td><code>thinking_config.thinking_budget</code></td><td><code>0 – 24576</code> (tokens) o <code>-1</code> (auto)</td></tr>
+<tr><td><span class="badge badge-ds">DeepSeek R / V4</span></td><td><code>thinking={"type":"enabled"}</code></td><td><code>on / off</code></td></tr>
+<tr><td>Qwen 3</td><td><code>enable_thinking</code></td><td><code>true / false</code></td></tr>
+</table></div>
+<p>Activar thinking sube calidad 5-30% en tareas multi-step (matemáticas, debugging, planificación) pero multiplica latencia 5-50× y coste por la misma proporción.</p>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">📦 <code>response_format</code> — formato estructurado</div>
+<p>Fuerza al modelo a emitir output que cumpla un esquema determinado.</p>
+<ul>
+  <li><code>{"type": "text"}</code> — Default. Texto libre.</li>
+  <li><code>{"type": "json_object"}</code> — Garantiza JSON válido en la salida (OpenAI, DeepSeek, Mistral, GLM). Formato libre.</li>
+  <li><code>{"type": "json_schema", "schema": {...}}</code> — JSON estricto que cumple el schema (OpenAI, Gemini "controlled generation"). El modelo NO puede desviarse.</li>
+  <li>Anthropic no expone <code>response_format</code> directamente; usa <code>tool_use</code> con <code>input_schema</code> para el mismo efecto.</li>
+</ul>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">🛠️ <code>tools</code> y <code>tool_choice</code> — function calling</div>
+<p>Lista de herramientas que el modelo puede invocar (definidas con nombre, descripción y schema de parámetros).</p>
+<ul>
+  <li><code>tool_choice="auto"</code> — El modelo decide si llama a alguna o responde directamente (default).</li>
+  <li><code>tool_choice="required"</code> / <code>"any"</code> — Forzar llamada a alguna tool.</li>
+  <li><code>tool_choice={"type":"tool","name":"X"}</code> — Forzar tool específica.</li>
+  <li><code>tool_choice="none"</code> — Prohibir tools, responder con texto solo.</li>
+</ul>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">💾 <code>cache_control</code> — prompt caching (Anthropic)</div>
+<p>Marca bloques del prompt como cacheables. La primera llamada paga 1.25× el precio normal de input para escribirlos en caché; las siguientes pagan 0.10× para leerlos. TTL típico 5 min (extensible a 1 h con <code>"ttl": "1h"</code>). Critical para system prompts largos y RAG con docs repetidos.</p>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">🌐 <code>system</code> / mensaje system — instrucciones globales</div>
+<p>El system prompt tiene prioridad máxima sobre los mensajes del usuario. Es donde defines rol, reglas, formato esperado, restricciones de seguridad. NO va dentro de <code>messages[]</code> en Anthropic (es un parámetro top-level <code>system</code>); en OpenAI/DeepSeek va como primer mensaje con <code>role: "system"</code>.</p>
+</div>
+
+<div class="warn"><strong>⚠️ Defaults son tu enemigo.</strong> Si dejas todos los parámetros sin especificar, cada modelo elige unos diferentes (Claude usa <code>temperature=1.0</code>, OpenAI <code>1.0</code>, DeepSeek <code>1.0</code>, Gemini <code>1.0</code> pero con <code>top_p=0.95</code> y <code>top_k=64</code>). Para producción, especifica explícitamente <code>temperature</code>, <code>max_tokens</code> y al menos uno de <code>top_p</code>/<code>top_k</code>.</div>
 
 </div>
 <div class="lang-block" data-lang="en">
@@ -334,15 +436,117 @@
 </div>
 
 <h3>Key Configuration Parameters</h3>
-<div class="table-wrap">
-<table>
-<tr><th>Parameter</th><th>What it does</th><th>Range</th></tr>
-<tr><td><code>temperature</code></td><td>Randomness (↑ creative, ↓ deterministic)</td><td>0.0 – 2.0</td></tr>
-<tr><td><code>top_p</code></td><td>Nucleus sampling — filters low-probability tokens</td><td>0.0 – 1.0</td></tr>
-<tr><td><code>effort</code> <span class="badge badge-claude">Claude</span></td><td>How much the model reasons (low→max)</td><td>low – max</td></tr>
-<tr><td><code>reasoning_effort</code> <span class="badge badge-ds">DeepSeek</span></td><td>Internal reasoning level</td><td>none – high</td></tr>
-</table>
+<p style="font-size:13px;color:var(--text-dim);">Each API uses slightly different names, but the concepts are universal. This is the practical list of parameters you'll touch in 95% of cases.</p>
+
+<div class="card card-accent">
+<div class="card-title">🌡️ <code>temperature</code> — sampling randomness</div>
+<p>Controls how much randomness the sampler injects when picking the next token. Internally it divides the logits by T before softmax: low T sharpens the distribution (top token always wins), high T flattens it (every viable token gets a chance).</p>
+<p><strong>Typical range:</strong> <code>0.0 – 2.0</code> (most APIs cap at 2.0; values &gt;1.5 produce hallucination and incoherence).</p>
+<p><strong>When to use what:</strong></p>
+<ul>
+  <li><code>0.0</code> — Deterministic. Same input → same output. Code generation, data extraction, classification, reproducible evals.</li>
+  <li><code>0.2 – 0.4</code> — Almost deterministic with a touch of variety. Refactoring, faithful translation, summarization.</li>
+  <li><code>0.5 – 0.7</code> — Balanced. General conversation, assistant, tutorial. The sensible default.</li>
+  <li><code>0.8 – 1.0</code> — Creative. Brainstorming, copywriting, fiction, generating variants.</li>
+  <li><code>1.0 – 1.5</code> — Very random. Only when you want to explore the output space (e.g. self-consistency CoT).</li>
+</ul>
 </div>
+
+<div class="card card-accent">
+<div class="card-title">🎯 <code>top_p</code> — nucleus sampling</div>
+<p>Trims the tail of the distribution: at each step only tokens whose cumulative probabilities sum to <code>p</code> are considered. With <code>top_p=0.9</code>, you discard the 10% least likely tokens at every decision. It's complementary to <code>temperature</code> — Anthropic recommends tuning one or the other, not both at once.</p>
+<p><strong>Typical range:</strong> <code>0.7 – 1.0</code>. Below 0.5 the model becomes repetitive.</p>
+<p><strong>Sensible defaults:</strong> <code>top_p=1.0</code> and raise <code>temperature</code>, or <code>temperature=1.0</code> and lower <code>top_p</code>.</p>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">🔝 <code>top_k</code> — candidate count cutoff</div>
+<p>Only considers the <code>k</code> most likely tokens at each step. Cruder than <code>top_p</code> (it doesn't adapt to the shape of the distribution). Useful when you want bounded diversity guaranteed. Some APIs (Google, DeepSeek) expose it; Anthropic doesn't.</p>
+<p><strong>Range:</strong> <code>1 – 50</code>. <code>k=1</code> is greedy (equivalent to <code>temperature=0</code>).</p>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">📏 <code>max_tokens</code> — output cap</div>
+<p>Maximum number of tokens the model can generate before being forcibly stopped. It's a hard cap, not a hint. If the model intended to produce more, the response truncates abruptly (often leaving malformed JSON).</p>
+<p><strong>Practical rules:</strong></p>
+<ul>
+  <li>Short response expected: <code>256 – 1024</code>.</li>
+  <li>Medium response (article, full function): <code>2048 – 4096</code>.</li>
+  <li>Long response (large code, essay): <code>8192 – 16384</code>.</li>
+  <li>Tasks with thinking enabled: raise to <code>32k – 64k</code> (thinking tokens count).</li>
+</ul>
+<p>Per-model caps: Claude 4.x 64k, GPT-5 16k, Gemini 2.5 Pro 64k, DeepSeek 8k.</p>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">🛑 <code>stop_sequences</code> / <code>stop</code> — explicit halts</div>
+<p>List of strings that, if they appear in the output, make the model stop immediately. Useful when you're doing few-shot with your own delimiter (<code>###</code>, <code>END</code>, <code>&lt;/answer&gt;</code>) and don't want the model to keep hallucinating a next example.</p>
+<p>Up to 4 sequences in most APIs. The consumed sequence is NOT included in the final response.</p>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">🔁 <code>frequency_penalty</code> and <code>presence_penalty</code> (OpenAI / DeepSeek)</div>
+<p>Reduce the probability of the model repeating tokens.</p>
+<ul>
+  <li><code>frequency_penalty</code> — penalizes tokens proportionally to how many times they've appeared (more occurrences, more penalty). Fights literal loops.</li>
+  <li><code>presence_penalty</code> — penalizes any token that appeared at least once (flat penalty). Pushes the model to explore new vocabulary.</li>
+</ul>
+<p><strong>Range:</strong> <code>-2.0 – 2.0</code>. Default <code>0.0</code>. Raise to <code>0.3 – 0.7</code> if you see repetitions; above 1.0 introduces noise. Anthropic doesn't expose them (Claude has internal anti-repetition).</p>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">🎲 <code>seed</code> — reproducibility</div>
+<p>Fixes the sampler RNG. Same seed + same parameters + same model version → same output (asterisk: most providers don't guarantee bit-exact determinism across infra versions).</p>
+<p>Critical for automated evals, prompt debugging, and paper reproducibility. OpenAI and DeepSeek expose it; Anthropic doesn't.</p>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">🧠 <code>thinking</code> / <code>reasoning_effort</code> — internal reasoning</div>
+<p>Enables internal reasoning tokens before the visible answer. The model thinks "to itself" for seconds or minutes, then delivers a stronger final answer. These tokens are billed.</p>
+<div class="table-wrap"><table>
+<tr><th>API</th><th>Parameter</th><th>Values</th></tr>
+<tr><td><span class="badge badge-claude">Claude</span></td><td><code>thinking={"type":"adaptive"}</code> + <code>output_config.effort</code></td><td><code>low / medium / high / xhigh / max</code></td></tr>
+<tr><td>OpenAI (o-series, GPT-5)</td><td><code>reasoning_effort</code></td><td><code>minimal / low / medium / high</code></td></tr>
+<tr><td>Gemini 2.5</td><td><code>thinking_config.thinking_budget</code></td><td><code>0 – 24576</code> (tokens) or <code>-1</code> (auto)</td></tr>
+<tr><td><span class="badge badge-ds">DeepSeek R / V4</span></td><td><code>thinking={"type":"enabled"}</code></td><td><code>on / off</code></td></tr>
+<tr><td>Qwen 3</td><td><code>enable_thinking</code></td><td><code>true / false</code></td></tr>
+</table></div>
+<p>Enabling thinking lifts quality 5-30% on multi-step tasks (math, debugging, planning) but multiplies latency 5-50× and cost proportionally.</p>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">📦 <code>response_format</code> — structured format</div>
+<p>Forces the model to emit output that conforms to a given schema.</p>
+<ul>
+  <li><code>{"type": "text"}</code> — Default. Free text.</li>
+  <li><code>{"type": "json_object"}</code> — Guarantees valid JSON in the output (OpenAI, DeepSeek, Mistral, GLM). Free form.</li>
+  <li><code>{"type": "json_schema", "schema": {...}}</code> — Strict JSON conforming to the schema (OpenAI, Gemini "controlled generation"). The model CANNOT deviate.</li>
+  <li>Anthropic doesn't expose <code>response_format</code> directly; use <code>tool_use</code> with <code>input_schema</code> for the same effect.</li>
+</ul>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">🛠️ <code>tools</code> and <code>tool_choice</code> — function calling</div>
+<p>List of tools the model can invoke (defined with name, description, and parameter schema).</p>
+<ul>
+  <li><code>tool_choice="auto"</code> — The model decides whether to call any tool or answer directly (default).</li>
+  <li><code>tool_choice="required"</code> / <code>"any"</code> — Force a tool call.</li>
+  <li><code>tool_choice={"type":"tool","name":"X"}</code> — Force a specific tool.</li>
+  <li><code>tool_choice="none"</code> — Forbid tools, text-only response.</li>
+</ul>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">💾 <code>cache_control</code> — prompt caching (Anthropic)</div>
+<p>Marks blocks of the prompt as cacheable. The first call pays 1.25× the normal input price to write to cache; subsequent calls pay 0.10× to read it. Typical TTL 5 min (extensible to 1 h with <code>"ttl": "1h"</code>). Critical for long system prompts and RAG with repeated docs.</p>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">🌐 <code>system</code> / system message — global instructions</div>
+<p>The system prompt has top priority over user messages. It's where you define role, rules, expected format, safety constraints. It does NOT go inside <code>messages[]</code> in Anthropic (it's a top-level <code>system</code> parameter); in OpenAI/DeepSeek it goes as the first message with <code>role: "system"</code>.</p>
+</div>
+
+<div class="warn"><strong>⚠️ Defaults are your enemy.</strong> If you leave all parameters unspecified, each model picks different ones (Claude uses <code>temperature=1.0</code>, OpenAI <code>1.0</code>, DeepSeek <code>1.0</code>, Gemini <code>1.0</code> but with <code>top_p=0.95</code> and <code>top_k=64</code>). For production, explicitly set <code>temperature</code>, <code>max_tokens</code> and at least one of <code>top_p</code>/<code>top_k</code>.</div>
 
 </div>
 </section>
@@ -598,11 +802,11 @@ Reply only with code, no text."</code></pre></div>
 
 <div class="card">
 <div class="card-title">📝 Ejemplo: Explicar el POR QUÉ</div>
-<pre><code>❌ "NEVER use ellipses in your response"
+<pre><code>❌ "NUNCA uses puntos suspensivos en tu respuesta".
 
-✅ "Your response will be read aloud by a text-to-speech engine,
-   so never use ellipses — the engine won't know how to pronounce them."</code></pre>
-<p>Claude es lo bastante inteligente para generalizar desde la explicación.</p>
+✅ "Tu respuesta la leerá en voz alta un motor text-to-speech,
+   por lo que nunca uses puntos suspensivos — el motor no sabrá pronunciarlos".</code></pre>
+<p>El modelo es lo bastante inteligente para generalizar a partir de la explicación, en lugar de tratar la regla como un caso aislado.</p>
 </div>
 
 <h3>Checklist de Claridad</h3>
@@ -863,10 +1067,10 @@ A: Combined speed = 80+100 = 180 km/h
 <div class="card">
 <div class="card-title">📝 Control de Verbosidad (Opus 4.7)</div>
 <pre><code># Más conciso:
-"Provide concise, focused responses. Skip non-essential context."
+"Da respuestas concisas y al grano. Omite contexto no esencial".
 
 # Más detallado:
-"Be thorough. Include edge cases, trade-offs, and implementation details."</code></pre>
+"Sé exhaustivo. Incluye edge cases, trade-offs y detalles de implementación".</code></pre>
 </div>
 
 </div>
@@ -1529,15 +1733,15 @@ client.messages.create(
 <div class="lang-block" data-lang="es">
 <p>Claude Opus 4.7 decide dinámicamente cuándo pensar, basado en complejidad + effort.</p>
 
-<pre><code># Si piensa DEMASIADO:
-"Thinking adds latency. Only use it when it meaningfully
-improves answer quality. When in doubt, respond directly."
+<pre><code># Si piensa DEMASIADO (sube latencia sin justificarlo):
+"Pensar añade latencia. Úsalo solo cuando mejore
+significativamente la calidad de la respuesta. Si dudas, responde directamente."
 
-# Si piensa POCO (sube effort primero, luego prompt):
-"After receiving tool results, carefully reflect on their
-quality and determine optimal next steps before proceeding."</code></pre>
+# Si piensa POCO (sube primero el effort, luego refuerza por prompt):
+"Tras recibir resultados de herramientas, reflexiona con cuidado
+sobre su calidad y decide los próximos pasos óptimos antes de continuar."</code></pre>
 
-<div class="tip"><strong>💡 Migración:</strong> El antiguo <code>thinking={"type":"enabled","budget_tokens":32000}</code> se reemplaza por <code>thinking={"type":"adaptive"}</code> + <code>output_config={"effort":"xhigh"}</code>.</div>
+<div class="tip"><strong>💡 Migración:</strong> el antiguo <code>thinking={"type":"enabled","budget_tokens":32000}</code> se reemplaza por <code>thinking={"type":"adaptive"}</code> + <code>output_config={"effort":"xhigh"}</code>.</div>
 
 </div>
 <div class="lang-block" data-lang="en">
@@ -2194,7 +2398,7 @@ dinner 90% (1.5 seatings). How many people served?</code></pre>
   }
 }
 // Claude rellena la estructura exacta</code></pre></div>
-<div><h4><span class="badge badge-ds">DeepSeek — JSON Mode</span></h4>
+<div><h4><span class="badge badge-ds">DeepSeek / OpenAI — JSON Mode</span></h4>
 <pre><code>response_format={"type": "json_object"}
 // O usar function calling:
 tools=[{
@@ -2209,14 +2413,14 @@ tools=[{
 <div class="card card-accent">
 <div class="card-title">📐 ¿Por qué Structured Outputs?</div>
 <ul>
-  <li><strong>Sin parsing frágil:</strong> Adiós a regex para extraer JSON de texto libre</li>
-  <li><strong>100% conformidad:</strong> El modelo garantiza seguir el schema (con retry en errores)</li>
-  <li><strong>Tipado fuerte:</strong> Strings, numbers, booleans, enums, arrays, nested objects</li>
-  <li><strong>Validación automática:</strong> El API rechaza respuestas que no cumplan el schema</li>
+  <li><strong>Sin parsing frágil:</strong> adiós a las regex para extraer JSON de texto libre.</li>
+  <li><strong>100% de conformidad:</strong> el modelo garantiza cumplir el schema (con reintento en errores).</li>
+  <li><strong>Tipado fuerte:</strong> strings, números, booleans, enums, arrays, objetos anidados.</li>
+  <li><strong>Validación automática:</strong> la API rechaza respuestas que no cumplan el schema.</li>
 </ul>
 </div>
 
-<div class="tip"><strong>💡 Cuándo usar:</strong> Extracción de datos, formularios, APIs, clasificación con labels fijas. NO para texto creativo o respuestas abiertas.</div>
+<div class="tip"><strong>💡 Cuándo usar:</strong> extracción de datos, formularios, APIs, clasificación con etiquetas fijas. NO para texto creativo o respuestas abiertas.</div>
 
 </div>
 <div class="lang-block" data-lang="en">
@@ -2281,15 +2485,15 @@ tools=[{
 
 <div class="compare">
 <div><h4><span class="badge badge-claude">Claude</span></h4>
-<pre><code># Cache write: 1.25x input price
-# Cache read: 0.10x input price
-# Mínimo: 1024 tokens (cacheable)
-# Múltiples bloques independientes</code></pre></div>
-<div><h4><span class="badge badge-ds">DeepSeek</span></h4>
+<pre><code># Escritura de caché: 1.25× del precio de input
+# Lectura de caché:    0.10× del precio de input
+# Mínimo:              1024 tokens (cacheable)
+# Permite múltiples bloques independientes</code></pre></div>
+<div><h4><span class="badge badge-ds">DeepSeek / OpenAI / Gemini</span></h4>
 <pre><code># Context Caching automático
-# Mismo prefix → caché hit
-# Hasta 128K tokens
-# Sin coste extra por escritura</code></pre></div>
+# Mismo prefix → cache hit
+# Hasta 128K-1M tokens según proveedor
+# Sin coste extra por escritura (chinos + Gemini)</code></pre></div>
 </div>
 
 <div class="table-wrap"><table>
@@ -2549,29 +2753,31 @@ if contains_injection_patterns(user_input): reject()</code></pre>
 <p class="subtitle">Patrones probados para system prompts robustos</p>
 <div class="lang-block" data-lang="es">
 
-<h3>1. Pattern: Guardrails First</h3>
+<div class="tip" style="font-size:12px;"><strong>📝 Convención del curso:</strong> los prompts de ejemplo se muestran en castellano cuando estás en modo ES. En producción, escribir prompts en inglés suele dar 5-15% mejor calidad en los modelos abiertos (Llama, Qwen, Gemma, Mistral) — para frontier (Claude, GPT-5, Gemini, DeepSeek) la diferencia es menor pero existe. Adapta el idioma al modelo target.</div>
+
+<h3>1. Patrón: Guardrails First (límites primero)</h3>
 <pre><code># Establece límites claros al inicio
-You are a medical assistant. CRITICAL RULES:
-- NEVER diagnose — only suggest possibilities
-- ALWAYS recommend consulting a doctor
-- If asked for emergency advice, respond with 911/Emergency number</code></pre>
+Eres un asistente médico. REGLAS CRÍTICAS:
+- NUNCA diagnostiques — solo sugiere posibilidades.
+- SIEMPRE recomienda consultar a un médico.
+- Si te piden consejo de emergencia, responde con el 112 / número de emergencias.</code></pre>
 
-<h3>2. Pattern: Persona + Expertise</h3>
-<pre><code>You are an expert Python developer with 15 years of experience
-in distributed systems. You value: correctness > cleverness,
-readability > conciseness, tested code > assumptions.</code></pre>
+<h3>2. Patrón: Persona + Expertise</h3>
+<pre><code>Eres un desarrollador Python experto con 15 años de experiencia
+en sistemas distribuidos. Valoras: corrección &gt; ingenio,
+legibilidad &gt; concisión, código testeado &gt; suposiciones.</code></pre>
 
-<h3>3. Pattern: Output Template</h3>
-<pre><code>Always respond in this exact format:
-&lt;analysis&gt;Your reasoning here&lt;/analysis&gt;
-&lt;code&gt;The implementation&lt;/code&gt;
-&lt;tests&gt;Test cases covering edge cases&lt;/tests&gt;</code></pre>
+<h3>3. Patrón: Output Template (plantilla de salida)</h3>
+<pre><code>Responde siempre con este formato exacto:
+&lt;analysis&gt;Tu razonamiento aquí&lt;/analysis&gt;
+&lt;code&gt;La implementación&lt;/code&gt;
+&lt;tests&gt;Casos de prueba que cubran edge cases&lt;/tests&gt;</code></pre>
 
-<h3>4. Pattern: Progressive Disclosure</h3>
-<pre><code>Step 1: Ask clarifying questions if anything is ambiguous
-Step 2: Explain your approach before implementing
-Step 3: Implement the solution
-Step 4: Verify with tests and self-review</code></pre>
+<h3>4. Patrón: Progressive Disclosure (revelación progresiva)</h3>
+<pre><code>Paso 1: Haz preguntas aclaratorias si algo es ambiguo.
+Paso 2: Explica tu enfoque antes de implementar.
+Paso 3: Implementa la solución.
+Paso 4: Verifica con tests y auto-revisión.</code></pre>
 
 </div>
 <div class="lang-block" data-lang="en">
@@ -2702,8 +2908,8 @@ User Query ──→ Retrieve ──→ Augment Prompt ──→ LLM ──→ R
 </div>
 
 <h3>Prompt para RAG</h3>
-<pre><code>Answer the question using ONLY the provided documents.
-If the answer is not in the documents, say "Not found in sources."
+<pre><code>Responde a la pregunta usando ÚNICAMENTE los documentos proporcionados.
+Si la respuesta no está en los documentos, di "No encontrado en las fuentes."
 
 &lt;documents&gt;
 &lt;document id="1"&gt;{{CHUNK_1}}&lt;/document&gt;
@@ -2711,10 +2917,10 @@ If the answer is not in the documents, say "Not found in sources."
 &lt;document id="3"&gt;{{CHUNK_3}}&lt;/document&gt;
 &lt;/documents&gt;
 
-Question: {{USER_QUERY}}
+Pregunta: {{USER_QUERY}}
 
-Cite the document ID for each fact in your answer.
-Format: [doc:X] at the end of each sentence that uses that source.</code></pre>
+Cita el ID del documento para cada hecho en tu respuesta.
+Formato: [doc:X] al final de cada frase que use esa fuente.</code></pre>
 
 <div class="tip"><strong>💡 Cuándo usar RAG vs contexto largo:</strong> RAG si tienes >200K docs o necesitas precisión factual. Contexto largo si necesitas razonar sobre relaciones entre todo el documento.</div>
 
@@ -2817,14 +3023,14 @@ Format: [doc:X] at the end of each sentence that uses that source.</code></pre>
 <div class="card-title">💬 Gestión de Conversaciones</div>
 <pre><code># Conversación multi-turn correcta
 messages = [
-  {"role": "system", "content": "Eres un tutor de Python"},
+  {"role": "system", "content": "Eres un tutor de Python."},
   {"role": "user", "content": "¿Qué es un decorador?"},
   {"role": "assistant", "content": "Un decorador es..."},
-  {"role": "user", "content": "Dame un ejemplo"},  # ← El modelo ve todo el historial
+  {"role": "user", "content": "Dame un ejemplo"},  # ← El modelo ve todo el historial.
 ]
 
-# ❌ Error común: enviar solo el último mensaje
-# ✅ Correcto: enviar historial completo (o compactado)</code></pre>
+# ❌ Error común: enviar solo el último mensaje.
+# ✅ Correcto: enviar el historial completo (o compactado).</code></pre>
 </div>
 
 <h3>Técnicas para Conversaciones Largas</h3>
@@ -2877,30 +3083,30 @@ messages = [
 <div class="lang-block" data-lang="es">
 
 <pre><code># System Prompt para Code Review Automático
-You are a senior security-focused code reviewer.
-For each PR, analyze and report:
+Eres un revisor de código sénior especializado en seguridad.
+Para cada PR, analiza e informa:
 
 &lt;instructions&gt;
-1. SECURITY: OWASP Top 10, injection, auth, data exposure
-2. CORRECTNESS: Logic errors, edge cases, race conditions
-3. PERFORMANCE: N+1 queries, memory leaks, blocking ops
-4. STYLE: Only flag issues that could cause bugs
+1. SEGURIDAD: OWASP Top 10, inyección, autenticación, exposición de datos.
+2. CORRECCIÓN: Errores lógicos, edge cases, race conditions.
+3. RENDIMIENTO: Queries N+1, memory leaks, operaciones bloqueantes.
+4. ESTILO: Solo señala problemas que puedan causar bugs.
 &lt;/instructions&gt;
 
 &lt;format&gt;
 &lt;finding severity="critical|high|medium|low"&gt;
-  &lt;file&gt;path/to/file.ts&lt;/file&gt;
+  &lt;file&gt;ruta/al/archivo.ts&lt;/file&gt;
   &lt;line&gt;42&lt;/line&gt;
-  &lt;issue&gt;Description&lt;/issue&gt;
-  &lt;fix&gt;Concrete code suggestion&lt;/fix&gt;
+  &lt;issue&gt;Descripción del problema&lt;/issue&gt;
+  &lt;fix&gt;Sugerencia concreta de código&lt;/fix&gt;
 &lt;/finding&gt;
 &lt;/format&gt;
 
-Report EVERY issue. Coverage over filtering.
-Include confidence level (0-100%) for each finding.</code></pre>
+Reporta TODOS los problemas. Cobertura sobre filtrado.
+Incluye nivel de confianza (0-100%) para cada hallazgo.</code></pre>
 
 <div class="card card-green"><div class="card-title">📈 Resultados típicos</div>
-<p>Con Claude Opus 4.7: 11pp más recall que modelos anteriores. 94% precisión en critical findings. Tiempo de review: de 45 min a 3 min por PR.</p></div>
+<p>Con Claude Opus 4.7: 11pp más recall que modelos anteriores. 94% precisión en hallazgos críticos. Tiempo de review: de 45 min a 3 min por PR.</p></div>
 
 </div>
 <div class="lang-block" data-lang="en">
@@ -2939,28 +3145,28 @@ Include confidence level (0-100%) for each finding.</code></pre>
 <div class="lang-block" data-lang="es">
 
 <pre><code># Chatbot de Soporte Técnico — System Prompt
-You are TechSupport AI for CloudSync Inc.
+Eres TechSupport AI para CloudSync Inc.
 
 &lt;persona&gt;
-Friendly, patient, solution-oriented. NEVER say "I don't know" —
-say "Let me find the right resource for you."
+Amable, paciente, orientado a soluciones. NUNCA digas "no lo sé" —
+di "Déjame buscarte el recurso adecuado".
 &lt;/persona&gt;
 
 &lt;escalation_rules&gt;
-- Account/billing issues → Transfer to human (provide ticket #)
-- Data loss → CRITICAL — escalate immediately
-- Feature requests → Log in feedback system
-- How-to questions → Answer with docs links
+- Problemas de cuenta/facturación → Transferir a humano (proporciona nº de ticket).
+- Pérdida de datos → CRÍTICO — escalar inmediatamente.
+- Solicitudes de features → Registrar en el sistema de feedback.
+- Preguntas "¿cómo hago…?" → Responder con enlaces a la documentación.
 &lt;/escalation_rules&gt;
 
 &lt;examples&gt;
 &lt;example&gt;
-User: "My files aren't syncing"
-Assistant: "Let's troubleshoot! First, check:
-1. Is CloudSync running? (look for the tray icon)
-2. Are you connected to internet?
-3. Which specific files aren't syncing?
-[If all checks pass → check server status → escalate if needed]"
+Usuario: "Mis archivos no se están sincronizando".
+Asistente: "¡Veamos! Primero comprueba:
+1. ¿Está CloudSync corriendo? (busca el icono en la bandeja).
+2. ¿Tienes conexión a internet?
+3. ¿Qué archivos concretos no se sincronizan?
+[Si todo lo anterior es correcto → comprueba el estado del servidor → escala si hace falta]".
 &lt;/example&gt;
 &lt;/examples&gt;</code></pre>
 
@@ -3001,8 +3207,8 @@ Assistant: "Let's troubleshoot! First, check:
 <div class="lang-block" data-lang="es">
 
 <pre><code># Pipeline de Extracción de Facturas
-# Step 1: Structured Output
-Extract from this invoice:
+# Paso 1: Output estructurado
+Extrae de esta factura los siguientes campos:
 {
   "invoice_number": "string",
   "date": "YYYY-MM-DD",
@@ -3012,12 +3218,12 @@ Extract from this invoice:
   "currency": "string (ISO 4217)"
 }
 
-# Step 2: Validation Prompt
-Validate the extracted data:
-- Does invoice_number match format ABC-####?
-- Do line_items sum up to subtotal? (±0.01 tolerance)
-- Is date within valid range (2020-2026)?
-- Flag any anomalies in &lt;anomalies&gt; tags.</code></pre>
+# Paso 2: Prompt de validación
+Valida los datos extraídos:
+- ¿Coincide invoice_number con el formato ABC-####?
+- ¿Suman line_items igual al subtotal? (tolerancia ±0.01).
+- ¿Está la fecha dentro del rango válido (2020-2026)?
+- Marca cualquier anomalía dentro de etiquetas &lt;anomalies&gt;.</code></pre>
 
 </div>
 <div class="lang-block" data-lang="en">
@@ -3048,27 +3254,27 @@ Validate the extracted data:
 <h2>11.4 Caso Real: Generador de Documentación</h2>
 <div class="lang-block" data-lang="es">
 
-<pre><code># Doc Generator System Prompt
-You are a technical writer. Generate documentation from code.
+<pre><code># System Prompt — Generador de Documentación
+Eres un redactor técnico. Genera documentación a partir del código.
 
 &lt;rules&gt;
-- Extract function signatures, params, return types, exceptions
-- Add a usage example for each public function
-- Note any side effects or mutating operations
-- Use the project's existing doc style (JSDoc / docstring / etc.)
+- Extrae signatures de funciones, params, return types y excepciones.
+- Añade un ejemplo de uso para cada función pública.
+- Indica cualquier efecto secundario u operación mutante.
+- Usa el estilo de documentación existente del proyecto (JSDoc / docstring / etc.).
 &lt;/rules&gt;
 
 &lt;template&gt;
-## `functionName(params)`
-**Description:** What this function does
-**Parameters:** | Name | Type | Description |
-**Returns:** Type — description
-**Throws:** ErrorType — when this happens
-**Example:**
+## `nombreFuncion(params)`
+**Descripción:** qué hace la función.
+**Parámetros:** | Nombre | Tipo | Descripción |
+**Retorna:** tipo — descripción.
+**Lanza:** TipoError — cuándo ocurre.
+**Ejemplo:**
 ```language
-// Working example with expected output
+// Ejemplo funcional con su salida esperada
 ```
-**Side Effects:** [none | description]
+**Efectos secundarios:** [ninguno | descripción]
 &lt;/template&gt;</code></pre>
 
 </div>
