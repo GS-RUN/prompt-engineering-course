@@ -645,3 +645,15 @@ tr:last-child td { border-bottom: none; }
 
 /* Sidebar bg explícito por tema (override del rgba hardcoded original) */
 #sidebar { background: var(--bg-sidebar); }
+
+/* === i18n lang blocks (Bug 2 fix 2026-05-07) ===
+   Each section body is wrapped in two parallel <div.lang-block data-lang="..."> blocks.
+   The active language attribute on <html> drives visibility. Default ES.
+   If a section is marked [data-untranslated="1"] (no EN content yet), the ES
+   block is shown even in EN mode as fallback while translations are pending. */
+.lang-block { display: none; }
+.lang-block[data-lang="es"] { display: block; }
+html[data-i18n-lang="en"] .lang-block[data-lang="es"] { display: none; }
+html[data-i18n-lang="en"] .lang-block[data-lang="en"] { display: block; }
+html[data-i18n-lang="en"] section[data-untranslated="1"] .lang-block[data-lang="es"] { display: block; }
+html[data-i18n-lang="en"] section[data-untranslated="1"] .lang-block[data-lang="en"] { display: none; }

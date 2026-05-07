@@ -9,8 +9,26 @@ const I18N = {
     // Build translation dict once
     this.dict = this.buildDict();
 
+    // Mark sections whose EN block is empty (only contains TODO comment / whitespace).
+    // CSS uses [data-untranslated="1"] to fall back to the ES block in EN mode.
+    document.querySelectorAll('section').forEach(sec => {
+      const en = sec.querySelector(':scope > .lang-block[data-lang="en"]');
+      if (!en) return;
+      // Strip HTML comments + whitespace; if nothing visible, mark untranslated.
+      const stripped = en.innerHTML.replace(/<!--[\s\S]*?-->/g, '').trim();
+      if (stripped === '') sec.dataset.untranslated = '1';
+    });
+
+    // Cache original Spanish module titles BEFORE any switchTo runs, so that
+    // restoring ES later doesn't snapshot English values that overwrote them.
+    this._origModTitles = [];
+    document.querySelectorAll('.nav-module-title').forEach(el => {
+      this._origModTitles.push(el.textContent);
+    });
+
     // Restore saved lang or default to ES
     const saved = localStorage.getItem('lang');
+    document.documentElement.setAttribute('data-i18n-lang', saved === 'en' ? 'en' : 'es');
     if (saved === 'en') this.switchTo('en');
 
     // Toggle buttons
@@ -25,6 +43,7 @@ const I18N = {
   switchTo(lang) {
     this.current = lang;
     localStorage.setItem('lang', lang);
+    document.documentElement.setAttribute('data-i18n-lang', lang);
     this.translateDOM();
     this.highlightToggle();
   },
@@ -43,45 +62,29 @@ const I18N = {
     document.querySelectorAll('.nav-link').forEach(el => {
       const key = this.sectionToKey(el.dataset.target);
       if (!key) return;
-      if (isEn && this.dict[key]) {
-        // Save original for later restore
-        if (!el.dataset.orig) el.dataset.orig = el.textContent.trim();
-        // Keep icon span, replace text after it
-        const icon = el.querySelector('.nav-icon');
-        if (icon) {
-          // Remove text nodes after icon, append translated text
-          const check = el.querySelector('.nav-check');
-          while (el.lastChild && el.lastChild !== icon && el.lastChild !== check) {
-            el.removeChild(el.lastChild);
-          }
-          // Remove text between icon and check
-          let afterIcon = false;
-          const toRemove = [];
-          el.childNodes.forEach(n => {
-            if (n === icon) afterIcon = true;
-            else if (n === check) afterIcon = false;
-            else if (afterIcon && n.nodeType === 3) toRemove.push(n);
-          });
-          toRemove.forEach(n => n.remove());
-          // Insert translated text before check or at end
-          const txt = document.createTextNode(' ' + this.dict[key]);
-          if (check) el.insertBefore(txt, check);
-          else el.appendChild(txt);
-        }
-      } else if (!isEn && el.dataset.orig) {
-        // Restore original Spanish
-        const icon = el.querySelector('.nav-icon');
-        if (icon) {
-          const check = el.querySelector('.nav-check');
-          while (el.lastChild && el.lastChild !== icon && el.lastChild !== check) {
-            el.removeChild(el.lastChild);
-          }
-          const afterText = el.dataset.orig.replace(/^.\s*/, '').replace(/\s*✅$/, '').trim();
-          const txt = document.createTextNode(' ' + afterText);
-          if (check) el.insertBefore(txt, check);
-          else el.appendChild(txt);
-        }
+      const icon = el.querySelector('.nav-icon');
+      if (!icon) return;
+      const check = el.querySelector('.nav-check');
+
+      // Save original Spanish text once (between icon and check)
+      if (!el.dataset.orig) {
+        el.dataset.orig = this.extractTextBetween(el, icon, check);
       }
+
+      // Pick the text to render in current lang
+      let newText;
+      if (isEn && this.dict[key]) newText = this.dict[key];
+      else newText = el.dataset.orig;
+      if (!newText) return;
+
+      // Strip ALL existing text nodes between icon and check (this is the
+      // bug fix: the previous lastChild-only loop missed nodes when <check>
+      // was the lastChild, leaving stale translations behind)
+      this.stripTextBetween(el, icon, check);
+
+      const txt = document.createTextNode(' ' + newText + ' ');
+      if (check) el.insertBefore(txt, check);
+      else el.appendChild(txt);
     });
 
     // 3) Section h2 titles
@@ -124,6 +127,36 @@ const I18N = {
         el.textContent = el.dataset.orig;
       }
     });
+  },
+
+  extractTextBetween(parent, before, after) {
+    let collecting = false;
+    let out = '';
+    parent.childNodes.forEach(n => {
+      if (n === before) { collecting = true; return; }
+      if (n === after) { collecting = false; return; }
+      if (collecting && n.nodeType === 3) out += n.nodeValue;
+    });
+    return out.trim();
+  },
+
+  stripTextBetween(parent, before, after) {
+    let collecting = false;
+    const toRemove = [];
+    parent.childNodes.forEach(n => {
+      if (n === before) { collecting = true; return; }
+      if (n === after) { collecting = false; return; }
+      if (collecting && n.nodeType === 3) toRemove.push(n);
+    });
+    // If there's no `after`, also strip text after `before` to end
+    if (!after) {
+      let afterBefore = false;
+      parent.childNodes.forEach(n => {
+        if (n === before) { afterBefore = true; return; }
+        if (afterBefore && n.nodeType === 3 && !toRemove.includes(n)) toRemove.push(n);
+      });
+    }
+    toRemove.forEach(n => n.remove());
   },
 
   highlightToggle() {
