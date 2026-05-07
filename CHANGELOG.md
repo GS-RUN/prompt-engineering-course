@@ -2,6 +2,69 @@
 
 All notable changes to this course are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.1.0] — 2026-05-08
+
+### Added — Block VIII fully written
+
+The cross-model patterns block was a single-section placeholder (only the
+frontier-models comparison from s26). It now contains seven full sections:
+
+- **8.1 Why agnostic?** — five-reason rationale for vendor-agnostic design,
+  cost-of-lock-in table.
+- **8.2 Frontier Models 2026** (existing s26, renumbered).
+- **8.3 Rosetta stones** — cross-API translations for every major
+  technique: thinking/reasoning_effort across Claude/OpenAI/Gemini/
+  DeepSeek/Qwen/Kimi/Llama; tool use formats; structured outputs;
+  prompt caching granularity and TTLs.
+- **8.4 Adapter layers** — comparison of OpenRouter, LiteLLM, PortKey,
+  LangChain LLMs, Vercel AI SDK, HF Inference. Runnable LiteLLM example.
+- **8.5 Fallback chains** — anatomy, five common patterns
+  (same-tier / down-tier / local-emergency / quality / cost-cap),
+  five known mistakes.
+- **8.6 Cost/quality routing** — rule-based router (with code), LLM
+  classifier router (with prompt), the metrics needed to iterate.
+- **8.7 Cross-model evaluation** — five rules of methodology, runnable
+  ~80-LOC eval template, common LLM-as-Judge bias trap.
+- **8.8 Pitfalls** — nine typical cross-model gotchas with symptom + fix
+  (tokenizer drift, tag conventions, defaults, stop sequences,
+  multimodal gap, system position, streaming format, refusal divergence,
+  silent versioning).
+
+### Added — Block XIV fully written
+
+The capstone block was a "coming soon" stub. It now contains:
+
+- **Intro** — how to work on a capstone (4 components, recommended time,
+  why the writeup is the most valuable artefact).
+- **Project A — End-to-end Code Review Bot** — full spec with seven
+  acceptance criteria (recall ≥ 80% on critical, precision ≥ 85%, mean
+  cost ≤ $0.30/PR, p95 latency ≤ 90s), suggested stack, deliverables,
+  five known traps, scoring rubric (100 pts).
+- **Project B — RAG Knowledge Assistant** — full spec (200+ docs ingest,
+  citation accuracy ≥ 90%, p95 ≤ 5s, cost ≤ $0.05/answer), stack
+  (embeddings/vector DB/generation choices), deliverables, five known
+  traps, scoring rubric.
+- **Project C — Local Self-Hosted Assistant** — spec, target hardware
+  tiers, four known traps. Full rubric and reference solution Q3 2026.
+- **Project D — Multi-Agent Research Team** — spec with 5-agent topology
+  (Researcher / Analyst / Critic / Writer / Supervisor), four known
+  traps. Full rubric and reference solution Q3 2026.
+
+### Changed
+
+- `js/shared/manifest.js`: Block XIV no longer flagged as `stub`.
+  Objectives rewritten to reflect actual content available.
+
+### Acknowledged remaining gaps
+
+These items from the v2.0 deferred list are still open:
+- Capstone Projects C and D — full rubrics + reference solutions.
+- Knowledge-check quizzes deeper than current.
+- AI tutor of the course (Claude API integration).
+- Foundations math deep-dive in Block I.
+
+---
+
 ## [2.0.0] — 2026-05-08
 
 ### Major restructure

@@ -60,8 +60,69 @@
   </div>
 </section>
 
+<section id="b8-1">
+<h2>
+  <span class="lang-block" data-lang="es">8.1 ¿Por qué agnóstico?</span>
+  <span class="lang-block" data-lang="en">8.1 Why agnostic?</span>
+</h2>
+
+<div class="lang-block" data-lang="es">
+<p>El reflejo natural cuando un proveedor te trata bien es casarte con él: API key única, framework familiar, equipo entrenado, dashboard que conoces. Y entonces, una mañana de 2024, alguien te dice "ah, OpenAI ha duplicado el precio de GPT-4 Turbo" o "Claude tiene un outage de 6 horas y nuestro chatbot está caído", y descubres en directo el coste del lock-in.</p>
+
+<div class="card card-accent">
+<div class="card-title">🧭 Las 5 razones del enfoque agnóstico</div>
+<ol>
+  <li><strong>Resiliencia operativa.</strong> Cualquier proveedor frontier ha tenido outages multi-hora en 2024-2026. Si tu producto depende de uno, tu producto se cae con él. Multi-proveedor con fallback es seguro de continuidad.</li>
+  <li><strong>Apalancamiento comercial.</strong> Cuando puedes mover el 80% de tu volumen a otro proveedor en 48h, el descuento que negocias cambia drásticamente. La amenaza creíble de migración es la herramienta de negociación más fuerte.</li>
+  <li><strong>Optimización coste/calidad.</strong> No todos los requests merecen Claude Opus 4.7 a $15/Mtok. Mucho del trabajo es perfectamente servible con DeepSeek V4 Pro a $0.50 o GPT-5 Mini a $0.25. Routing inteligente baja el coste medio 5-10× sin perder calidad donde importa.</li>
+  <li><strong>Ventajas regionales.</strong> Datos sensibles UE → preferencia por Mistral o self-hosted. Datos sensibles US → Claude/OpenAI con BAA. Documentos largos → Gemini/Kimi. Coding alto volumen → DeepSeek. La realidad geopolítica importa.</li>
+  <li><strong>Evolución del frontier.</strong> El líder de 2026 puede no ser el de 2027. En los últimos 24 meses Claude, GPT y Gemini se han ido turnando el liderazgo en distintos benchmarks. Estar en uno solo es estar en el "ganador del mes pasado".</li>
+</ol>
+</div>
+
+<h3>El coste real del lock-in</h3>
+<div class="table-wrap"><table>
+<tr><th>Lock-in vector</th><th>Síntoma</th><th>Coste cuando explota</th></tr>
+<tr><td>Solo una API key</td><td>Outage del proveedor → tu producto offline</td><td>Pérdida directa de revenue + reputación</td></tr>
+<tr><td>SDK propietario (Anthropic SDK, OpenAI SDK, Google GenAI)</td><td>Migrar requiere reescribir parsing, error handling, streaming</td><td>2-6 semanas de ingeniería</td></tr>
+<tr><td>Prompts ajustados a cuirks de UN modelo</td><td>El competitor responde peor incluso siendo más capaz en general</td><td>Parálisis para migrar aunque haya descuento</td></tr>
+<tr><td>Features exclusivas (Computer Use, Operator, Native Search)</td><td>Migrar implica perder funcionalidad</td><td>O reconstruyes, o no migras</td></tr>
+<tr><td>Cuenta de equipo enterprise sin ramp-down</td><td>Compromisos anuales / mínimos contractuales</td><td>Hasta 12 meses de pago "muerto" tras decidir migrar</td></tr>
+</table></div>
+
+<div class="tip"><strong>💡 La alternativa pragmática:</strong> diseñar el sistema desde el día 1 con un <em>capa de abstracción delgada</em> sobre la API. No es over-engineering — es seguro de continuidad. Si la abstracción te cuesta 100 LOC de más, es <strong>la mejor inversión defensiva que harás</strong>.</div>
+</div>
+
+<div class="lang-block" data-lang="en">
+<p>The natural reflex when a provider treats you well is to marry them: single API key, familiar framework, trained team, dashboard you know. And then, one morning in 2024, someone tells you "OpenAI just doubled GPT-4 Turbo's price" or "Claude has a 6-hour outage and our chatbot is down", and you discover the real cost of lock-in in real time.</p>
+
+<div class="card card-accent">
+<div class="card-title">🧭 The 5 reasons for an agnostic approach</div>
+<ol>
+  <li><strong>Operational resilience.</strong> Every frontier provider has had multi-hour outages in 2024-2026. If your product depends on one, your product goes down with it. Multi-provider with fallback is business continuity insurance.</li>
+  <li><strong>Commercial leverage.</strong> When you can move 80% of your volume to another provider in 48h, the discount you negotiate changes dramatically. A credible migration threat is your strongest bargaining tool.</li>
+  <li><strong>Cost/quality optimisation.</strong> Not every request deserves Claude Opus 4.7 at $15/Mtok. A lot of the work is perfectly servable by DeepSeek V4 Pro at $0.50 or GPT-5 Mini at $0.25. Smart routing cuts average cost 5-10× without losing quality where it counts.</li>
+  <li><strong>Regional advantages.</strong> Sensitive EU data → preference for Mistral or self-hosted. Sensitive US data → Claude/OpenAI with BAA. Long documents → Gemini/Kimi. High-volume coding → DeepSeek. Geopolitics matters.</li>
+  <li><strong>Frontier evolution.</strong> 2026's leader may not be 2027's. Over the last 24 months Claude, GPT and Gemini have been trading leadership across different benchmarks. Being on only one is being on "last month's winner".</li>
+</ol>
+</div>
+
+<h3>The real cost of lock-in</h3>
+<div class="table-wrap"><table>
+<tr><th>Lock-in vector</th><th>Symptom</th><th>Cost when it blows up</th></tr>
+<tr><td>Single API key</td><td>Provider outage → your product offline</td><td>Direct revenue loss + reputation</td></tr>
+<tr><td>Proprietary SDK (Anthropic SDK, OpenAI SDK, Google GenAI)</td><td>Migrating means rewriting parsing, error handling, streaming</td><td>2-6 engineering weeks</td></tr>
+<tr><td>Prompts tuned to ONE model's quirks</td><td>The competitor scores worse even when more capable overall</td><td>Migration paralysis even with a discount on the table</td></tr>
+<tr><td>Exclusive features (Computer Use, Operator, Native Search)</td><td>Migration means losing functionality</td><td>Either rebuild or stay</td></tr>
+<tr><td>Enterprise account without ramp-down</td><td>Annual commitments / contractual minimums</td><td>Up to 12 months of "dead" payment after deciding to migrate</td></tr>
+</table></div>
+
+<div class="tip"><strong>💡 The pragmatic alternative:</strong> design the system from day 1 with a <em>thin abstraction layer</em> over the API. It's not over-engineering — it's continuity insurance. If the abstraction costs you 100 extra LOC, it's <strong>the best defensive investment you'll make</strong>.</div>
+</div>
+</section>
+
 <section id="s26">
-<h2>6.1 Frontier Models 2026 — Comparativa Completa</h2>
+<h2>8.2 Frontier Models 2026 — Comparativa Completa</h2>
 <p class="subtitle">Claude, GPT, Gemini, DeepSeek, Kimi, MiniMax, Qwen, GLM, Grok, Mistral — qué pedir a cada uno</p>
 <div class="lang-block" data-lang="es">
 
@@ -165,6 +226,553 @@
 </div>
 </section>
 
+<section id="b8-3">
+<h2>
+  <span class="lang-block" data-lang="es">8.3 Rosetta stones — la misma técnica en cada API</span>
+  <span class="lang-block" data-lang="en">8.3 Rosetta stones — the same technique in every API</span>
+</h2>
+
+<div class="lang-block" data-lang="es">
+<p>Las grandes técnicas (thinking, tool use, structured outputs, prompt caching) existen en TODOS los frontier APIs, pero con nombres y formas distintas. La táctica agnóstica empieza por dominar la traducción.</p>
+
+<h3>3.1 Internal reasoning / thinking</h3>
+<div class="table-wrap"><table>
+<tr><th>API</th><th>Cómo se activa</th><th>Niveles disponibles</th></tr>
+<tr><td><span class="badge badge-claude">Claude</span> (Anthropic)</td><td><code>thinking={"type":"adaptive"}</code> + <code>output_config={"effort":"xhigh"}</code></td><td><code>low / medium / high / xhigh / max</code></td></tr>
+<tr><td>OpenAI (o-series, GPT-5)</td><td><code>reasoning_effort="high"</code></td><td><code>minimal / low / medium / high</code></td></tr>
+<tr><td>Gemini 2.5</td><td><code>thinking_config={"thinking_budget": 8192}</code></td><td>Tokens 0-24576, o <code>-1</code> auto</td></tr>
+<tr><td><span class="badge badge-ds">DeepSeek</span> R/V4</td><td><code>thinking={"type":"enabled"}</code></td><td><code>on / off</code></td></tr>
+<tr><td>Qwen 3</td><td><code>enable_thinking=true</code></td><td>Boolean</td></tr>
+<tr><td>Kimi K2</td><td>Header <code>X-Kimi-Thinking: true</code></td><td>Boolean</td></tr>
+<tr><td>Llama 4 / Mistral local</td><td>Prompt: <code>"Razona paso a paso antes de responder."</code></td><td>Solo soft-control via prompt</td></tr>
+</table></div>
+
+<h3>3.2 Tool use / function calling</h3>
+<div class="table-wrap"><table>
+<tr><th>API</th><th>Llamado</th><th>Schema en</th><th>Formato respuesta</th></tr>
+<tr><td><span class="badge badge-claude">Claude</span></td><td>Tool Use</td><td><code>tools: [{name, description, input_schema}]</code></td><td><code>content[].type=="tool_use"</code></td></tr>
+<tr><td>OpenAI</td><td>Function Calling</td><td><code>tools: [{type:"function", function:{name, parameters}}]</code></td><td><code>tool_calls[].function</code></td></tr>
+<tr><td>Gemini</td><td>Function Declarations</td><td><code>tools: [{function_declarations: [...]}]</code></td><td><code>candidates[].content.parts[].function_call</code></td></tr>
+<tr><td><span class="badge badge-ds">DeepSeek</span></td><td>OpenAI-compatible</td><td>Idéntico a OpenAI</td><td>Idéntico a OpenAI</td></tr>
+<tr><td>Mistral</td><td>OpenAI-compatible</td><td>Idéntico a OpenAI</td><td>Idéntico a OpenAI</td></tr>
+<tr><td>Qwen / GLM</td><td>OpenAI-compatible</td><td>Idéntico a OpenAI</td><td>Idéntico a OpenAI</td></tr>
+</table></div>
+
+<div class="tip"><strong>💡 Patrón estable:</strong> el <strong>OpenAI function calling format</strong> es el de facto standard fuera de Anthropic. Si diseñas para él, soportas DeepSeek, Mistral, Qwen, GLM, Kimi, MiniMax y la mayoría de proveedores chinos sin tocar el código. Solo Claude (y Gemini) requieren un adapter dedicado.</div>
+
+<h3>3.3 Structured outputs (forzar JSON)</h3>
+<div class="table-wrap"><table>
+<tr><th>API</th><th>Cómo</th></tr>
+<tr><td><span class="badge badge-claude">Claude</span></td><td>NO existe parámetro nativo. Patrón: definir un tool con <code>input_schema</code>, <code>tool_choice={"type":"tool","name":"X"}</code> → la respuesta del modelo es la invocación con los args ajustados al schema.</td></tr>
+<tr><td>OpenAI</td><td><code>response_format={"type":"json_schema", "json_schema":{...}}</code> → Strict mode, garantía 100% de conformidad.</td></tr>
+<tr><td>Gemini 2.5</td><td><code>response_mime_type="application/json"</code> + <code>response_schema={...}</code> → Controlled generation.</td></tr>
+<tr><td><span class="badge badge-ds">DeepSeek</span></td><td><code>response_format={"type":"json_object"}</code> → JSON válido garantizado, schema NO obligatorio (free-form JSON).</td></tr>
+<tr><td>Mistral</td><td><code>response_format={"type":"json_object"}</code> + Outlines / xgrammar para schema strict.</td></tr>
+<tr><td>Qwen / GLM / Kimi</td><td>Idéntico a DeepSeek (OpenAI-compatible <code>json_object</code>).</td></tr>
+</table></div>
+
+<h3>3.4 Prompt caching</h3>
+<div class="table-wrap"><table>
+<tr><th>API</th><th>Granularidad</th><th>Coste write/read</th><th>TTL</th></tr>
+<tr><td><span class="badge badge-claude">Claude</span></td><td>Bloques marcados con <code>cache_control={"type":"ephemeral"}</code></td><td>1.25× / 0.10×</td><td>5 min (default), 1h con <code>"ttl":"1h"</code></td></tr>
+<tr><td>OpenAI</td><td>Automático (prefix matching)</td><td>1.0× / 0.50×</td><td>~5-10 min</td></tr>
+<tr><td>Gemini</td><td>Explícito vía <code>cachedContents.create()</code></td><td>1.0× / 0.25× + storage fee</td><td>Configurable hasta 1h</td></tr>
+<tr><td><span class="badge badge-ds">DeepSeek</span></td><td>Automático (prefix matching)</td><td>1.0× / 0.10×</td><td>~24h</td></tr>
+<tr><td>Otros chinos (Kimi, GLM, Qwen)</td><td>Mayoría automático prefix-matching</td><td>1.0× / 0.10-0.20×</td><td>~horas</td></tr>
+</table></div>
+
+<div class="tip"><strong>💡 Bottom line:</strong> el patrón "mete el sistema y el contexto largo al inicio del prompt, en orden estable" sirve para activar caching en CASI todos los proveedores. El único que requiere markup explícito es Claude (y Gemini si quieres TTL 1h).</div>
+</div>
+
+<div class="lang-block" data-lang="en">
+<p>The big techniques (thinking, tool use, structured outputs, prompt caching) exist in EVERY frontier API, but with different names and shapes. The agnostic tactic starts with mastering the translation.</p>
+
+<h3>3.1 Internal reasoning / thinking</h3>
+<div class="table-wrap"><table>
+<tr><th>API</th><th>How to enable</th><th>Available levels</th></tr>
+<tr><td><span class="badge badge-claude">Claude</span> (Anthropic)</td><td><code>thinking={"type":"adaptive"}</code> + <code>output_config={"effort":"xhigh"}</code></td><td><code>low / medium / high / xhigh / max</code></td></tr>
+<tr><td>OpenAI (o-series, GPT-5)</td><td><code>reasoning_effort="high"</code></td><td><code>minimal / low / medium / high</code></td></tr>
+<tr><td>Gemini 2.5</td><td><code>thinking_config={"thinking_budget": 8192}</code></td><td>Tokens 0-24576, or <code>-1</code> auto</td></tr>
+<tr><td><span class="badge badge-ds">DeepSeek</span> R/V4</td><td><code>thinking={"type":"enabled"}</code></td><td><code>on / off</code></td></tr>
+<tr><td>Qwen 3</td><td><code>enable_thinking=true</code></td><td>Boolean</td></tr>
+<tr><td>Kimi K2</td><td>Header <code>X-Kimi-Thinking: true</code></td><td>Boolean</td></tr>
+<tr><td>Llama 4 / Mistral local</td><td>Prompt: <code>"Reason step by step before answering."</code></td><td>Soft-control via prompt only</td></tr>
+</table></div>
+
+<h3>3.2 Tool use / function calling</h3>
+<div class="table-wrap"><table>
+<tr><th>API</th><th>Called</th><th>Schema in</th><th>Response format</th></tr>
+<tr><td><span class="badge badge-claude">Claude</span></td><td>Tool Use</td><td><code>tools: [{name, description, input_schema}]</code></td><td><code>content[].type=="tool_use"</code></td></tr>
+<tr><td>OpenAI</td><td>Function Calling</td><td><code>tools: [{type:"function", function:{name, parameters}}]</code></td><td><code>tool_calls[].function</code></td></tr>
+<tr><td>Gemini</td><td>Function Declarations</td><td><code>tools: [{function_declarations: [...]}]</code></td><td><code>candidates[].content.parts[].function_call</code></td></tr>
+<tr><td><span class="badge badge-ds">DeepSeek</span></td><td>OpenAI-compatible</td><td>Identical to OpenAI</td><td>Identical to OpenAI</td></tr>
+<tr><td>Mistral</td><td>OpenAI-compatible</td><td>Identical to OpenAI</td><td>Identical to OpenAI</td></tr>
+<tr><td>Qwen / GLM</td><td>OpenAI-compatible</td><td>Identical to OpenAI</td><td>Identical to OpenAI</td></tr>
+</table></div>
+
+<div class="tip"><strong>💡 Stable pattern:</strong> the <strong>OpenAI function calling format</strong> is the de facto standard outside Anthropic. If you design for it, you support DeepSeek, Mistral, Qwen, GLM, Kimi, MiniMax and most Chinese providers without touching code. Only Claude (and Gemini) need a dedicated adapter.</div>
+
+<h3>3.3 Structured outputs (forcing JSON)</h3>
+<div class="table-wrap"><table>
+<tr><th>API</th><th>How</th></tr>
+<tr><td><span class="badge badge-claude">Claude</span></td><td>No native parameter. Pattern: define a tool with <code>input_schema</code>, <code>tool_choice={"type":"tool","name":"X"}</code> → the model's response is the tool invocation with args matching the schema.</td></tr>
+<tr><td>OpenAI</td><td><code>response_format={"type":"json_schema", "json_schema":{...}}</code> → Strict mode, 100% conformance guaranteed.</td></tr>
+<tr><td>Gemini 2.5</td><td><code>response_mime_type="application/json"</code> + <code>response_schema={...}</code> → Controlled generation.</td></tr>
+<tr><td><span class="badge badge-ds">DeepSeek</span></td><td><code>response_format={"type":"json_object"}</code> → Valid JSON guaranteed, schema NOT enforced (free-form JSON).</td></tr>
+<tr><td>Mistral</td><td><code>response_format={"type":"json_object"}</code> + Outlines / xgrammar for strict schema.</td></tr>
+<tr><td>Qwen / GLM / Kimi</td><td>Identical to DeepSeek (OpenAI-compatible <code>json_object</code>).</td></tr>
+</table></div>
+
+<h3>3.4 Prompt caching</h3>
+<div class="table-wrap"><table>
+<tr><th>API</th><th>Granularity</th><th>Write/read cost</th><th>TTL</th></tr>
+<tr><td><span class="badge badge-claude">Claude</span></td><td>Blocks marked with <code>cache_control={"type":"ephemeral"}</code></td><td>1.25× / 0.10×</td><td>5 min (default), 1h with <code>"ttl":"1h"</code></td></tr>
+<tr><td>OpenAI</td><td>Automatic (prefix matching)</td><td>1.0× / 0.50×</td><td>~5-10 min</td></tr>
+<tr><td>Gemini</td><td>Explicit via <code>cachedContents.create()</code></td><td>1.0× / 0.25× + storage fee</td><td>Configurable up to 1h</td></tr>
+<tr><td><span class="badge badge-ds">DeepSeek</span></td><td>Automatic (prefix matching)</td><td>1.0× / 0.10×</td><td>~24h</td></tr>
+<tr><td>Other Chinese (Kimi, GLM, Qwen)</td><td>Mostly automatic prefix-matching</td><td>1.0× / 0.10-0.20×</td><td>~hours</td></tr>
+</table></div>
+
+<div class="tip"><strong>💡 Bottom line:</strong> the pattern "put system + long context at the start of the prompt in stable order" activates caching across nearly every provider. Only Claude (and Gemini for 1h TTL) needs explicit markup.</div>
+</div>
+</section>
+
+<section id="b8-4">
+<h2>
+  <span class="lang-block" data-lang="es">8.4 Capas de adaptación — OpenRouter, LiteLLM, PortKey</span>
+  <span class="lang-block" data-lang="en">8.4 Adapter layers — OpenRouter, LiteLLM, PortKey</span>
+</h2>
+
+<div class="lang-block" data-lang="es">
+<p>En lugar de mantener tres SDKs (Anthropic, OpenAI, Google) y traducir manualmente entre formatos, hay tres familias de adaptadores production-ready que lo hacen por ti. La elección depende de qué nivel de control quieras retener.</p>
+
+<div class="table-wrap"><table>
+<tr><th>Solución</th><th>Tipo</th><th>Modelo de coste</th><th>Cuándo es la elección correcta</th></tr>
+<tr><td><strong>OpenRouter</strong></td><td>Cloud gateway (un solo API key, factura única)</td><td>Pasa el coste del modelo subyacente con un margen ~5%</td><td>MVPs, prototipos, "quiero probar 10 modelos sin abrir 10 cuentas". Una API key, todos los modelos.</td></tr>
+<tr><td><strong>LiteLLM</strong></td><td>Librería Python OSS + opcional proxy server</td><td>Gratis (usas tus propias API keys)</td><td>Producción donde quieres mantener relación directa con cada proveedor pero unificar el código.</td></tr>
+<tr><td><strong>PortKey</strong></td><td>AI gateway con control plane (logging, evals, fallback rules)</td><td>Free tier + pricing por escalado</td><td>Equipos serios que quieren observabilidad + governance + fallback declarativo.</td></tr>
+<tr><td><strong>LangChain LLMs</strong></td><td>Abstracción de framework (más amplia)</td><td>Gratis</td><td>Cuando ya estás dentro de LangChain por otros componentes (RAG, agents).</td></tr>
+<tr><td><strong>Vercel AI SDK</strong></td><td>SDK JS/TS multi-proveedor</td><td>Gratis</td><td>Apps Next.js / React con streaming. Excelente DX para frontend.</td></tr>
+<tr><td><strong>Hugging Face Inference API</strong></td><td>Cloud para OSS</td><td>Subscription tier</td><td>Llama, Qwen, Mistral, etc. servidos por HF cuando no quieres self-host.</td></tr>
+</table></div>
+
+<h3>Ejemplo: la misma llamada a 4 proveedores con LiteLLM</h3>
+<pre><code>from litellm import completion
+
+# Misma firma, distintos modelos
+modelos = [
+    "anthropic/claude-opus-4-7",
+    "openai/gpt-5",
+    "deepseek/deepseek-chat",
+    "ollama/qwen3:32b"          # local
+]
+
+for m in modelos:
+    resp = completion(
+        model=m,
+        messages=[{"role": "user", "content": "Capital de Francia."}],
+        temperature=0.0,
+        max_tokens=64
+    )
+    print(m, "→", resp.choices[0].message.content)
+</code></pre>
+
+<div class="warn"><strong>⚠️ Coste oculto de las abstracciones:</strong> nunca son perfectas. Features avanzadas (Computer Use de Claude, Native Search de Gemini, prompt caching con TTL custom) suelen no estar mapeadas o estarlo a medias. Diseña asumiendo que el 90% del código usa la abstracción y el 10% baja al SDK nativo cuando hace falta una feature exclusiva.</div>
+</div>
+
+<div class="lang-block" data-lang="en">
+<p>Instead of maintaining three SDKs (Anthropic, OpenAI, Google) and translating between formats by hand, three families of production-ready adapters do the work for you. Choose by how much control you want to keep.</p>
+
+<div class="table-wrap"><table>
+<tr><th>Solution</th><th>Type</th><th>Cost model</th><th>When it's the right choice</th></tr>
+<tr><td><strong>OpenRouter</strong></td><td>Cloud gateway (one API key, single bill)</td><td>Passes underlying model cost + ~5% margin</td><td>MVPs, prototypes, "I want to try 10 models without opening 10 accounts". One key, every model.</td></tr>
+<tr><td><strong>LiteLLM</strong></td><td>OSS Python library + optional proxy server</td><td>Free (use your own API keys)</td><td>Production where you want direct relationships with each provider but unified code.</td></tr>
+<tr><td><strong>PortKey</strong></td><td>AI gateway with control plane (logging, evals, fallback rules)</td><td>Free tier + scale-based pricing</td><td>Serious teams wanting observability + governance + declarative fallback.</td></tr>
+<tr><td><strong>LangChain LLMs</strong></td><td>Framework abstraction (broader scope)</td><td>Free</td><td>When you're already inside LangChain for other components (RAG, agents).</td></tr>
+<tr><td><strong>Vercel AI SDK</strong></td><td>JS/TS multi-provider SDK</td><td>Free</td><td>Next.js / React apps with streaming. Excellent frontend DX.</td></tr>
+<tr><td><strong>Hugging Face Inference API</strong></td><td>OSS cloud</td><td>Subscription tier</td><td>Llama, Qwen, Mistral, etc. hosted by HF when you don't want to self-host.</td></tr>
+</table></div>
+
+<h3>Example: same call to 4 providers with LiteLLM</h3>
+<pre><code>from litellm import completion
+
+# Same signature, different models
+models = [
+    "anthropic/claude-opus-4-7",
+    "openai/gpt-5",
+    "deepseek/deepseek-chat",
+    "ollama/qwen3:32b"          # local
+]
+
+for m in models:
+    resp = completion(
+        model=m,
+        messages=[{"role": "user", "content": "Capital of France."}],
+        temperature=0.0,
+        max_tokens=64
+    )
+    print(m, "→", resp.choices[0].message.content)
+</code></pre>
+
+<div class="warn"><strong>⚠️ Hidden cost of abstractions:</strong> they're never perfect. Advanced features (Claude's Computer Use, Gemini's Native Search, prompt caching with custom TTL) are often unmapped or half-mapped. Design assuming 90% of your code uses the abstraction and 10% drops to the native SDK when an exclusive feature is needed.</div>
+</div>
+</section>
+
+<section id="b8-5">
+<h2>
+  <span class="lang-block" data-lang="es">8.5 Fallback chains — resiliencia operativa</span>
+  <span class="lang-block" data-lang="en">8.5 Fallback chains — operational resilience</span>
+</h2>
+
+<div class="lang-block" data-lang="es">
+<p>Un fallback chain es una lista ordenada de modelos que se prueban secuencialmente: si el primero falla (timeout, rate-limit, 5xx, contenido rechazado), se intenta el siguiente. Es la pieza más importante de un sistema serio que dependa de LLMs.</p>
+
+<h3>Anatomía de un fallback chain bien diseñado</h3>
+<div class="card">
+<pre><code># config/fallback.yaml — patrón production
+primary: claude-opus-4-7        # mejor calidad, latencia ~5-15s
+secondary: gpt-5-5              # similar capacidad, otro proveedor (resiliencia geográfica)
+tertiary: deepseek-v4-pro       # 30× más barato, calidad aceptable
+emergency: qwen3-32b-local      # sin internet, sin coste, 80% calidad
+disable_on_repeat_failures: 3   # si los primeros 3 retries fallan, salta al siguiente
+
+retry:
+  timeout_s: 30
+  max_retries: 2
+  backoff: exponential  # 1s, 2s, 4s
+  retry_on:             # códigos que disparan fallback
+    - timeout
+    - 429        # rate limit
+    - 5xx        # server errors
+    - content_filter  # respuesta rechazada por safety
+</code></pre>
+</div>
+
+<h3>Patrones comunes de fallback</h3>
+<div class="table-wrap"><table>
+<tr><th>Patrón</th><th>Descripción</th><th>Cuándo usarlo</th></tr>
+<tr><td><strong>Same-tier fallback</strong></td><td>Claude Opus → GPT-5.5 (mismo nivel calidad/coste)</td><td>Resiliencia frente a outages, sin bajada de calidad</td></tr>
+<tr><td><strong>Down-tier fallback</strong></td><td>Claude Opus → Claude Sonnet → DeepSeek</td><td>Si el primario está caído, aceptar calidad menor para no caer del todo</td></tr>
+<tr><td><strong>Local emergency</strong></td><td>Cloud → Ollama local</td><td>Continuidad cuando hay outage masivo (toda la red, todos los proveedores)</td></tr>
+<tr><td><strong>Quality fallback</strong></td><td>Si la respuesta del primario falla evals → reintentar en secundario</td><td>Quality assurance — el modelo más barato suele bastar pero a veces falla</td></tr>
+<tr><td><strong>Cost-cap fallback</strong></td><td>Si el coste mensual rebasa $X → bajar a tier inferior automáticamente</td><td>Producto con presupuesto fijo</td></tr>
+</table></div>
+
+<div class="card card-orange">
+<div class="card-title">⚠️ Errores comunes en fallback chains</div>
+<ol>
+  <li><strong>No probar el path de fallback en CI.</strong> El primer outage real va a ser la primera vez que ejercitáis ese código. Test con chaos monkey.</li>
+  <li><strong>Fallback infinito.</strong> Si tu chain tiene N modelos y todos fallan, eventualmente el caller verá un error claro — no quedarse colgado intentando.</li>
+  <li><strong>Diferente formato de respuesta sin normalizar.</strong> Si el primario devuelve JSON estricto y el fallback devuelve markdown, el código downstream se rompe. Normaliza siempre antes de devolver.</li>
+  <li><strong>Diferente coste sin alertar.</strong> Si el fallback es 50× más caro y nadie lo monitoriza, tu factura se dispara silenciosamente.</li>
+  <li><strong>Determinismo perdido.</strong> Misma query → distinto modelo → distinta respuesta. Si tu producto promete reproducibilidad, declara en logs qué modelo respondió cada request.</li>
+</ol>
+</div>
+</div>
+
+<div class="lang-block" data-lang="en">
+<p>A fallback chain is an ordered list of models tried sequentially: if the first fails (timeout, rate-limit, 5xx, rejected content), the next is attempted. It's the single most important piece of a serious LLM-dependent system.</p>
+
+<h3>Anatomy of a well-designed fallback chain</h3>
+<div class="card">
+<pre><code># config/fallback.yaml — production pattern
+primary: claude-opus-4-7        # best quality, ~5-15s latency
+secondary: gpt-5-5              # similar capability, different provider (geo resilience)
+tertiary: deepseek-v4-pro       # 30× cheaper, acceptable quality
+emergency: qwen3-32b-local      # offline, free, 80% quality
+disable_on_repeat_failures: 3   # if first 3 retries fail, jump to next
+
+retry:
+  timeout_s: 30
+  max_retries: 2
+  backoff: exponential  # 1s, 2s, 4s
+  retry_on:             # codes that trigger fallback
+    - timeout
+    - 429        # rate limit
+    - 5xx        # server errors
+    - content_filter  # rejected by safety
+</code></pre>
+</div>
+
+<h3>Common fallback patterns</h3>
+<div class="table-wrap"><table>
+<tr><th>Pattern</th><th>Description</th><th>When to use</th></tr>
+<tr><td><strong>Same-tier fallback</strong></td><td>Claude Opus → GPT-5.5 (same quality/cost tier)</td><td>Resilience against outages, no quality loss</td></tr>
+<tr><td><strong>Down-tier fallback</strong></td><td>Claude Opus → Claude Sonnet → DeepSeek</td><td>If primary is down, accept lower quality vs total downtime</td></tr>
+<tr><td><strong>Local emergency</strong></td><td>Cloud → local Ollama</td><td>Continuity during massive outage (whole network, every provider)</td></tr>
+<tr><td><strong>Quality fallback</strong></td><td>If primary's response fails evals → retry on secondary</td><td>Quality assurance — cheaper model often suffices but sometimes misses</td></tr>
+<tr><td><strong>Cost-cap fallback</strong></td><td>If monthly cost exceeds $X → auto-downgrade to lower tier</td><td>Fixed-budget products</td></tr>
+</table></div>
+
+<div class="card card-orange">
+<div class="card-title">⚠️ Common fallback chain mistakes</div>
+<ol>
+  <li><strong>Not testing the fallback path in CI.</strong> The first real outage will be the first time you exercise that code. Test with chaos monkey.</li>
+  <li><strong>Infinite fallback.</strong> If your chain has N models and all fail, the caller eventually needs a clean error — never hang trying.</li>
+  <li><strong>Different response format unnormalised.</strong> If primary returns strict JSON and fallback returns markdown, downstream breaks. Always normalise before returning.</li>
+  <li><strong>Different cost unalerted.</strong> If the fallback is 50× pricier and nobody monitors it, your bill silently explodes.</li>
+  <li><strong>Lost determinism.</strong> Same query → different model → different answer. If your product promises reproducibility, log which model answered each request.</li>
+</ol>
+</div>
+</div>
+</section>
+
+<section id="b8-6">
+<h2>
+  <span class="lang-block" data-lang="es">8.6 Routing por coste / calidad — el patrón mixed-strategy</span>
+  <span class="lang-block" data-lang="en">8.6 Cost / quality routing — the mixed-strategy pattern</span>
+</h2>
+
+<div class="lang-block" data-lang="es">
+<p>Pocos productos serios usan UN solo modelo en producción. El patrón típico 2026 es un <strong>router</strong> (regla determinista o LLM clasificador) que decide a qué modelo despachar cada request, basado en complejidad, sensibilidad y coste tolerable.</p>
+
+<h3>Estrategias de routing</h3>
+<div class="card card-accent">
+<div class="card-title">🚦 Router por reglas (más simple, recomendado de inicio)</div>
+<pre><code># Pseudocode: classify by intent + length + sensitivity
+def route(request):
+    if request.contains_code:
+        return "deepseek-v4-pro"        # coding barato
+    if len(request.context) > 200_000:
+        return "gemini-2.5-pro"          # contexto enorme
+    if request.complexity == "high":
+        return "claude-opus-4-7"         # razonamiento profundo
+    if request.sensitive_data:
+        return "qwen3-32b-local"         # privacidad
+    return "claude-haiku-4-5"            # default rápido y barato</code></pre>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">🧠 Router por LLM clasificador</div>
+<p>Un primer modelo barato (Claude Haiku, GPT-5 Mini, DeepSeek Flash) clasifica el intent en 1-5 categorías. Cada categoría mapea a un modelo distinto. Coste extra ~$0.0001 por clasificación; ahorro sobre el modelo grande ~$0.05+ por request.</p>
+<pre><code>classifier_prompt = """
+Clasifica esta petición en EXACTAMENTE una categoría:
+- simple: preguntas factuales, traducción, formateo
+- coding: programación, debugging, refactoring
+- reasoning: matemáticas, lógica, planning multi-step
+- sensitive: datos personales, salud, finanzas
+- multimodal: imagen, audio, vídeo
+
+Petición: {input}
+Devuelve solo la palabra de la categoría.
+"""
+
+# Despacha
+category = await classify(request)
+model = ROUTING[category]   # tabla declarativa
+response = await model.complete(request)</code></pre>
+</div>
+
+<h3>Métricas que necesitas para iterar el router</h3>
+<ul>
+  <li><strong>Coste medio por request</strong> (€/request) y distribución por modelo.</li>
+  <li><strong>Latencia p50/p95/p99</strong> por modelo.</li>
+  <li><strong>Tasa de re-routing</strong> (cuántos requests acaban yendo al modelo más caro tras fallback).</li>
+  <li><strong>Quality score</strong> agregado por modelo (eval automatizado o thumbs up/down de usuarios).</li>
+  <li><strong>Coste mensual total</strong> y proyección.</li>
+</ul>
+
+<div class="tip"><strong>💡 Realidad operativa:</strong> con un router decente, en muchos productos el 60-80% del tráfico va al tier más barato (Haiku/Mini/Flash), 15-30% al tier medio, y &lt;5% al frontier. El coste medio sale 5-10× más bajo que despachar todo a Claude Opus, y la calidad percibida apenas baja.</div>
+</div>
+
+<div class="lang-block" data-lang="en">
+<p>Few serious products use a SINGLE model in production. The 2026 typical pattern is a <strong>router</strong> (deterministic rule or LLM classifier) deciding which model to dispatch each request to, based on complexity, sensitivity and tolerable cost.</p>
+
+<h3>Routing strategies</h3>
+<div class="card card-accent">
+<div class="card-title">🚦 Rule-based router (simplest, recommended starting point)</div>
+<pre><code># Pseudocode: classify by intent + length + sensitivity
+def route(request):
+    if request.contains_code:
+        return "deepseek-v4-pro"        # cheap coding
+    if len(request.context) > 200_000:
+        return "gemini-2.5-pro"          # huge context
+    if request.complexity == "high":
+        return "claude-opus-4-7"         # deep reasoning
+    if request.sensitive_data:
+        return "qwen3-32b-local"         # privacy
+    return "claude-haiku-4-5"            # fast cheap default</code></pre>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">🧠 LLM-classifier router</div>
+<p>A first cheap model (Claude Haiku, GPT-5 Mini, DeepSeek Flash) classifies intent in 1-5 categories. Each category maps to a different model. Extra cost ~$0.0001 per classification; savings over a frontier model ~$0.05+ per request.</p>
+<pre><code>classifier_prompt = """
+Classify this request into EXACTLY one category:
+- simple: factual questions, translation, formatting
+- coding: programming, debugging, refactoring
+- reasoning: math, logic, multi-step planning
+- sensitive: personal data, health, finance
+- multimodal: image, audio, video
+
+Request: {input}
+Return only the category word.
+"""
+
+# Dispatch
+category = await classify(request)
+model = ROUTING[category]   # declarative table
+response = await model.complete(request)</code></pre>
+</div>
+
+<h3>Metrics you need to iterate the router</h3>
+<ul>
+  <li><strong>Mean cost per request</strong> (€/request) and distribution by model.</li>
+  <li><strong>Latency p50/p95/p99</strong> per model.</li>
+  <li><strong>Re-routing rate</strong> (how many requests end up on the pricier model after fallback).</li>
+  <li><strong>Quality score</strong> aggregated by model (automated eval or user thumbs up/down).</li>
+  <li><strong>Total monthly cost</strong> and projection.</li>
+</ul>
+
+<div class="tip"><strong>💡 Operational reality:</strong> with a decent router, in many products 60-80% of traffic hits the cheapest tier (Haiku/Mini/Flash), 15-30% the medium tier, and &lt;5% the frontier. Mean cost ends up 5-10× lower than sending everything to Claude Opus, and perceived quality barely moves.</div>
+</div>
+</section>
+
+<section id="b8-7">
+<h2>
+  <span class="lang-block" data-lang="es">8.7 Cross-model evaluation — comparar manzanas con manzanas</span>
+  <span class="lang-block" data-lang="en">8.7 Cross-model evaluation — apples to apples</span>
+</h2>
+
+<div class="lang-block" data-lang="es">
+<p>"Probé el mismo prompt en Claude y GPT, y Claude responde mejor" es la frase más común y la más errónea. Sin metodología, esa "intuición" mide más a tu sesgo de confirmación que a los modelos. La cross-model evaluation seria sigue 5 reglas.</p>
+
+<div class="card card-accent">
+<div class="card-title">📏 Las 5 reglas de la cross-model eval</div>
+<ol>
+  <li><strong>Mismo dataset</strong> — Mínimo 50 inputs representativos de tu caso real con respuestas "ground truth" preparadas. No pruebas con 5 ejemplos cherry-picked.</li>
+  <li><strong>Mismas instrucciones</strong> — Si tu prompt está afinado para Claude (XML, "respond in flowing prose"), GPT y Gemini pueden rendir peor por convención. Prepara dos prompts: el "common-denominator" (works in all) y el optimizado por modelo, y reporta ambos.</li>
+  <li><strong>Mismos parámetros</strong> — temperature, top_p, max_tokens iguales o explicitados en el reporte.</li>
+  <li><strong>Misma métrica</strong> — exact-match, contains, BLEU, LLM-as-Judge — define ANTES de mirar resultados. Si tu métrica es "calidad" subjetiva, usa LLM-as-Judge con un evaluador distinto a los modelos comparados.</li>
+  <li><strong>N suficiente</strong> — diferencias inferiores a ~3% en una muestra de 50 son ruido. Para diferencias finas necesitas 200+ ejemplos.</li>
+</ol>
+</div>
+
+<h3>Plantilla mínima de eval</h3>
+<pre><code># eval_cross_model.py — runnable, ~80 LOC
+import asyncio
+from litellm import acompletion
+
+DATASET = [
+    {"input": "...", "expected": "...", "criterion": "contains"},
+    # ... 50+ ejemplos
+]
+
+MODELS = ["anthropic/claude-opus-4-7", "openai/gpt-5", "deepseek/deepseek-chat"]
+
+async def run_one(model, sample):
+    r = await acompletion(model=model,
+                          messages=[{"role": "user", "content": sample["input"]}],
+                          temperature=0.0, max_tokens=512, seed=42)
+    out = r.choices[0].message.content
+    if sample["criterion"] == "contains":
+        ok = sample["expected"].lower() in out.lower()
+    elif sample["criterion"] == "exact":
+        ok = sample["expected"].strip() == out.strip()
+    return ok, out
+
+async def main():
+    results = {m: 0 for m in MODELS}
+    for sample in DATASET:
+        for m in MODELS:
+            ok, _ = await run_one(m, sample)
+            results[m] += int(ok)
+    for m, c in results.items():
+        print(f"{m}: {c}/{len(DATASET)} = {100*c/len(DATASET):.1f}%")
+
+asyncio.run(main())</code></pre>
+
+<div class="warn"><strong>⚠️ Trampa frecuente:</strong> usar el mismo modelo (ej. GPT-4) como evaluador del comparativo entre Claude/GPT/Gemini. GPT-4 favorece outputs estilísticamente cercanos al suyo. Si haces LLM-as-Judge, el evaluador debe ser un modelo DISTINTO de los comparados, idealmente uno más capaz (Claude Opus 4.7 evalúa Sonnet vs GPT-5).</div>
+</div>
+
+<div class="lang-block" data-lang="en">
+<p>"I tried the same prompt in Claude and GPT, and Claude does better" is the most common and most wrong sentence. Without methodology, that "intuition" measures your confirmation bias more than the models. Serious cross-model evaluation follows 5 rules.</p>
+
+<div class="card card-accent">
+<div class="card-title">📏 The 5 rules of cross-model eval</div>
+<ol>
+  <li><strong>Same dataset</strong> — Minimum 50 inputs representative of your real case with prepared "ground truth" answers. Not 5 cherry-picked examples.</li>
+  <li><strong>Same instructions</strong> — If your prompt is tuned for Claude (XML, "respond in flowing prose"), GPT and Gemini may score worse for convention reasons. Prepare two prompts: the "common-denominator" (works everywhere) and the per-model optimised one, and report both.</li>
+  <li><strong>Same parameters</strong> — temperature, top_p, max_tokens identical, or explicit in the report.</li>
+  <li><strong>Same metric</strong> — exact-match, contains, BLEU, LLM-as-Judge — defined BEFORE looking at results. If your metric is subjective "quality", use LLM-as-Judge with an evaluator different from the compared models.</li>
+  <li><strong>Sufficient N</strong> — &lt;3% gaps on a 50-sample run is noise. Fine differences need 200+ examples.</li>
+</ol>
+</div>
+
+<h3>Minimal eval template</h3>
+<pre><code># eval_cross_model.py — runnable, ~80 LOC
+import asyncio
+from litellm import acompletion
+
+DATASET = [
+    {"input": "...", "expected": "...", "criterion": "contains"},
+    # ... 50+ examples
+]
+
+MODELS = ["anthropic/claude-opus-4-7", "openai/gpt-5", "deepseek/deepseek-chat"]
+
+async def run_one(model, sample):
+    r = await acompletion(model=model,
+                          messages=[{"role": "user", "content": sample["input"]}],
+                          temperature=0.0, max_tokens=512, seed=42)
+    out = r.choices[0].message.content
+    if sample["criterion"] == "contains":
+        ok = sample["expected"].lower() in out.lower()
+    elif sample["criterion"] == "exact":
+        ok = sample["expected"].strip() == out.strip()
+    return ok, out
+
+async def main():
+    results = {m: 0 for m in MODELS}
+    for sample in DATASET:
+        for m in MODELS:
+            ok, _ = await run_one(m, sample)
+            results[m] += int(ok)
+    for m, c in results.items():
+        print(f"{m}: {c}/{len(DATASET)} = {100*c/len(DATASET):.1f}%")
+
+asyncio.run(main())</code></pre>
+
+<div class="warn"><strong>⚠️ Common trap:</strong> using the same model (e.g. GPT-4) as the evaluator of a Claude/GPT/Gemini comparison. GPT-4 favours outputs stylistically close to its own. If you do LLM-as-Judge, the evaluator must be DIFFERENT from the compared models, ideally one more capable (Claude Opus 4.7 evaluating Sonnet vs GPT-5).</div>
+</div>
+</section>
+
+<section id="b8-8">
+<h2>
+  <span class="lang-block" data-lang="es">8.8 Pitfalls — los errores típicos del cross-model</span>
+  <span class="lang-block" data-lang="en">8.8 Pitfalls — typical cross-model gotchas</span>
+</h2>
+
+<div class="lang-block" data-lang="es">
+<div class="table-wrap"><table>
+<tr><th>Pitfall</th><th>Síntoma</th><th>Solución</th></tr>
+<tr><td><strong>Tokenizer drift</strong></td><td>El mismo prompt cuesta distintos tokens en distintos modelos. Tu cap de <code>max_tokens</code> se queda corto en uno y se desborda en otro.</td><td>Usa el tokenizer de cada modelo (tiktoken para OpenAI, anthropic-tokenizer-python para Claude, etc.) o sobre-dimensiona el cap por defecto.</td></tr>
+<tr><td><strong>Convenciones de tags</strong></td><td>Claude espera XML (<code>&lt;instructions&gt;</code>); GPT espera markdown; Gemini es agnóstico. Un prompt optimizado para uno rinde peor en otro.</td><td>Adopta una convención común-denominador (markdown estructurado) excepto para Claude, donde XML rinde mejor — usa adapter por modelo.</td></tr>
+<tr><td><strong>Diferentes defaults</strong></td><td><code>temperature</code> default varía: Claude 1.0, OpenAI 1.0, Gemini 1.0 con top_p 0.95 y top_k 64. Comportamiento "sin tocar nada" diverge.</td><td>Especifica SIEMPRE temperature, top_p, max_tokens explícitamente en producción.</td></tr>
+<tr><td><strong>Stop sequences distintos</strong></td><td>Claude: hasta 4 stop_sequences. OpenAI: hasta 4 stop. Gemini: hasta 5 stop_sequences. Mismos para todos = denominador común 4.</td><td>No exceder 4 stops nunca; documentarlos como contrato del prompt.</td></tr>
+<tr><td><strong>Multimodal feature gap</strong></td><td>Claude lee PDFs nativos; GPT-5 procesa audio; Gemini hace vídeo; DeepSeek base sólo texto. Diseñar para multimodal restringe proveedores.</td><td>Capa adapter detecta capability y degrada (ej: "vídeo no soportado en este modelo, usa Gemini").</td></tr>
+<tr><td><strong>System prompt position</strong></td><td>Claude: <code>system</code> es param top-level. OpenAI/DeepSeek: primer mensaje con <code>role:"system"</code>. Mistral: igual que OpenAI.</td><td>Adapter normaliza: tu código siempre dice "system: …" y el adapter lo pone donde toque.</td></tr>
+<tr><td><strong>Streaming format</strong></td><td>Anthropic streaming: SSE con eventos tipados (<code>content_block_start</code>, <code>content_block_delta</code>...). OpenAI: SSE chunks con <code>delta.content</code>. Gemini: chunks con <code>candidates[0].content.parts[0].text</code>.</td><td>LiteLLM y Vercel AI SDK normalizan a un único stream de tokens. Vale la pena el adapter solo por esto.</td></tr>
+<tr><td><strong>Refusal divergence</strong></td><td>Mismo prompt: Claude lo rechaza por safety, GPT lo responde, Gemini parcialmente. Comportamiento impredecible cross-model.</td><td>Test de evals incluye categoría "borderline" — observa qué proveedor rechaza qué tipo de contenido y documenta.</td></tr>
+<tr><td><strong>Versioning silencioso</strong></td><td>"GPT-5" hoy puede no ser "GPT-5" mañana. Anthropic versiona explícitamente (claude-opus-4-7); otros no.</td><td>Pin de versión en producción siempre que se pueda; alerta cuando un modelo se actualiza vía release notes.</td></tr>
+</table></div>
+</div>
+
+<div class="lang-block" data-lang="en">
+<div class="table-wrap"><table>
+<tr><th>Pitfall</th><th>Symptom</th><th>Solution</th></tr>
+<tr><td><strong>Tokenizer drift</strong></td><td>Same prompt costs different tokens across models. Your <code>max_tokens</code> cap is short on one, oversized on another.</td><td>Use each model's tokenizer (tiktoken for OpenAI, anthropic-tokenizer-python for Claude, etc.) or over-size the default cap.</td></tr>
+<tr><td><strong>Tag conventions</strong></td><td>Claude expects XML (<code>&lt;instructions&gt;</code>); GPT expects markdown; Gemini is agnostic. A prompt tuned for one underperforms on another.</td><td>Adopt a common-denominator convention (structured markdown) except for Claude where XML wins — use a per-model adapter.</td></tr>
+<tr><td><strong>Different defaults</strong></td><td>Default <code>temperature</code> varies: Claude 1.0, OpenAI 1.0, Gemini 1.0 with top_p 0.95 and top_k 64. "Untouched" behaviour diverges.</td><td>ALWAYS specify temperature, top_p, max_tokens explicitly in production.</td></tr>
+<tr><td><strong>Different stop sequences</strong></td><td>Claude: up to 4 stop_sequences. OpenAI: up to 4 stop. Gemini: up to 5 stop_sequences. Common-denominator = 4.</td><td>Never exceed 4 stops; document them as part of the prompt contract.</td></tr>
+<tr><td><strong>Multimodal feature gap</strong></td><td>Claude reads PDFs natively; GPT-5 handles audio; Gemini does video; base DeepSeek text-only. Designing multimodal restricts providers.</td><td>Adapter detects capability and degrades gracefully (e.g. "video unsupported on this model, use Gemini").</td></tr>
+<tr><td><strong>System prompt position</strong></td><td>Claude: <code>system</code> is top-level param. OpenAI/DeepSeek: first message with <code>role:"system"</code>. Mistral: same as OpenAI.</td><td>Adapter normalises: your code always says "system: …" and the adapter places it correctly.</td></tr>
+<tr><td><strong>Streaming format</strong></td><td>Anthropic streaming: SSE with typed events (<code>content_block_start</code>, <code>content_block_delta</code>...). OpenAI: SSE chunks with <code>delta.content</code>. Gemini: chunks with <code>candidates[0].content.parts[0].text</code>.</td><td>LiteLLM and Vercel AI SDK normalise to a single token stream. Worth the adapter for this alone.</td></tr>
+<tr><td><strong>Refusal divergence</strong></td><td>Same prompt: Claude refuses for safety, GPT answers, Gemini partially. Cross-model behaviour unpredictable.</td><td>Eval set includes a "borderline" category — observe which provider rejects which content type and document.</td></tr>
+<tr><td><strong>Silent versioning</strong></td><td>"GPT-5" today may not be "GPT-5" tomorrow. Anthropic versions explicitly (claude-opus-4-7); others don't.</td><td>Pin version in production whenever possible; alert when a model updates via release notes.</td></tr>
+</table></div>
+</div>
+</section>
 
 
 <section class="module-references">

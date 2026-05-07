@@ -9,7 +9,7 @@
    ============================================================ */
 
 window.COURSE_MANIFEST = {
-  version: '2.0.0',
+  version: '2.1.0',
   lastUpdated: '2026-05-08',
   blocks: [
     {
@@ -331,14 +331,17 @@ window.COURSE_MANIFEST = {
       icon: '🎓',
       level: 'capstone',
       timeMinutes: 600,
-      sections: [],   // future content
-      stub: true,
+      sections: [],   // hand-written content (no legacy sections)
       objectives: {
         es: [
-          '(Próximamente) Construir 4 proyectos end-to-end: code-review bot, RAG knowledge assistant, local self-hosted assistant, multi-agent research team.'
+          'Construir 4 proyectos end-to-end con specs reales, criterios de aceptación y rúbricas.',
+          'Producir artefactos portfolio: starter repo + writeup + métricas reales.',
+          'Cerrar el ciclo aprendizaje → producción aplicando todo lo de los Bloques I-XIII.'
         ],
         en: [
-          '(Coming soon) Build 4 end-to-end projects: code-review bot, RAG knowledge assistant, local self-hosted assistant, multi-agent research team.'
+          'Build 4 end-to-end projects with real specs, acceptance criteria and rubrics.',
+          'Produce portfolio artefacts: starter repo + writeup + real metrics.',
+          'Close the learning → production loop applying everything from Blocks I-XIII.'
         ]
       }
     },

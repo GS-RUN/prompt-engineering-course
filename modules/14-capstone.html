@@ -39,45 +39,526 @@
     <span class="lang-block" data-lang="es">Bloque XIV — Proyectos Capstone</span>
     <span class="lang-block" data-lang="en">Block XIV — Capstone Projects</span>
   </h1>
+  <div class="module-objectives">
+    <div class="lang-block" data-lang="es">
+      <h3>Objetivos de aprendizaje</h3>
+      <ul>
+        <li>Construir 4 proyectos end-to-end que integran todo lo aprendido en los Bloques I-XIII.</li>
+        <li>Escribir, testear y desplegar un sistema LLM con métricas reales de calidad y coste.</li>
+        <li>Producir artefactos portfolio: starter repo + spec + solución de referencia + rúbrica.</li>
+      </ul>
+    </div>
+    <div class="lang-block" data-lang="en">
+      <h3>Learning objectives</h3>
+      <ul>
+        <li>Build 4 end-to-end projects integrating everything learned in Blocks I-XIII.</li>
+        <li>Write, test and deploy an LLM system with real quality and cost metrics.</li>
+        <li>Produce portfolio artefacts: starter repo + spec + reference solution + rubric.</li>
+      </ul>
+    </div>
+  </div>
 </section>
 
-<section class="card card-orange">
-  <div class="lang-block" data-lang="es">
-    <h3>🚧 Próximamente</h3>
-    <p>Los proyectos capstone son la pieza más demandante del curso y están en desarrollo activo. Cada uno incluirá: <strong>starter repo</strong> con esqueleto reproducible, <strong>especificación detallada</strong> con criterios de aceptación, <strong>solución de referencia</strong> y <strong>rúbrica de evaluación</strong> para auto-evaluarte.</p>
+<section id="b14-intro">
+<h2>
+  <span class="lang-block" data-lang="es">Cómo trabajar con un capstone</span>
+  <span class="lang-block" data-lang="en">How to work on a capstone</span>
+</h2>
 
-    <h4>Proyecto A — Code Review Bot end-to-end</h4>
-    <p>Bot que revisa Pull Requests automáticamente: integración con GitHub Actions, system prompt robusto, structured outputs, JSON Schema, prompt caching, evals automatizados con golden dataset de 50 PRs reales. Stack: Python + Anthropic API + GitHub API.</p>
+<div class="lang-block" data-lang="es">
+<p>Cada capstone tiene cuatro componentes:</p>
+<ol>
+  <li><strong>Specification</strong> — el qué y el porqué. Problema, criterios de aceptación, deliverables.</li>
+  <li><strong>Starter repo</strong> — esqueleto reproducible con tests, CI, dependencias fijadas. Clonas y empiezas.</li>
+  <li><strong>Reference solution</strong> — implementación de referencia (no la única correcta) para comparar tu enfoque.</li>
+  <li><strong>Rubric</strong> — autoevaluación basada en criterios objetivos: pasa tests, métricas de calidad, métricas de coste, documentación.</li>
+</ol>
+<p><strong>Tiempo recomendado:</strong> 8-15 horas focused trabajando en sesiones de 2-3 horas. NO intentes hacerlo de una sentada — el aprendizaje viene del ciclo iterativo de probar, fallar, ajustar.</p>
+<p><strong>Lo más valioso:</strong> el writeup final. Tras terminar, escribe un README de 500-800 palabras que explique tu enfoque, qué probaste que no funcionó, qué métricas obtuviste y qué harías distinto la próxima vez. Eso es lo que un empleador serio quiere ver.</p>
+</div>
 
-    <h4>Proyecto B — RAG Knowledge Assistant</h4>
-    <p>Asistente que responde sobre tu base de conocimiento (Confluence, Notion, Google Drive, mil PDFs). Pipeline RAG completo: ingesta + chunking + embeddings + vector DB + retrieval + augmented generation + citation. Stack: Python + LangChain + Qdrant + Cohere/OpenAI embeddings + Claude.</p>
+<div class="lang-block" data-lang="en">
+<p>Every capstone has four components:</p>
+<ol>
+  <li><strong>Specification</strong> — the what and why. Problem, acceptance criteria, deliverables.</li>
+  <li><strong>Starter repo</strong> — reproducible skeleton with tests, CI, pinned dependencies. Clone and go.</li>
+  <li><strong>Reference solution</strong> — reference implementation (not the only correct one) to compare your approach.</li>
+  <li><strong>Rubric</strong> — self-assessment on objective criteria: tests pass, quality metrics, cost metrics, documentation.</li>
+</ol>
+<p><strong>Recommended time:</strong> 8-15 focused hours in 2-3 hour sessions. DON'T try to ship in a single sitting — the learning happens in the test-fail-tune cycle.</p>
+<p><strong>The most valuable artefact:</strong> the final writeup. After shipping, write a 500-800 word README explaining your approach, what you tried that didn't work, what metrics you got and what you'd do differently next time. That's what a serious employer wants to read.</p>
+</div>
+</section>
 
-    <h4>Proyecto C — Local Self-Hosted Assistant</h4>
-    <p>Asistente 100% local con privacidad total: Qwen3-32B Q5 vía Ollama + RAG con ChromaDB + frontend Next.js. Métricas: latencia, calidad, cumplimiento GDPR. Hardware target: RTX 4090 / 5090 o Mac M3/M4 Pro.</p>
+<section id="b14-a">
+<h2>
+  <span class="lang-block" data-lang="es">Proyecto A — Code Review Bot end-to-end</span>
+  <span class="lang-block" data-lang="en">Project A — End-to-end Code Review Bot</span>
+</h2>
 
-    <h4>Proyecto D — Multi-Agent Research Team</h4>
-    <p>Equipo de agentes que investiga un tema y escribe un informe: researcher (busca en web), analyst (sintetiza), critic (red-teams), writer (redacta). Patrón supervisor-worker con LangGraph + Claude Code skills + MCP tools. Métricas: cobertura, accuracy factual vs golden answers, coste total.</p>
+<div class="lang-block" data-lang="es">
+<div class="card card-accent">
+<div class="card-title">📋 Specification</div>
+<p><strong>Problema:</strong> revisar Pull Requests manualmente consume 30-45 min por PR de un dev senior. Construir un bot que revise PRs automáticamente al abrirse, deje comentarios línea-por-línea con severidad, y sirva de "primer pase" antes del review humano.</p>
 
-    <p><strong>Cuándo:</strong> primer proyecto disponible Q3 2026. Si quieres priorizar uno, abre issue en GitHub con la propuesta.</p>
-  </div>
-  <div class="lang-block" data-lang="en">
-    <h3>🚧 Coming soon</h3>
-    <p>The capstone projects are the most demanding piece of the course and are in active development. Each will include: <strong>starter repo</strong> with reproducible skeleton, <strong>detailed spec</strong> with acceptance criteria, <strong>reference solution</strong> and <strong>evaluation rubric</strong> for self-assessment.</p>
+<p><strong>Criterios de aceptación:</strong></p>
+<ul>
+  <li>Trigger automático en GitHub Actions cuando se abre/actualiza un PR.</li>
+  <li>Detecta al menos 4 categorías de problemas: SECURITY (OWASP Top 10), CORRECTNESS (lógica), PERFORMANCE (N+1, leaks), MAINTAINABILITY (legibilidad).</li>
+  <li>Output structured (JSON Schema) con: file, line, severity (critical/high/medium/low), issue, suggested_fix, confidence (0-100%).</li>
+  <li>Comenta solo findings con confidence ≥ 70 — el resto van a una sección "low-confidence" expandible.</li>
+  <li>Sobre el golden dataset de 50 PRs reales (proporcionado), recall ≥ 80% en críticos y precision ≥ 85%.</li>
+  <li>Coste medio ≤ $0.30 por PR (medido).</li>
+  <li>P95 latencia ≤ 90 segundos desde PR abierto hasta primer comentario publicado.</li>
+</ul>
+</div>
 
-    <h4>Project A — Code Review Bot end-to-end</h4>
-    <p>Bot that reviews Pull Requests automatically: GitHub Actions integration, robust system prompt, structured outputs, JSON Schema, prompt caching, automated evals with a golden dataset of 50 real PRs. Stack: Python + Anthropic API + GitHub API.</p>
+<div class="card card-accent">
+<div class="card-title">🛠️ Stack sugerido</div>
+<ul>
+  <li><strong>Lenguaje:</strong> Python 3.11+.</li>
+  <li><strong>LLM API:</strong> Anthropic Claude Opus 4.7 (mejor en code review). Fallback secundario: GPT-5 o DeepSeek V4 Pro.</li>
+  <li><strong>Integración GitHub:</strong> <code>octokit</code> via PyGithub o llamadas REST directas. Webhook desde GitHub Actions.</li>
+  <li><strong>Caching:</strong> prompt caching de Anthropic con system prompt + ejemplos few-shot cacheados (5 min TTL es suficiente para una serie de PRs).</li>
+  <li><strong>Tests:</strong> pytest + dataset de 50 PRs con golden answers preparados.</li>
+  <li><strong>Observabilidad:</strong> log estructurado JSON + métricas a Prometheus o Helicone.</li>
+</ul>
+</div>
 
-    <h4>Project B — RAG Knowledge Assistant</h4>
-    <p>Assistant that answers questions over your knowledge base (Confluence, Notion, Google Drive, thousands of PDFs). Full RAG pipeline: ingest + chunking + embeddings + vector DB + retrieval + augmented generation + citation. Stack: Python + LangChain + Qdrant + Cohere/OpenAI embeddings + Claude.</p>
+<div class="card card-accent">
+<div class="card-title">📦 Deliverables</div>
+<ol>
+  <li><code>code-review-bot/</code> repo con código + GitHub Action <code>.github/workflows/review.yml</code>.</li>
+  <li>System prompt versionado con XML structure y 5 few-shot examples.</li>
+  <li>JSON Schema de findings + validación strict.</li>
+  <li>Eval suite: <code>tests/eval_golden.py</code> que corre los 50 PRs y reporta recall/precision/coste.</li>
+  <li>README con: setup, decisiones de diseño, métricas obtenidas, limitaciones conocidas.</li>
+  <li>Demo en GIF o screencast de un PR real revisado por el bot.</li>
+</ol>
+</div>
 
-    <h4>Project C — Local Self-Hosted Assistant</h4>
-    <p>100% local assistant with full privacy: Qwen3-32B Q5 via Ollama + RAG with ChromaDB + Next.js frontend. Metrics: latency, quality, GDPR compliance. Target hardware: RTX 4090 / 5090 or Mac M3/M4 Pro.</p>
+<div class="card card-orange">
+<div class="card-title">⚠️ Trampas conocidas (lecciones de los que ya lo hicieron)</div>
+<ul>
+  <li><strong>Diff completo en el prompt explota tokens.</strong> Filtra hunks irrelevantes (whitespace-only, generated code) antes de enviar.</li>
+  <li><strong>Modelos alucinan números de línea.</strong> No confíes ciegamente — valida que el line number exista en el diff antes de publicar.</li>
+  <li><strong>Falsos positivos en seguridad ahogan al dev.</strong> Mejor 5 critical-findings reales que 30 "esto podría ser SQL injection en teoría".</li>
+  <li><strong>Coste se dispara con prompts gigantes.</strong> Si el PR es ≥ 1000 líneas, divide por archivo y revisa por chunks.</li>
+  <li><strong>Sin prompt caching, $1+ por PR.</strong> Con caching del system prompt, baja a $0.10-0.30. Marca <code>cache_control</code> en system + ejemplos.</li>
+</ul>
+</div>
 
-    <h4>Project D — Multi-Agent Research Team</h4>
-    <p>Team of agents that researches a topic and writes a report: researcher (searches the web), analyst (synthesizes), critic (red-teams), writer (drafts). Supervisor-worker pattern with LangGraph + Claude Code skills + MCP tools. Metrics: coverage, factual accuracy vs golden answers, total cost.</p>
+<div class="card card-green">
+<div class="card-title">📏 Rúbrica de auto-evaluación</div>
+<div class="table-wrap"><table>
+<tr><th>Criterio</th><th>Puntos</th><th>Cómo se mide</th></tr>
+<tr><td>Pipeline funciona end-to-end</td><td>20</td><td>Trigger → review → comentarios visibles en PR</td></tr>
+<tr><td>Recall en críticos ≥ 80%</td><td>20</td><td>Eval golden dataset</td></tr>
+<tr><td>Precision ≥ 85%</td><td>20</td><td>Eval golden dataset</td></tr>
+<tr><td>Coste medio ≤ $0.30/PR</td><td>15</td><td>Logs de Anthropic billing</td></tr>
+<tr><td>Tests automatizados pasan</td><td>10</td><td>pytest verde en CI</td></tr>
+<tr><td>README + writeup decentes</td><td>10</td><td>Decisiones explicadas, limitaciones honestas</td></tr>
+<tr><td>Bonus: integración real en un repo OSS o privado</td><td>5</td><td>Demo grabada</td></tr>
+</table></div>
+<p>Ranking: 90+ portfolio-grade · 70-89 funciona · &lt;70 vuelve al ciclo iterativo.</p>
+</div>
+</div>
 
-    <p><strong>When:</strong> first project available Q3 2026. To prioritize one, open a GitHub issue with the proposal.</p>
-  </div>
+<div class="lang-block" data-lang="en">
+<div class="card card-accent">
+<div class="card-title">📋 Specification</div>
+<p><strong>Problem:</strong> manually reviewing Pull Requests takes 30-45 min per PR for a senior dev. Build a bot that reviews PRs automatically when opened, leaves line-by-line severity-tagged comments, and serves as a "first pass" before human review.</p>
+
+<p><strong>Acceptance criteria:</strong></p>
+<ul>
+  <li>Auto-trigger on GitHub Actions when a PR is opened/updated.</li>
+  <li>Detects at least 4 issue categories: SECURITY (OWASP Top 10), CORRECTNESS (logic), PERFORMANCE (N+1, leaks), MAINTAINABILITY (readability).</li>
+  <li>Structured output (JSON Schema) with: file, line, severity (critical/high/medium/low), issue, suggested_fix, confidence (0-100%).</li>
+  <li>Comments only findings with confidence ≥ 70 — others go in a collapsible "low-confidence" section.</li>
+  <li>On the golden dataset of 50 real PRs (provided), recall ≥ 80% on critical findings and precision ≥ 85%.</li>
+  <li>Mean cost ≤ $0.30 per PR (measured).</li>
+  <li>P95 latency ≤ 90 seconds from PR opened to first comment posted.</li>
+</ul>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">🛠️ Suggested stack</div>
+<ul>
+  <li><strong>Language:</strong> Python 3.11+.</li>
+  <li><strong>LLM API:</strong> Anthropic Claude Opus 4.7 (best at code review). Secondary fallback: GPT-5 or DeepSeek V4 Pro.</li>
+  <li><strong>GitHub integration:</strong> <code>octokit</code> via PyGithub or direct REST calls. Webhook from GitHub Actions.</li>
+  <li><strong>Caching:</strong> Anthropic prompt caching with cached system prompt + few-shot examples (5 min TTL is enough for a PR sequence).</li>
+  <li><strong>Tests:</strong> pytest + dataset of 50 PRs with prepared golden answers.</li>
+  <li><strong>Observability:</strong> structured JSON logging + metrics to Prometheus or Helicone.</li>
+</ul>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">📦 Deliverables</div>
+<ol>
+  <li><code>code-review-bot/</code> repo with code + GitHub Action <code>.github/workflows/review.yml</code>.</li>
+  <li>Versioned system prompt with XML structure and 5 few-shot examples.</li>
+  <li>JSON Schema for findings + strict validation.</li>
+  <li>Eval suite: <code>tests/eval_golden.py</code> running the 50 PRs and reporting recall/precision/cost.</li>
+  <li>README with: setup, design decisions, metrics achieved, known limitations.</li>
+  <li>Demo GIF or screencast of a real PR being reviewed by the bot.</li>
+</ol>
+</div>
+
+<div class="card card-orange">
+<div class="card-title">⚠️ Known traps (lessons from those who shipped it)</div>
+<ul>
+  <li><strong>Full diff in the prompt blows tokens.</strong> Filter irrelevant hunks (whitespace-only, generated code) before sending.</li>
+  <li><strong>Models hallucinate line numbers.</strong> Don't trust blindly — verify the line number exists in the diff before posting.</li>
+  <li><strong>Security false positives drown the dev.</strong> 5 real critical findings beat 30 "this could theoretically be SQL injection".</li>
+  <li><strong>Cost explodes with huge prompts.</strong> If the PR is ≥ 1000 lines, split per file and review in chunks.</li>
+  <li><strong>Without prompt caching, $1+ per PR.</strong> With caching, drops to $0.10-0.30. Mark <code>cache_control</code> on system + examples.</li>
+</ul>
+</div>
+
+<div class="card card-green">
+<div class="card-title">📏 Self-evaluation rubric</div>
+<div class="table-wrap"><table>
+<tr><th>Criterion</th><th>Points</th><th>How measured</th></tr>
+<tr><td>End-to-end pipeline works</td><td>20</td><td>Trigger → review → comments visible in PR</td></tr>
+<tr><td>Recall on critical ≥ 80%</td><td>20</td><td>Golden dataset eval</td></tr>
+<tr><td>Precision ≥ 85%</td><td>20</td><td>Golden dataset eval</td></tr>
+<tr><td>Mean cost ≤ $0.30/PR</td><td>15</td><td>Anthropic billing logs</td></tr>
+<tr><td>Automated tests pass</td><td>10</td><td>pytest green in CI</td></tr>
+<tr><td>Decent README + writeup</td><td>10</td><td>Decisions explained, honest limitations</td></tr>
+<tr><td>Bonus: real integration in OSS or private repo</td><td>5</td><td>Recorded demo</td></tr>
+</table></div>
+<p>Ranking: 90+ portfolio-grade · 70-89 works · &lt;70 back to the iteration loop.</p>
+</div>
+</div>
+</section>
+
+<section id="b14-b">
+<h2>
+  <span class="lang-block" data-lang="es">Proyecto B — RAG Knowledge Assistant</span>
+  <span class="lang-block" data-lang="en">Project B — RAG Knowledge Assistant</span>
+</h2>
+
+<div class="lang-block" data-lang="es">
+<div class="card card-accent">
+<div class="card-title">📋 Specification</div>
+<p><strong>Problema:</strong> tu organización tiene 500-5000 documentos (Confluence, Notion, Drive, PDFs, manuales internos). Un nuevo empleado tarda semanas en orientarse. Construye un asistente que responda preguntas sobre esa base de conocimiento, citando fuentes verificables.</p>
+
+<p><strong>Criterios de aceptación:</strong></p>
+<ul>
+  <li>Ingesta automatizada de un corpus inicial de ≥ 200 documentos (≥ 2 MB de texto plano tras parsing).</li>
+  <li>Pipeline RAG completo: chunking + embeddings + vector DB + retrieval + augmented generation + citation.</li>
+  <li>Cada respuesta incluye al menos 2 citaciones <code>[doc:X, sección:Y]</code> con enlaces clicables al documento original.</li>
+  <li>Si la respuesta no está en el corpus, el bot dice "No encontrado en las fuentes" — sin alucinar.</li>
+  <li>Sobre un eval set de 30 preguntas con golden answers, accuracy ≥ 80% y citation accuracy ≥ 90% (la cita realmente respalda la afirmación).</li>
+  <li>Latencia p95 ≤ 5 segundos por respuesta.</li>
+  <li>Coste medio ≤ $0.05 por respuesta.</li>
+</ul>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">🛠️ Stack sugerido</div>
+<ul>
+  <li><strong>Lenguaje:</strong> Python 3.11+ (frontend opcional Next.js / Streamlit).</li>
+  <li><strong>Embeddings:</strong> OpenAI text-embedding-3-small ($0.02/1M tok) o BGE-M3 self-hosted (gratis).</li>
+  <li><strong>Vector DB:</strong> Qdrant self-hosted o Chroma local para empezar; Pinecone Serverless si quieres cero ops.</li>
+  <li><strong>Generation:</strong> Claude Sonnet 4.6 (balance calidad/coste/contexto) o DeepSeek V4 Pro.</li>
+  <li><strong>Chunking:</strong> RecursiveCharacterTextSplitter (LangChain) con chunk_size=512, overlap=50. O semantic chunking para corpus técnico.</li>
+  <li><strong>Frameworks:</strong> LangChain o LlamaIndex para el pipeline; Instructor para outputs estructurados.</li>
+  <li><strong>Eval:</strong> RAGAS (faithfulness, answer relevancy, context precision/recall).</li>
+</ul>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">📦 Deliverables</div>
+<ol>
+  <li><code>rag-assistant/</code> repo con: ingesta, indexado, query, frontend.</li>
+  <li>Script <code>ingest.py</code> que procesa una carpeta y construye el índice.</li>
+  <li>API <code>POST /query</code> que devuelve <code>{answer, citations[], confidence}</code>.</li>
+  <li>Frontend mínimo con caja de búsqueda y respuesta con citas clicables.</li>
+  <li>Eval suite con 30 preguntas + RAGAS scores reportados.</li>
+  <li>README con tabla de decisiones (qué embedding probaste, qué chunk size, qué k recuperaste, por qué).</li>
+</ol>
+</div>
+
+<div class="card card-orange">
+<div class="card-title">⚠️ Trampas conocidas</div>
+<ul>
+  <li><strong>Chunking malo arruina todo el resto.</strong> Si tus chunks cortan a mitad de oraciones o pierden contexto de cabeceras, el retrieval no compensa. Empieza con RecursiveCharacterSplitter, mide, itera.</li>
+  <li><strong>Top-K demasiado bajo o alto.</strong> K=3 pierde contexto; K=20 mete ruido y dispara coste. K=5-7 es el sweet spot habitual.</li>
+  <li><strong>Embeddings sin re-ranker.</strong> Para precisión seria, añade un re-ranker (Cohere Rerank o BGE-reranker) sobre los top-20 → top-5 finales. Mejora 10-20pp en context precision.</li>
+  <li><strong>Citations alucinadas.</strong> Si el modelo genera <code>[doc:42]</code> pero ese doc no existe, el sistema rompe confianza. Valida programáticamente que cada citation referencia un chunk real.</li>
+  <li><strong>Sin "No encontrado" honesto.</strong> El modelo por defecto rellena con su training data en vez de decir "no sé". Hay que prompt-engineering muy explícito para forzarlo.</li>
+</ul>
+</div>
+
+<div class="card card-green">
+<div class="card-title">📏 Rúbrica</div>
+<div class="table-wrap"><table>
+<tr><th>Criterio</th><th>Puntos</th></tr>
+<tr><td>Pipeline funciona end-to-end</td><td>15</td></tr>
+<tr><td>Accuracy ≥ 80% sobre eval set</td><td>20</td></tr>
+<tr><td>Citation accuracy ≥ 90%</td><td>20</td></tr>
+<tr><td>"No encontrado" funciona en 5/5 preguntas fuera de corpus</td><td>10</td></tr>
+<tr><td>Latencia p95 ≤ 5s</td><td>10</td></tr>
+<tr><td>Coste ≤ $0.05/respuesta</td><td>10</td></tr>
+<tr><td>Eval RAGAS reportado</td><td>10</td></tr>
+<tr><td>Bonus: re-ranker añadido y comparativa antes/después</td><td>5</td></tr>
+</table></div>
+</div>
+</div>
+
+<div class="lang-block" data-lang="en">
+<div class="card card-accent">
+<div class="card-title">📋 Specification</div>
+<p><strong>Problem:</strong> your organisation has 500-5000 documents (Confluence, Notion, Drive, PDFs, internal manuals). A new hire takes weeks to ramp up. Build an assistant that answers questions over that knowledge base, citing verifiable sources.</p>
+
+<p><strong>Acceptance criteria:</strong></p>
+<ul>
+  <li>Automated ingest of an initial corpus of ≥ 200 documents (≥ 2 MB plain text after parsing).</li>
+  <li>Full RAG pipeline: chunking + embeddings + vector DB + retrieval + augmented generation + citation.</li>
+  <li>Every answer includes at least 2 citations <code>[doc:X, section:Y]</code> with clickable links to the source.</li>
+  <li>If the answer isn't in the corpus, the bot says "Not found in sources" — no hallucination.</li>
+  <li>On a 30-question eval set with golden answers, accuracy ≥ 80% and citation accuracy ≥ 90% (the cite actually supports the claim).</li>
+  <li>Latency p95 ≤ 5 seconds per answer.</li>
+  <li>Mean cost ≤ $0.05 per answer.</li>
+</ul>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">🛠️ Suggested stack</div>
+<ul>
+  <li><strong>Language:</strong> Python 3.11+ (optional frontend Next.js / Streamlit).</li>
+  <li><strong>Embeddings:</strong> OpenAI text-embedding-3-small ($0.02/1M tok) or BGE-M3 self-hosted (free).</li>
+  <li><strong>Vector DB:</strong> Qdrant self-hosted or Chroma local to start; Pinecone Serverless if zero-ops.</li>
+  <li><strong>Generation:</strong> Claude Sonnet 4.6 (balance quality/cost/context) or DeepSeek V4 Pro.</li>
+  <li><strong>Chunking:</strong> RecursiveCharacterTextSplitter (LangChain) with chunk_size=512, overlap=50. Or semantic chunking for technical corpus.</li>
+  <li><strong>Frameworks:</strong> LangChain or LlamaIndex for the pipeline; Instructor for structured outputs.</li>
+  <li><strong>Eval:</strong> RAGAS (faithfulness, answer relevancy, context precision/recall).</li>
+</ul>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">📦 Deliverables</div>
+<ol>
+  <li><code>rag-assistant/</code> repo with: ingest, indexing, query, frontend.</li>
+  <li>Script <code>ingest.py</code> processing a folder and building the index.</li>
+  <li>API <code>POST /query</code> returning <code>{answer, citations[], confidence}</code>.</li>
+  <li>Minimal frontend with search box and answer with clickable citations.</li>
+  <li>Eval suite with 30 questions + RAGAS scores reported.</li>
+  <li>README with a decisions table (which embedding, which chunk size, which k, why).</li>
+</ol>
+</div>
+
+<div class="card card-orange">
+<div class="card-title">⚠️ Known traps</div>
+<ul>
+  <li><strong>Bad chunking ruins everything else.</strong> If chunks cut mid-sentence or lose header context, retrieval can't compensate. Start with RecursiveCharacterSplitter, measure, iterate.</li>
+  <li><strong>Top-K too low or high.</strong> K=3 loses context; K=20 adds noise and bumps cost. K=5-7 is the usual sweet spot.</li>
+  <li><strong>Embeddings without re-ranker.</strong> For serious precision, add a re-ranker (Cohere Rerank or BGE-reranker) over top-20 → top-5 final. 10-20pp gain in context precision.</li>
+  <li><strong>Hallucinated citations.</strong> If the model emits <code>[doc:42]</code> but doc 42 doesn't exist, trust breaks. Validate programmatically that every citation references a real chunk.</li>
+  <li><strong>No honest "not found".</strong> By default the model fills with training data instead of saying "I don't know". Needs very explicit prompt engineering to force it.</li>
+</ul>
+</div>
+
+<div class="card card-green">
+<div class="card-title">📏 Rubric</div>
+<div class="table-wrap"><table>
+<tr><th>Criterion</th><th>Points</th></tr>
+<tr><td>End-to-end pipeline works</td><td>15</td></tr>
+<tr><td>Accuracy ≥ 80% on eval set</td><td>20</td></tr>
+<tr><td>Citation accuracy ≥ 90%</td><td>20</td></tr>
+<tr><td>"Not found" works on 5/5 out-of-corpus questions</td><td>10</td></tr>
+<tr><td>Latency p95 ≤ 5s</td><td>10</td></tr>
+<tr><td>Cost ≤ $0.05/answer</td><td>10</td></tr>
+<tr><td>RAGAS eval reported</td><td>10</td></tr>
+<tr><td>Bonus: re-ranker added with before/after comparison</td><td>5</td></tr>
+</table></div>
+</div>
+</div>
+</section>
+
+<section id="b14-c">
+<h2>
+  <span class="lang-block" data-lang="es">Proyecto C — Local Self-Hosted Assistant</span>
+  <span class="lang-block" data-lang="en">Project C — Local Self-Hosted Assistant</span>
+</h2>
+
+<div class="lang-block" data-lang="es">
+<div class="card card-accent">
+<div class="card-title">📋 Specification</div>
+<p><strong>Problema:</strong> una empresa procesa datos sensibles que NO pueden salir de su red (sanidad, legal, gobierno). Construir un asistente equivalente al Proyecto B pero <strong>100% on-premise</strong>, sin que ningún byte cruce a la nube.</p>
+
+<p><strong>Criterios de aceptación:</strong></p>
+<ul>
+  <li>Modelo LLM corriendo localmente: Qwen3-32B Q5_K_M vía Ollama, o Llama 4 70B Q4 si tienes ≥48 GB VRAM.</li>
+  <li>Embeddings locales: BGE-M3 o Nomic Embed Text v2 corriendo en CPU/GPU.</li>
+  <li>Vector DB local: ChromaDB embebido o Qdrant local.</li>
+  <li>Frontend Next.js mínimo con autenticación.</li>
+  <li>Cero llamadas a APIs externas — verificable con monitor de red.</li>
+  <li>Métricas: tokens/segundo del modelo, latencia p95 ≤ 8s en hardware target documentado, calidad ≥ 75% del baseline cloud sobre el mismo eval set.</li>
+  <li>Documento de cumplimiento GDPR Art. 32 (medidas técnicas) preparado para auditor.</li>
+</ul>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">🛠️ Hardware target sugerido</div>
+<ul>
+  <li><strong>Mínimo:</strong> RTX 4090 (24 GB VRAM) o Mac M3 Pro 36 GB unified memory → Qwen3-32B Q4_K_M, ~25 tok/s.</li>
+  <li><strong>Recomendado:</strong> RTX 5090 (32 GB) o dual 4090 (48 GB) → Qwen3-32B Q5_K_M o Llama 4 70B Q4, ~20-30 tok/s.</li>
+  <li><strong>Servidor:</strong> 4× A100 80GB → Llama 4 70B FP16 con vLLM, 100+ tok/s en producción.</li>
+</ul>
+</div>
+
+<div class="card card-orange">
+<div class="card-title">⚠️ Trampas conocidas</div>
+<ul>
+  <li><strong>Calidad cae con cuantizaciones agresivas.</strong> Q2/Q3 ahorran VRAM pero pierden 10-20pp de calidad. Q4_K_M es el suelo razonable; Q5_K_M es el sweet spot.</li>
+  <li><strong>Latencia en CPU es brutal.</strong> Si solo tienes CPU + RAM, prepárate para 2-5 tok/s. Para uso interactivo, GPU es prácticamente obligatoria.</li>
+  <li><strong>Tokenizer mismatches.</strong> Si entrenas embeddings con un tokenizer y el LLM usa otro, los chunks no coinciden semánticamente. Documenta y testea.</li>
+  <li><strong>Setup de Ollama en producción.</strong> Ollama es excelente para dev pero limitado en concurrencia. Para producción seria, vLLM o SGLang son mejores.</li>
+</ul>
+</div>
+
+<p><strong>Rúbrica completa y reference solution:</strong> próximamente Q3 2026. Si quieres priorizarlo, abre issue en el repo.</p>
+</div>
+
+<div class="lang-block" data-lang="en">
+<div class="card card-accent">
+<div class="card-title">📋 Specification</div>
+<p><strong>Problem:</strong> a company processes sensitive data that CANNOT leave its network (healthcare, legal, government). Build an assistant equivalent to Project B but <strong>100% on-premise</strong>, no byte crossing to the cloud.</p>
+
+<p><strong>Acceptance criteria:</strong></p>
+<ul>
+  <li>LLM running locally: Qwen3-32B Q5_K_M via Ollama, or Llama 4 70B Q4 if you have ≥48 GB VRAM.</li>
+  <li>Local embeddings: BGE-M3 or Nomic Embed Text v2 on CPU/GPU.</li>
+  <li>Local vector DB: embedded ChromaDB or local Qdrant.</li>
+  <li>Minimal Next.js frontend with auth.</li>
+  <li>Zero calls to external APIs — verifiable with a network monitor.</li>
+  <li>Metrics: model tok/s, latency p95 ≤ 8s on documented target hardware, quality ≥ 75% of the cloud baseline on the same eval set.</li>
+  <li>GDPR Art. 32 (technical measures) compliance doc ready for an auditor.</li>
+</ul>
+</div>
+
+<div class="card card-accent">
+<div class="card-title">🛠️ Suggested target hardware</div>
+<ul>
+  <li><strong>Minimum:</strong> RTX 4090 (24 GB VRAM) or Mac M3 Pro 36 GB unified memory → Qwen3-32B Q4_K_M, ~25 tok/s.</li>
+  <li><strong>Recommended:</strong> RTX 5090 (32 GB) or dual 4090 (48 GB) → Qwen3-32B Q5_K_M or Llama 4 70B Q4, ~20-30 tok/s.</li>
+  <li><strong>Server:</strong> 4× A100 80GB → Llama 4 70B FP16 with vLLM, 100+ tok/s in production.</li>
+</ul>
+</div>
+
+<div class="card card-orange">
+<div class="card-title">⚠️ Known traps</div>
+<ul>
+  <li><strong>Quality drops with aggressive quantization.</strong> Q2/Q3 save VRAM but lose 10-20pp quality. Q4_K_M is the reasonable floor; Q5_K_M is the sweet spot.</li>
+  <li><strong>CPU latency is brutal.</strong> CPU + RAM only? Expect 2-5 tok/s. For interactive use, a GPU is practically mandatory.</li>
+  <li><strong>Tokenizer mismatches.</strong> If you embed with one tokenizer and the LLM uses another, chunks misalign semantically. Document and test.</li>
+  <li><strong>Ollama in production.</strong> Ollama is great for dev but limited on concurrency. Serious production: vLLM or SGLang.</li>
+</ul>
+</div>
+
+<p><strong>Full rubric and reference solution:</strong> coming Q3 2026. To prioritize, open an issue.</p>
+</div>
+</section>
+
+<section id="b14-d">
+<h2>
+  <span class="lang-block" data-lang="es">Proyecto D — Multi-Agent Research Team</span>
+  <span class="lang-block" data-lang="en">Project D — Multi-Agent Research Team</span>
+</h2>
+
+<div class="lang-block" data-lang="es">
+<div class="card card-accent">
+<div class="card-title">📋 Specification</div>
+<p><strong>Problema:</strong> investigar un tema técnico (p.ej. "comparativa de vector DBs en 2026") manualmente lleva 4-8 horas. Construir un equipo de agentes que haga la investigación y escriba un informe markdown publicable.</p>
+
+<p><strong>Equipo de agentes:</strong></p>
+<ul>
+  <li><strong>Researcher</strong> — busca en web (Tavily, Perplexity API, o Brave Search), recolecta fuentes, las anota.</li>
+  <li><strong>Analyst</strong> — sintetiza las fuentes, encuentra contradicciones, extrae datos numéricos comparables.</li>
+  <li><strong>Critic</strong> — red-teamea el draft, busca afirmaciones sin respaldo, sesgos, omisiones.</li>
+  <li><strong>Writer</strong> — redacta el informe final en markdown publicable.</li>
+  <li><strong>Supervisor</strong> — coordina, decide cuándo iterar y cuándo cerrar.</li>
+</ul>
+
+<p><strong>Criterios de aceptación:</strong></p>
+<ul>
+  <li>Input: una pregunta de investigación en lenguaje natural.</li>
+  <li>Output: informe markdown 1500-3000 palabras con: resumen ejecutivo, secciones, tabla comparativa, citas con URLs, sección de "limitaciones de esta investigación".</li>
+  <li>Pipeline supervisor-worker con LangGraph o CrewAI.</li>
+  <li>Sobre 5 preguntas de prueba con golden reports preparados, coverage ≥ 75% (qué fuentes/datos clave aparecen) y factual accuracy ≥ 90% (afirmaciones verificables contra las URLs citadas).</li>
+  <li>Coste total ≤ $5 por informe.</li>
+  <li>Tiempo total ≤ 30 minutos por informe.</li>
+</ul>
+</div>
+
+<div class="card card-orange">
+<div class="card-title">⚠️ Trampas conocidas</div>
+<ul>
+  <li><strong>Loops infinitos entre agentes.</strong> Critic dice "falta X", Writer añade X, Critic encuentra otro problema, etc. Cap duro en iteraciones (máx 3 rondas).</li>
+  <li><strong>Coste se dispara silenciosamente.</strong> 5 agentes × varios calls = decenas de llamadas. Si cada uno usa Claude Opus, el bill mensual es alarmante. Mezcla tiers: Researcher con Haiku, Writer con Opus.</li>
+  <li><strong>Hallucinated URLs.</strong> El Researcher puede inventar fuentes. Verifica que cada URL devuelva 200 antes de citarla.</li>
+  <li><strong>Critic demasiado complaciente o demasiado destructivo.</strong> Calibrar el system prompt del Critic es lo más difícil del proyecto.</li>
+</ul>
+</div>
+
+<p><strong>Rúbrica completa y reference solution:</strong> próximamente Q3 2026.</p>
+</div>
+
+<div class="lang-block" data-lang="en">
+<div class="card card-accent">
+<div class="card-title">📋 Specification</div>
+<p><strong>Problem:</strong> researching a technical topic (e.g. "vector DB comparison in 2026") manually takes 4-8 hours. Build a team of agents that does the research and writes a publishable markdown report.</p>
+
+<p><strong>Agent team:</strong></p>
+<ul>
+  <li><strong>Researcher</strong> — searches the web (Tavily, Perplexity API, or Brave Search), collects sources, annotates them.</li>
+  <li><strong>Analyst</strong> — synthesises sources, finds contradictions, extracts comparable numerical data.</li>
+  <li><strong>Critic</strong> — red-teams the draft, looks for unsupported claims, biases, omissions.</li>
+  <li><strong>Writer</strong> — composes the final markdown report.</li>
+  <li><strong>Supervisor</strong> — coordinates, decides when to iterate and when to close.</li>
+</ul>
+
+<p><strong>Acceptance criteria:</strong></p>
+<ul>
+  <li>Input: a natural-language research question.</li>
+  <li>Output: 1500-3000 word markdown report with: executive summary, sections, comparison table, citations with URLs, "limitations of this research" section.</li>
+  <li>Supervisor-worker pipeline with LangGraph or CrewAI.</li>
+  <li>On 5 test questions with prepared golden reports, coverage ≥ 75% (which key sources/data points appear) and factual accuracy ≥ 90% (verifiable claims against cited URLs).</li>
+  <li>Total cost ≤ $5 per report.</li>
+  <li>Total time ≤ 30 minutes per report.</li>
+</ul>
+</div>
+
+<div class="card card-orange">
+<div class="card-title">⚠️ Known traps</div>
+<ul>
+  <li><strong>Infinite loops between agents.</strong> Critic says "missing X", Writer adds X, Critic finds another issue, etc. Hard cap on iterations (max 3 rounds).</li>
+  <li><strong>Cost silently explodes.</strong> 5 agents × multiple calls = dozens of API hits. If each uses Claude Opus, the monthly bill is alarming. Mix tiers: Researcher on Haiku, Writer on Opus.</li>
+  <li><strong>Hallucinated URLs.</strong> The Researcher can invent sources. Verify every URL returns 200 before citing.</li>
+  <li><strong>Critic too lenient or too destructive.</strong> Calibrating the Critic's system prompt is the project's hardest part.</li>
+</ul>
+</div>
+
+<p><strong>Full rubric and reference solution:</strong> coming Q3 2026.</p>
+</div>
+</section>
+
+<section class="module-references">
+  <h3>
+    <span class="lang-block" data-lang="es">Referencias</span>
+    <span class="lang-block" data-lang="en">References</span>
+  </h3>
+  <ul class="references-list">
+    <li><a href="https://docs.anthropic.com/en/docs/agents-and-tools/agent-cookbook" target="_blank" rel="noopener">Anthropic — Agent Cookbook</a></li>
+    <li><a href="https://github.com/anthropics/anthropic-cookbook" target="_blank" rel="noopener">anthropic-cookbook (GitHub)</a></li>
+    <li><a href="https://github.com/openai/openai-cookbook" target="_blank" rel="noopener">openai-cookbook (GitHub)</a></li>
+    <li><a href="https://docs.ragas.io/" target="_blank" rel="noopener">RAGAS — RAG evaluation framework</a></li>
+    <li><a href="https://docs.crewai.com/" target="_blank" rel="noopener">CrewAI documentation</a></li>
+    <li><a href="https://langchain-ai.github.io/langgraph/" target="_blank" rel="noopener">LangGraph documentation</a></li>
+  </ul>
 </section>
 
 </main>
