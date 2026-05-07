@@ -1,34 +1,96 @@
 /* ============================================================
-   PROMPT ENGINEERING MASTER COURSE — Cyberpunk/Glassmorphism
+   PROMPT ENGINEERING MASTER COURSE — Carbón + Ámbar
+   © Alonso J. Núñez — GS·RUN
    ============================================================ */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap');
 
-:root {
-  --bg-deep: #0a0a0c;
-  --bg: #0e0e12;
-  --bg-card: rgba(18,18,26,0.75);
-  --bg-card-hover: rgba(22,22,34,0.88);
-  --glass: rgba(255,255,255,0.025);
-  --glass-border: rgba(255,255,255,0.05);
-  --glass-hover: rgba(255,255,255,0.07);
-  --text: #e4e4ee;
-  --text-dim: #8a8a9a;
-  --text-muted: #54546a;
-  --accent: #d4a853;
-  --accent-glow: rgba(212,168,83,0.25);
-  --accent2: #e08a3a;
-  --accent2-glow: rgba(224,138,58,0.2);
-  --green: #5cb878;
-  --red: #e05555;
-  --yellow: #e0b843;
-  --orange: #d4784a;
-  --gray-accent: #8a8a96;
-  --gray-soft: #6e6e7a;
-  --radius: 14px;
-  --radius-sm: 8px;
-  --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  --font: 'Inter', system-ui, -apple-system, sans-serif;
-  --mono: 'JetBrains Mono', 'Fira Code', monospace;
+/* === TEMA OSCURO (default) — Carbón + Ámbar dorado === */
+:root, [data-theme="dark"] {
+  /* Backgrounds */
+  --bg-deep:        #0F1115;
+  --bg:             #161A20;
+  --bg-card:        rgba(30, 35, 42, 0.65);
+  --bg-card-hover:  rgba(36, 42, 50, 0.85);
+  --bg-code:        rgba(12, 14, 18, 0.85);
+  --bg-sidebar:     rgba(18, 22, 28, 0.85);
+
+  /* Glass / borders */
+  --glass:          rgba(245, 165, 36, 0.04);
+  --glass-border:   rgba(245, 165, 36, 0.12);
+  --glass-hover:    rgba(245, 165, 36, 0.08);
+  --grid-line:      rgba(245, 165, 36, 0.04);
+
+  /* Texto cálido (no glacial) */
+  --text:           #E8E6E3;
+  --text-dim:       #9A958E;
+  --text-muted:     #6B665E;
+
+  /* Acentos firma — ámbar dorado profundo, NO amarillo chillón */
+  --accent:         #F5A524;
+  --accent-soft:    #FFC56C;
+  --accent-deep:    #C77D0B;
+  --accent-glow:    rgba(245, 165, 36, 0.22);
+  --accent2:        #E0840F;       /* ámbar quemado, segundo plano */
+  --accent2-glow:   rgba(224, 132, 15, 0.18);
+
+  /* Colores semánticos */
+  --green:          #6EBE7F;
+  --red:            #E05F5F;
+  --yellow:         #E0B843;
+  --orange:         #D4784A;
+  --gray-accent:    #8A857C;
+  --gray-soft:      #6E6960;
+
+  --radius:         14px;
+  --radius-sm:      8px;
+  --transition:     0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --font:           'Inter', system-ui, -apple-system, sans-serif;
+  --mono:           'JetBrains Mono', 'Fira Code', monospace;
+}
+
+/* === TEMA CLARO — Papel + Ámbar profundo === */
+[data-theme="light"] {
+  /* Backgrounds — papel cálido, no glacial */
+  --bg-deep:        #FAF9F6;
+  --bg:             #F4F2EC;
+  --bg-card:        rgba(255, 255, 255, 0.85);
+  --bg-card-hover:  rgba(255, 255, 255, 0.95);
+  --bg-code:        rgba(28, 25, 20, 0.95);
+  --bg-sidebar:     rgba(248, 246, 240, 0.92);
+
+  /* Glass / borders ámbar profundo (contraste accesible WCAG) */
+  --glass:          rgba(199, 125, 11, 0.05);
+  --glass-border:   rgba(199, 125, 11, 0.18);
+  --glass-hover:    rgba(199, 125, 11, 0.1);
+  --grid-line:      rgba(199, 125, 11, 0.05);
+
+  /* Texto */
+  --text:           #1A1A1A;
+  --text-dim:       #5C5852;
+  --text-muted:     #908A82;
+
+  /* Acentos — más profundos que en oscuro para legibilidad */
+  --accent:         #C77D0B;
+  --accent-soft:    #F5A524;
+  --accent-deep:    #8F5708;
+  --accent-glow:    rgba(199, 125, 11, 0.20);
+  --accent2:        #B86A05;
+  --accent2-glow:   rgba(184, 106, 5, 0.15);
+
+  /* Semánticos ajustados */
+  --green:          #4F8B5F;
+  --red:            #B83838;
+  --yellow:         #B89020;
+  --orange:         #B85A20;
+  --gray-accent:    #6B665E;
+  --gray-soft:      #908A82;
+}
+
+/* Smooth transition al cambiar tema */
+html, body, #app, #sidebar, #main, .card, .nav-link, .btn,
+.exercise-panel, .sim-panel, pre, .code-block, .copy-btn {
+  transition: background-color 0.4s ease, color 0.4s ease,
+              border-color 0.4s ease, box-shadow 0.4s ease;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -495,3 +557,91 @@ tr:last-child td { border-bottom: none; }
 
 /* HIGHLIGHT OVERRIDES */
 .hljs { background: transparent !important; }
+
+/* === SIDEBAR TOGGLES (lang + theme) — Beta 2026-05-07 === */
+.sidebar-toggles {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px; margin-top: 12px;
+}
+.lang-toggle { display: flex; gap: 4px; }
+.lang-btn {
+  padding: 4px 12px; border-radius: 12px;
+  border: 1px solid var(--glass-border); background: var(--glass);
+  color: var(--text-dim); font-size: 10px; font-weight: 700;
+  cursor: pointer; font-family: var(--font);
+  transition: all var(--transition); letter-spacing: 0.5px;
+}
+.lang-btn:hover { border-color: var(--accent); color: var(--text); }
+.lang-btn.active {
+  background: var(--accent); color: #1A1A1A;
+  border-color: var(--accent);
+  box-shadow: 0 0 12px var(--accent-glow);
+}
+#theme-toggle {
+  width: 30px; height: 26px; border-radius: 12px;
+  border: 1px solid var(--glass-border); background: var(--glass);
+  color: var(--text); font-size: 13px; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: all var(--transition); padding: 0;
+}
+#theme-toggle:hover {
+  border-color: var(--accent); background: var(--glass-hover);
+  box-shadow: 0 0 12px var(--accent-glow);
+}
+
+/* === FOOTER — © Alonso J. Núñez · GS·RUN === */
+#site-footer {
+  margin-top: 80px; padding: 40px 0 32px;
+  border-top: 1px solid var(--glass-border);
+  font-size: 12px; color: var(--text-muted);
+}
+#site-footer .footer-inner {
+  display: flex; flex-direction: column; gap: 14px; align-items: center;
+  text-align: center;
+}
+@media (min-width: 720px) {
+  #site-footer .footer-inner {
+    flex-direction: row; justify-content: space-between; align-items: center;
+  }
+}
+.footer-brand {
+  display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  justify-content: center;
+}
+.footer-copy { font-weight: 600; color: var(--text-dim); letter-spacing: 0.3px; }
+.footer-sep { color: var(--text-muted); opacity: 0.6; }
+.footer-link {
+  color: var(--accent); text-decoration: none; font-weight: 700;
+  letter-spacing: 0.5px; transition: color var(--transition);
+}
+.footer-link:hover { color: var(--accent-soft); text-shadow: 0 0 8px var(--accent-glow); }
+.footer-license { color: var(--text-muted); font-style: italic; font-size: 11px; }
+.footer-links {
+  display: inline-flex; gap: 18px; flex-wrap: wrap; justify-content: center;
+}
+.footer-links a {
+  color: var(--text-dim); text-decoration: none; font-size: 12px;
+  transition: color var(--transition);
+}
+.footer-links a:hover { color: var(--accent); }
+
+/* === BG ORBS — ajuste para tema claro (más sutiles) === */
+[data-theme="light"] .bg-orb { opacity: 0.08; filter: blur(100px); }
+[data-theme="light"] .bg-grid { opacity: 0.4; }
+[data-theme="light"] .bg-orb-1 { background: radial-gradient(circle, rgba(199,125,11,0.55) 0%, transparent 70%); }
+[data-theme="light"] .bg-orb-2 { background: radial-gradient(circle, rgba(184,106,5,0.5) 0%, transparent 70%); }
+[data-theme="light"] .bg-orb-3 { background: radial-gradient(circle, rgba(245,165,36,0.4) 0%, transparent 70%); }
+
+/* Code block en tema claro: fondo oscuro mantiene legibilidad de syntax */
+[data-theme="light"] pre,
+[data-theme="light"] .code-block,
+[data-theme="light"] .exercise-panel textarea.ex-editor,
+[data-theme="light"] .exercise-panel .ex-output,
+[data-theme="light"] .sim-control select,
+[data-theme="light"] .sim-control input {
+  background: var(--bg-code); color: #E8E6E3;
+}
+[data-theme="light"] pre code { color: #E8E6E3; }
+
+/* Sidebar bg explícito por tema (override del rgba hardcoded original) */
+#sidebar { background: var(--bg-sidebar); }

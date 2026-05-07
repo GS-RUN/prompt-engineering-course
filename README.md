@@ -39,7 +39,8 @@ A comprehensive, interactive web-based course on LLM prompt engineering — opti
 - **Prompt Diff Comparator** — A/B test two prompts with 5-criteria scoring
 - **Prompt Simulator** — toggle 6 techniques and see how response quality changes
 - **12 Quizzes** — multiple choice with localStorage persistence
-- **5 Coding Exercises** — with real-time quality scoring
+- **4 Coding Exercises** — with real-time quality scoring
+- **Theme Toggle** — Dark (Carbón + Ámbar) / Light (Papel + Ámbar) with localStorage persistence
 
 ---
 
@@ -68,15 +69,14 @@ prompt-engineering-course/
 ├── css/
 │   └── style.css       # Glassmorphism dark theme, CSS variables, responsive
 ├── js/
-│   ├── app.js          # Router, scroll-spy, progress bar
-│   ├── i18n.js         # ES/EN translation system (auto-nav + section titles)
+│   ├── app.js          # Router, scroll-spy, progress bar, theme controller
+│   ├── i18n.js         # ES/EN translation system (nav + titles + [data-i18n] generic)
 │   ├── exercises.js    # 4 interactive exercises with scoring engine
 │   ├── simulator.js    # Prompt simulator with 6 toggleable techniques
 │   ├── diagrams.js     # 3 animated Canvas diagrams
 │   ├── quiz.js         # 12 quizzes with localStorage persistence
 │   ├── token-tools.js  # Token counter + cost calculator
-│   ├── prompt-diff.js  # A/B prompt comparator
-│   └── three-bg.js     # Unused (kept for reference — replaced by CSS orbs)
+│   └── prompt-diff.js  # A/B prompt comparator
 └── .gitignore
 ```
 
@@ -120,3 +120,7 @@ Content compiled from official documentation:
 ## 📄 License
 
 MIT — use it, modify it, share it.
+
+---
+
+© 2026 **Alonso J. Núñez** · [GS·RUN](https://github.com/GS-RUN)

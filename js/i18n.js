@@ -109,6 +109,21 @@ const I18N = {
         sub.textContent = sub.dataset.orig;
       }
     });
+
+    // 5) Generic [data-i18n="key"] attribute — para cualquier elemento
+    // marcado explicitamente. Se usa para footer, sidebar-subtitle,
+    // y cualquier nuevo string añadido en el futuro sin tener que
+    // tocar la lógica de translateDOM. Patrón estándar i18n.
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.dataset.i18n;
+      if (!key) return;
+      if (isEn && this.dict[key]) {
+        if (!el.dataset.orig) el.dataset.orig = el.textContent;
+        el.textContent = this.dict[key];
+      } else if (!isEn && el.dataset.orig) {
+        el.textContent = el.dataset.orig;
+      }
+    });
   },
 
   highlightToggle() {
@@ -318,6 +333,12 @@ const I18N = {
       's88-title':'21.1 What is Model Quantization?','s88-sub':'Compressing models so they fit on your GPU (or your phone)',
       's89-title':'21.2 Quantization Methods',
       's90-title':'21.3 Quality vs Size — The Definitive Table',
+
+      // FOOTER + UI strings (Beta 2026-05-07)
+      'sidebar-subtitle':'Master Course 2026',
+      'footer-copy':'© 2026 Alonso J. Núñez',
+      'footer-source':'📦 Source code',
+      'footer-issues':'🐛 Report bug',
     };
   },
 };

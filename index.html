@@ -5,7 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Prompt Engineering Master Course — Claude Opus 4.7 + DeepSeek V4 Pro</title>
 <link rel="stylesheet" href="css/style.css">
-<!-- Elegant CSS-only background — no Three.js needed -->
+<!-- Inline theme bootstrap — evita FOUC + es inmune al orden de scripts -->
+<script>
+  (function() {
+    try {
+      var t = localStorage.getItem('theme');
+      if (t !== 'dark' && t !== 'light') t = 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+    } catch(e) { document.documentElement.setAttribute('data-theme', 'dark'); }
+  })();
+</script>
 </head>
 <body>
 
@@ -22,9 +31,12 @@
   <div id="sidebar-logo">
     <h2>🧠 Prompt Engineering</h2>
     <span data-i18n="sidebar-subtitle">Master Course 2026</span>
-    <div style="display:flex;gap:4px;margin-top:10px;">
-      <button class="lang-btn active" data-lang="es" style="padding:3px 10px;border-radius:12px;border:1px solid var(--glass-border);background:var(--accent);color:#000;font-size:10px;font-weight:700;cursor:pointer;font-family:var(--font);">ES</button>
-      <button class="lang-btn" data-lang="en" style="padding:3px 10px;border-radius:12px;border:1px solid var(--glass-border);background:var(--glass);color:var(--text-dim);font-size:10px;font-weight:700;cursor:pointer;font-family:var(--font);">EN</button>
+    <div class="sidebar-toggles">
+      <div class="lang-toggle">
+        <button class="lang-btn active" data-lang="es">ES</button>
+        <button class="lang-btn" data-lang="en">EN</button>
+      </div>
+      <button id="theme-toggle" aria-label="Toggle theme" title="Cambiar tema">🌙</button>
     </div>
   </div>
 
@@ -2212,6 +2224,61 @@ Current topic: {{TOPIC}}. Past mistakes: {{MISTAKES}}.
 </table></div>
 
 <div class="tip"><strong>💡 Un solo benchmark no basta.</strong> Un modelo puede ser excelente en MMLU y pésimo en coding. Mira al menos: 1 benchmark de conocimiento, 1 de razonamiento, 1 de código, y 1 de seguridad.</div>
+
+<h3>Cada Benchmark en Detalle</h3>
+<p class="subtitle">Qué mide exactamente, cómo se calcula la puntuación y qué dice de un modelo.</p>
+
+<div class="card card-accent">
+  <div class="card-title">📚 MMLU — Massive Multitask Language Understanding</div>
+  <p><strong>Qué mide:</strong> conocimiento factual y razonamiento en <strong>57 dominios académicos</strong> distintos: STEM (matemáticas, física, química, biología, CS), humanidades (filosofía, historia, derecho), ciencias sociales (economía, psicología) y profesionales (medicina, contabilidad).</p>
+  <p><strong>Formato:</strong> ~16 000 preguntas multiple choice de 4 opciones, dificultad nivel high-school a posgrado. Se mide accuracy global (0-100%).</p>
+  <p><strong>Por qué importa:</strong> es el benchmark estándar de "inteligencia general académica". Un score &gt; 90% indica que el modelo absorbió el conocimiento equivalente al de un humano educado promedio. Limitación: solo mide conocimiento memorizado, no razonamiento profundo ni habilidades aplicadas.</p>
+  <p><strong>Estado del arte 2026:</strong> humanos expertos ~89.8%, GPT-5.5 94.1%, Claude Opus 4.7 93.8%. Los modelos top ya superan al humano experto promedio.</p>
+</div>
+
+<div class="card card-accent">
+  <div class="card-title">💻 HumanEval — Generación de Código Python</div>
+  <p><strong>Qué mide:</strong> capacidad de generar funciones Python correctas a partir de un docstring describiendo el comportamiento esperado. Cada problema incluye tests unitarios; el modelo aprueba si su código pasa todos los tests.</p>
+  <p><strong>Formato:</strong> 164 problemas de programación curados manualmente. La métrica oficial es <code>pass@k</code> — probabilidad de que al menos una de <code>k</code> generaciones pase los tests. Se reporta típicamente <code>pass@1</code> (greedy single-shot).</p>
+  <p><strong>Por qué importa:</strong> primer benchmark serio de coding. Limitación: problemas relativamente cortos y aislados (~10 líneas), no captura programación real (debugging, integración, codebases grandes). Los modelos top lo saturan al &gt;95%, por eso SWE-bench es el nuevo estándar.</p>
+  <p><strong>Estado del arte 2026:</strong> Claude Opus 4.7 96.2%, GPT-5.5 95.8%. Saturado — todos los frontier models están dentro del rango 92-97%.</p>
+</div>
+
+<div class="card card-accent">
+  <div class="card-title">🧮 MATH — Problemas de Competición Matemática</div>
+  <p><strong>Qué mide:</strong> resolución de problemas matemáticos de nivel competición olímpica (AMC, AIME) — pre-álgebra, álgebra, conteo y probabilidad, geometría, teoría de números, pre-cálculo, cálculo. NO son cálculos rutinarios: requieren razonamiento creativo en pasos.</p>
+  <p><strong>Formato:</strong> 12 500 problemas con solución numérica exacta. Cada problema tiene una respuesta única verificable; se mide accuracy. Crítico: no acepta "casi" — la respuesta debe coincidir bit-exact.</p>
+  <p><strong>Por qué importa:</strong> es el benchmark donde más drásticamente se ve la diferencia entre modelos con razonamiento (thinking tokens, chain-of-thought) y sin él. Un modelo que mejora 30 puntos al activar thinking demuestra que sus tokens internos sí están razonando, no solo decorando.</p>
+  <p><strong>Estado del arte 2026:</strong> Claude Opus 4.7 92.1%, GPT-5.5 91.7%, DeepSeek V4 Pro 90.3%. Hace 2 años los modelos sin thinking apenas llegaban al 50%.</p>
+</div>
+
+<div class="card card-accent">
+  <div class="card-title">🎓 GPQA — Graduate-Level Physics, Chemistry, Biology</div>
+  <p><strong>Qué mide:</strong> preguntas de nivel <strong>doctoral</strong> en biología, física y química, escritas y validadas por PhDs en cada campo. La clave: las respuestas correctas no se pueden encontrar googleando — requieren entender los fundamentos.</p>
+  <p><strong>Formato:</strong> 448 preguntas multiple choice extremadamente técnicas. Subset "GPQA Diamond" (198 preguntas) es el más usado para reportar — más estricto.</p>
+  <p><strong>Por qué importa:</strong> diseñado específicamente para ser <strong>"Google-proof"</strong>. Mide si el modelo realmente entiende la materia o solo recuerda información de internet. Los humanos expertos del campo correspondiente sacan ~65-75%; los humanos de otro campo (incluso otros PhDs) sacan ~34% (apenas mejor que random).</p>
+  <p><strong>Estado del arte 2026:</strong> Claude Opus 4.7 74.5%, GPT-5.5 73.8%. Los frontier models ya están al nivel de un experto del dominio — un salto enorme respecto a 2024.</p>
+</div>
+
+<div class="card card-accent">
+  <div class="card-title">🔧 SWE-bench — Bug Fixing en Repos Reales de GitHub</div>
+  <p><strong>Qué mide:</strong> capacidad de un agente de código para resolver issues reales de proyectos open-source famosos (Django, sympy, scikit-learn, matplotlib, etc). Dado un issue + el repo entero como contexto, el modelo debe producir un patch que arregle el bug y pase los tests existentes.</p>
+  <p><strong>Formato:</strong> 2 294 issues reales con commits ground-truth y suite de tests. Se mide <strong>resolution rate</strong> — % de issues donde el patch generado pasa todos los tests. Variantes: SWE-bench Lite (300 issues curados), SWE-bench Verified (issues humanos-validados como solucionables).</p>
+  <p><strong>Por qué importa:</strong> es el benchmark más realista para coding agents. Captura todo lo que HumanEval no: navegar codebases grandes, entender arquitectura, debugging, ejecutar tests, iterar. Un modelo con 60%+ aquí está literalmente reemplazando trabajo de un junior dev.</p>
+  <p><strong>Estado del arte 2026:</strong> Claude Opus 4.7 lidera con 68.3% (con Claude Code agent), GPT-5.5 65.1%, DeepSeek V4 Pro 60.4%. Hace 18 meses ningún modelo pasaba del 25%.</p>
+</div>
+
+<div class="card card-accent">
+  <div class="card-title">🧠 GSM8K · HellaSwag · TruthfulQA · MT-Bench</div>
+  <p><strong>GSM8K (Grade School Math 8K):</strong> 8 500 problemas matemáticos de nivel primaria con enunciado en lenguaje natural ("Jane tiene 5 manzanas, regala 2..."). Mide razonamiento <em>multi-step</em> sobre aritmética básica. Saturado &gt;95% en frontier models — útil para validar que un modelo small no está roto.</p>
+  <p><strong>HellaSwag:</strong> completa el final más razonable de un escenario común. 10 000 preguntas multiple choice. Mide sentido común físico y social ("El chef abrió el horno y..."). Prácticamente saturado &gt;95% — ya no diferencia frontier models, sirve para detectar regresiones.</p>
+  <p><strong>TruthfulQA:</strong> 817 preguntas diseñadas para inducir conceptos erróneos comunes ("¿Qué pasa si te tronas los nudillos?"). Mide veracidad bajo presión social. Útil para safety — score bajo significa que el modelo repite mitos populares como si fueran ciertos.</p>
+  <p><strong>MT-Bench:</strong> 80 conversaciones multi-turno (escritura, razonamiento, matemáticas, coding, role-play, extracción). Cada respuesta evaluada por GPT-4 (LLM-as-Judge) en escala 1-10. Mide <strong>calidad conversacional</strong> que las pruebas multiple-choice no capturan. Crítico: depende del juez (GPT-4 favorece estilos similares al suyo).</p>
+</div>
+
+<div class="warn"><strong>⚠️ Cuidado con la "saturación":</strong> cuando un benchmark satura (todos los modelos &gt; 95%), deja de discriminar. MMLU y HumanEval están cerca de saturar. Los benchmarks útiles ahora son <strong>SWE-bench, GPQA Diamond, ARC-AGI, MATH avanzado</strong> — donde aún hay headroom y se separan los modelos top.</div>
+
+<div class="tip"><strong>💡 Cómo interpretar un leaderboard:</strong> mira siempre fecha (<6 meses), versión exacta del modelo (no "Claude" sino "Claude Opus 4.7"), modo (con/sin thinking), y método de eval (zero-shot, few-shot, chain-of-thought). Dos números del mismo modelo pueden diferir 15 puntos según método.</div>
 </section>
 
 <section id="s74">
@@ -2879,18 +2946,34 @@ Use TypeScript, React Hook Form, and Zod for validation.</textarea>
   </p>
 </section>
 
+<footer id="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <span class="footer-copy" data-i18n="footer-copy">© 2026 Alonso J. Núñez</span>
+      <span class="footer-sep">·</span>
+      <a class="footer-link" href="https://github.com/GS-RUN" target="_blank" rel="noopener">GS·RUN</a>
+      <span class="footer-sep">·</span>
+      <span class="footer-license">MIT License</span>
+    </div>
+    <div class="footer-links">
+      <a href="https://github.com/GS-RUN/prompt-engineering-course" target="_blank" rel="noopener" data-i18n="footer-source">📦 Código fuente</a>
+      <a href="https://github.com/GS-RUN/prompt-engineering-course/issues" target="_blank" rel="noopener" data-i18n="footer-issues">🐛 Reportar bug</a>
+    </div>
+  </div>
+</footer>
+
 </main>
 </div>
 
-<!-- SCRIPTS -->
-<script src="js/exercises.js"></script>
-<script src="js/simulator.js"></script>
-<script src="js/diagrams.js"></script>
-<script src="js/quiz.js"></script>
-<script src="js/token-tools.js"></script>
-<script src="js/prompt-diff.js"></script>
-<script src="js/i18n.js"></script>
-<script src="js/app.js"></script>
+<!-- SCRIPTS — version bump invalida cache en redeploy -->
+<script src="js/exercises.js?v=5"></script>
+<script src="js/simulator.js?v=5"></script>
+<script src="js/diagrams.js?v=5"></script>
+<script src="js/quiz.js?v=5"></script>
+<script src="js/token-tools.js?v=5"></script>
+<script src="js/prompt-diff.js?v=5"></script>
+<script src="js/i18n.js?v=5"></script>
+<script src="js/app.js?v=5"></script>
 
 </body>
 </html>

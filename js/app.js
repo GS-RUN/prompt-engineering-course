@@ -1,6 +1,43 @@
 /* ============================================================
-   Main App — Routing, Navigation, State
+   Main App — Routing, Navigation, State, Theme
    ============================================================ */
+
+/* Theme controller — exposed on window for robust click delegation */
+window.ThemeController = {
+  current: 'dark',
+  init() {
+    const saved = localStorage.getItem('theme');
+    if (saved === 'light' || saved === 'dark') {
+      this.current = saved;
+    }
+    this.apply();
+  },
+  toggle() {
+    this.current = this.current === 'dark' ? 'light' : 'dark';
+    localStorage.setItem('theme', this.current);
+    this.apply();
+  },
+  apply() {
+    document.documentElement.setAttribute('data-theme', this.current);
+    const btn = document.getElementById('theme-toggle');
+    if (btn) {
+      btn.textContent = this.current === 'dark' ? '🌙' : '☀️';
+      btn.setAttribute('title',
+        this.current === 'dark' ? 'Cambiar a tema claro' : 'Cambiar a tema oscuro');
+    }
+  },
+};
+
+/* Click delegation — sobrevive a re-renders del button + sin depender
+ * de timing de ID-existe-cuando-init-corre. */
+document.addEventListener('click', (e) => {
+  const t = e.target.closest('#theme-toggle');
+  if (t) {
+    e.preventDefault();
+    window.ThemeController.toggle();
+  }
+});
+
 class App {
   constructor() {
     this.exerciseEngine = null;
@@ -15,11 +52,13 @@ class App {
   }
 
   init() {
+    // Load visited from localStorage
     try {
       const saved = JSON.parse(localStorage.getItem('visitedSections') || '[]');
       saved.forEach(s => this.visitedSections.add(s));
-    } catch(e) {}
+    } catch (e) {}
 
+    // Initialize modules (Three.js bg removed — replaced by CSS orbs)
     this.exerciseEngine = new ExerciseEngine();
     this.promptSimulator = new PromptSimulator();
     this.diagramEngine = new DiagramEngine();
@@ -27,48 +66,12 @@ class App {
     this.tokenTools = new TokenTools();
     this.promptDiff = new PromptDiff();
 
+    // Wiring
     this.setupNavigation();
     this.setupScrollSpy();
     this.setupCopyButtons();
     setTimeout(() => this.quizEngine.attachHandlers(), 100);
     this.setupProgressBar();
-    this.markVisited();
-  }
-
-  init() {
-    // Load visited from localStorage
-    try {
-      const saved = JSON.parse(localStorage.getItem('visitedSections') || '[]');
-      saved.forEach(s => this.visitedSections.add(s));
-    } catch(e) {}
-
-    // Initialize Three.js background
-    if (typeof THREE !== 'undefined') {
-      this.neuralBg = new NeuralBg();
-    }
-
-    // Initialize modules
-    this.exerciseEngine = new ExerciseEngine();
-    this.promptSimulator = new PromptSimulator();
-    this.diagramEngine = new DiagramEngine();
-    this.quizEngine = new QuizEngine();
-
-    // Setup navigation
-    this.setupNavigation();
-
-    // Setup scroll spy with IntersectionObserver
-    this.setupScrollSpy();
-
-    // Setup copy buttons
-    this.setupCopyButtons();
-
-    // Setup quiz after DOM is ready
-    setTimeout(() => this.quizEngine.attachHandlers(), 100);
-
-    // Progress bar
-    this.setupProgressBar();
-
-    // Mark current as visited
     this.markVisited();
   }
 
@@ -111,9 +114,7 @@ class App {
       this.visitedSections.add(sectionId);
       try {
         localStorage.setItem('visitedSections', JSON.stringify([...this.visitedSections]));
-      } catch(e) {}
-
-      // Update checkmark
+      } catch (e) {}
       const link = document.querySelector(`.nav-link[data-target="${sectionId}"]`);
       if (link) link.classList.add('completed');
     }
@@ -148,8 +149,13 @@ class App {
   }
 }
 
+// Theme primero (evita flash al cargar) — el inline en <head> ya seteó
+// data-theme; aquí sincronizamos el state interno del controller + el btn.
+window.ThemeController.init();
+
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
+  window.ThemeController.init();
   window.app = new App();
 });
 
