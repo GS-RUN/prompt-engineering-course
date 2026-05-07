@@ -2,6 +2,62 @@
 
 All notable changes to this course are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.2.1] — 2026-05-08
+
+### Changed — capstone stacks now use latest available models + hardware
+
+User feedback: project stacks were referencing outdated specifics
+(text-embedding-3-small from 2024, hardware ladder weighted toward
+RTX 4090 / Mac M3 / A100). Block XIV updated:
+
+- **New "Model + hardware version policy" card** at the top of the
+  capstone intro (ES + EN). States explicitly: always use the latest
+  available version of each model family; pin exact version in
+  production for reproducibility; if a new GPU/Mac generation has
+  shipped, that's the new target. Course authors will keep updating;
+  readers should open issues if anything mentioned is no longer the
+  freshest.
+- **Project A (Code Review Bot):** stack note now says "use latest
+  available". Python bumped to 3.12+. Fallback chain explicitly mixes
+  providers (Anthropic → OpenAI → DeepSeek) to avoid single-point-
+  of-failure. Observability adds Langfuse alongside Helicone.
+- **Project B (RAG Knowledge Assistant):** embeddings line rewritten
+  to recommend `text-embedding-4`, Cohere `embed-v4`, Voyage `voyage-3`,
+  NVIDIA `NV-Embed-v2` (latest gen of each provider) instead of the
+  old `text-embedding-3-small`. Note about higher-dimensional embeddings
+  lifting retrieval +3-5pp. Vector DB note recommends current LTS
+  (Qdrant 2.x, Milvus 2.5+, etc.). Re-ranker now mentions Cohere Rerank
+  v4. Frameworks pinned to current versions (LangChain 0.3+,
+  LlamaIndex 0.13+, Instructor 1.7+).
+- **Project C (Local Self-Hosted Assistant):** hardware tiers
+  rebuilt around 2026-current generation — RTX 5090 (32 GB GDDR7) as
+  the primary "recommended" tier instead of RTX 4090; Mac M4 Pro/Max
+  as the Apple primary; RTX PRO 6000 Blackwell (96 GB) as workstation
+  step-up; H100/H200 (with B200/GB200 mention) as datacenter. RTX 4090
+  kept as floor since it's still viable. New "Edge / on-device" tier
+  (Mac mini M4 Pro, iPad Pro M5) for Gemma 3 / Phi-5 mini at &lt;10W.
+  Closing note: hardware ladders stay roughly stable across
+  generations — substitute model and tier names as new gen ships.
+- **Project D (Multi-Agent Research Team):** orchestration libs
+  pinned to current versions. Each role explicitly described as a
+  TIER (fast-cheap / balance / top-frontier) with current 2026 models
+  named as instances of that tier. Closing note about tier-mixing
+  pattern surviving model generation changes.
+
+### Rationale
+
+A capstone spec that names obsolete tools loses didactic value within
+6-12 months. The new approach: **name the tier, name the current
+instance of that tier, instruct the reader to substitute upward**. Same
+philosophy already used in 8.1-8.8 (cross-model patterns) — extended
+here for consistency.
+
+### Manifest
+
+- Course version 2.2.0 → 2.2.1.
+
+---
+
 ## [2.2.0] — 2026-05-08
 
 ### Added — closing the deferred items from v2.0/v2.1

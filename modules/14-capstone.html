@@ -75,6 +75,18 @@
 </ol>
 <p><strong>Tiempo recomendado:</strong> 8-15 horas focused trabajando en sesiones de 2-3 horas. NO intentes hacerlo de una sentada — el aprendizaje viene del ciclo iterativo de probar, fallar, ajustar.</p>
 <p><strong>Lo más valioso:</strong> el writeup final. Tras terminar, escribe un README de 500-800 palabras que explique tu enfoque, qué probaste que no funcionó, qué métricas obtuviste y qué harías distinto la próxima vez. Eso es lo que un empleador serio quiere ver.</p>
+
+<div class="card card-orange">
+<div class="card-title">⚠️ Política de versiones de modelos y hardware</div>
+<p>Los stacks sugeridos abajo nombran modelos concretos (Claude Opus 4.7, GPT-5.5, DeepSeek V4 Pro, Qwen3-32B, Llama 4...) y hardware (RTX 5090, Mac M4 Max, H100) <strong>como referencia del estado del frontier al inicio de 2026</strong>. Cuando arranques el proyecto:</p>
+<ul>
+  <li><strong>Usa SIEMPRE la versión más reciente disponible</strong> de cada familia (Anthropic, OpenAI, Google, DeepSeek, Moonshot, Alibaba, Zhipu, Meta, Mistral). Si tu proveedor expone Claude Opus 5 o GPT-6 cuando leas esto, úsalo. La rúbrica funciona igual con modelos posteriores — los thresholds (recall ≥ 80%, coste ≤ $X) se calibraron con el frontier 2026 y el frontier futuro debería igualarlos o superarlos.</li>
+  <li><strong>Pin de versión en producción</strong>: para reproducibilidad, fija la versión exacta del modelo (ej. <code>claude-opus-4-7-20260101</code>) en el repo. Re-evalúa cuando salga una nueva versión.</li>
+  <li><strong>Hardware: usa la generación actual</strong>. Si NVIDIA ha sacado RTX 6090 o Apple ha presentado M5, son los target. Las cifras de tok/s en los rubrics asumen frontier hardware del momento.</li>
+  <li><strong>Embeddings, vector DBs, frameworks</strong>: igualmente. <code>text-embedding-4</code> sustituye a <code>text-embedding-3</code>. Cohere Embed v4 sustituye a v3. Si LangGraph 0.5 ha salido, úsalo en vez de 0.4.</li>
+</ul>
+<p>El curso se versiona y actualiza (ver footer + CHANGELOG); si detectas un modelo o hardware mencionado que ya no es lo más actual cuando lees esto, abre issue.</p>
+</div>
 </div>
 
 <div class="lang-block" data-lang="en">
@@ -87,6 +99,18 @@
 </ol>
 <p><strong>Recommended time:</strong> 8-15 focused hours in 2-3 hour sessions. DON'T try to ship in a single sitting — the learning happens in the test-fail-tune cycle.</p>
 <p><strong>The most valuable artefact:</strong> the final writeup. After shipping, write a 500-800 word README explaining your approach, what you tried that didn't work, what metrics you got and what you'd do differently next time. That's what a serious employer wants to read.</p>
+
+<div class="card card-orange">
+<div class="card-title">⚠️ Model + hardware version policy</div>
+<p>The stacks below name concrete models (Claude Opus 4.7, GPT-5.5, DeepSeek V4 Pro, Qwen3-32B, Llama 4...) and hardware (RTX 5090, Mac M4 Max, H100) <strong>as a snapshot of the frontier at the start of 2026</strong>. When you start your project:</p>
+<ul>
+  <li><strong>ALWAYS use the latest version available</strong> of each family (Anthropic, OpenAI, Google, DeepSeek, Moonshot, Alibaba, Zhipu, Meta, Mistral). If your provider has Claude Opus 5 or GPT-6 by the time you read this, use it. The rubric works fine with later models — its thresholds (recall ≥ 80%, cost ≤ $X) were calibrated against the 2026 frontier and future frontiers should match or beat them.</li>
+  <li><strong>Pin the version in production</strong>: for reproducibility, lock the exact model version (e.g. <code>claude-opus-4-7-20260101</code>) in the repo. Re-evaluate when a new version ships.</li>
+  <li><strong>Hardware: use the current generation</strong>. If NVIDIA has released RTX 6090 or Apple unveiled M5, those are the targets. The tok/s figures in the rubrics assume frontier hardware of the moment.</li>
+  <li><strong>Embeddings, vector DBs, frameworks</strong>: same rule. <code>text-embedding-4</code> supersedes <code>text-embedding-3</code>. Cohere Embed v4 supersedes v3. If LangGraph 0.5 ships, use it over 0.4.</li>
+</ul>
+<p>The course is versioned and updated (see footer + CHANGELOG); if you spot a model or piece of hardware mentioned here that's no longer the freshest by the time you read this, open an issue.</p>
+</div>
 </div>
 </section>
 
@@ -114,14 +138,15 @@
 </div>
 
 <div class="card card-accent">
-<div class="card-title">🛠️ Stack sugerido</div>
+<div class="card-title">🛠️ Stack sugerido <span style="font-size:11px;color:var(--text-muted);">(usa la versión más reciente de cada uno)</span></div>
 <ul>
-  <li><strong>Lenguaje:</strong> Python 3.11+.</li>
-  <li><strong>LLM API:</strong> Anthropic Claude Opus 4.7 (mejor en code review). Fallback secundario: GPT-5 o DeepSeek V4 Pro.</li>
-  <li><strong>Integración GitHub:</strong> <code>octokit</code> via PyGithub o llamadas REST directas. Webhook desde GitHub Actions.</li>
-  <li><strong>Caching:</strong> prompt caching de Anthropic con system prompt + ejemplos few-shot cacheados (5 min TTL es suficiente para una serie de PRs).</li>
-  <li><strong>Tests:</strong> pytest + dataset de 50 PRs con golden answers preparados.</li>
-  <li><strong>Observabilidad:</strong> log estructurado JSON + métricas a Prometheus o Helicone.</li>
+  <li><strong>Lenguaje:</strong> Python 3.12+ (o la última LTS estable).</li>
+  <li><strong>LLM primario:</strong> el frontier de Anthropic disponible — Claude Opus 4.7 al inicio de 2026, Opus 5 o superior cuando esté disponible. Es el mejor en code review hoy.</li>
+  <li><strong>Fallback chain:</strong> el frontier actual de OpenAI (GPT-5.5+ / GPT-6) → frontier DeepSeek (V4 Pro / V5) → DeepSeek R2/R3 (reasoning extendido). Que NO todos sean del mismo proveedor evita single-point-of-failure.</li>
+  <li><strong>Integración GitHub:</strong> <code>octokit</code> via PyGithub o REST directo. Webhook desde GitHub Actions.</li>
+  <li><strong>Caching:</strong> prompt caching nativo del proveedor primario (Anthropic <code>cache_control</code>, OpenAI automático, DeepSeek automático) con system prompt + few-shot cacheados.</li>
+  <li><strong>Tests:</strong> pytest + dataset de 50 PRs con golden answers.</li>
+  <li><strong>Observabilidad:</strong> log estructurado JSON + métricas a Helicone, Langfuse o Prometheus.</li>
 </ul>
 </div>
 
@@ -182,14 +207,15 @@
 </div>
 
 <div class="card card-accent">
-<div class="card-title">🛠️ Suggested stack</div>
+<div class="card-title">🛠️ Suggested stack <span style="font-size:11px;color:var(--text-muted);">(use the latest available version of each)</span></div>
 <ul>
-  <li><strong>Language:</strong> Python 3.11+.</li>
-  <li><strong>LLM API:</strong> Anthropic Claude Opus 4.7 (best at code review). Secondary fallback: GPT-5 or DeepSeek V4 Pro.</li>
-  <li><strong>GitHub integration:</strong> <code>octokit</code> via PyGithub or direct REST calls. Webhook from GitHub Actions.</li>
-  <li><strong>Caching:</strong> Anthropic prompt caching with cached system prompt + few-shot examples (5 min TTL is enough for a PR sequence).</li>
-  <li><strong>Tests:</strong> pytest + dataset of 50 PRs with prepared golden answers.</li>
-  <li><strong>Observability:</strong> structured JSON logging + metrics to Prometheus or Helicone.</li>
+  <li><strong>Language:</strong> Python 3.12+ (or the latest stable LTS).</li>
+  <li><strong>Primary LLM:</strong> the latest Anthropic frontier — Claude Opus 4.7 at the start of 2026, Opus 5 or higher when available. Best at code review today.</li>
+  <li><strong>Fallback chain:</strong> current OpenAI frontier (GPT-5.5+ / GPT-6) → current DeepSeek frontier (V4 Pro / V5) → DeepSeek R2/R3 (extended reasoning). Mixing providers avoids single-point-of-failure.</li>
+  <li><strong>GitHub integration:</strong> <code>octokit</code> via PyGithub or direct REST. Webhook from GitHub Actions.</li>
+  <li><strong>Caching:</strong> primary provider's native prompt caching (Anthropic <code>cache_control</code>, OpenAI automatic, DeepSeek automatic) with system prompt + few-shot cached.</li>
+  <li><strong>Tests:</strong> pytest + 50-PR dataset with golden answers.</li>
+  <li><strong>Observability:</strong> structured JSON logging + metrics to Helicone, Langfuse or Prometheus.</li>
 </ul>
 </div>
 
@@ -257,15 +283,16 @@
 </div>
 
 <div class="card card-accent">
-<div class="card-title">🛠️ Stack sugerido</div>
+<div class="card-title">🛠️ Stack sugerido <span style="font-size:11px;color:var(--text-muted);">(usa la versión más reciente de cada uno)</span></div>
 <ul>
-  <li><strong>Lenguaje:</strong> Python 3.11+ (frontend opcional Next.js / Streamlit).</li>
-  <li><strong>Embeddings:</strong> OpenAI text-embedding-3-small ($0.02/1M tok) o BGE-M3 self-hosted (gratis).</li>
-  <li><strong>Vector DB:</strong> Qdrant self-hosted o Chroma local para empezar; Pinecone Serverless si quieres cero ops.</li>
-  <li><strong>Generation:</strong> Claude Sonnet 4.6 (balance calidad/coste/contexto) o DeepSeek V4 Pro.</li>
-  <li><strong>Chunking:</strong> RecursiveCharacterTextSplitter (LangChain) con chunk_size=512, overlap=50. O semantic chunking para corpus técnico.</li>
-  <li><strong>Frameworks:</strong> LangChain o LlamaIndex para el pipeline; Instructor para outputs estructurados.</li>
-  <li><strong>Eval:</strong> RAGAS (faithfulness, answer relevancy, context precision/recall).</li>
+  <li><strong>Lenguaje:</strong> Python 3.12+ (frontend opcional Next.js 15+ / Streamlit).</li>
+  <li><strong>Embeddings:</strong> el embedding model más reciente de tu proveedor — OpenAI <code>text-embedding-4</code>, Cohere <code>embed-v4</code>, Voyage <code>voyage-3</code>, NVIDIA <code>NV-Embed-v2</code>. Para self-host: BGE-M3 o el modelo de embeddings más actual en HuggingFace. La generación importa: dimensiones más altas (3072 vs 1536) suben calidad de retrieval ~3-5pp.</li>
+  <li><strong>Vector DB:</strong> Qdrant self-hosted o Chroma local para empezar; Pinecone Serverless si quieres cero ops; Milvus 2.5+ si vas a escala masiva. <strong>Usa la versión LTS más reciente</strong> — los cambios de schema en v1→v2 mejoran rendimiento 2-3×.</li>
+  <li><strong>Generation:</strong> el frontier "balance" del momento — Claude Sonnet 4.6 al inicio de 2026, Sonnet 5+ cuando esté. Alternativas: GPT-5 Mini / GPT-5, Gemini 2.5 Flash / Pro, DeepSeek V4 Pro / V5. Que el modelo soporte structured outputs con JSON Schema strict.</li>
+  <li><strong>Re-ranker (recomendado):</strong> Cohere Rerank v4 o BGE-reranker-v2-m3. Sube context precision 10-20pp con coste marginal.</li>
+  <li><strong>Chunking:</strong> RecursiveCharacterTextSplitter (LangChain 0.3+) con chunk_size=512, overlap=50. O semantic chunking para corpus técnico.</li>
+  <li><strong>Frameworks:</strong> LangChain 0.3+ o LlamaIndex 0.13+ para el pipeline; Instructor 1.7+ para outputs estructurados.</li>
+  <li><strong>Eval:</strong> RAGAS 0.2+ (faithfulness, answer relevancy, context precision/recall).</li>
 </ul>
 </div>
 
@@ -326,15 +353,16 @@
 </div>
 
 <div class="card card-accent">
-<div class="card-title">🛠️ Suggested stack</div>
+<div class="card-title">🛠️ Suggested stack <span style="font-size:11px;color:var(--text-muted);">(use the latest available version of each)</span></div>
 <ul>
-  <li><strong>Language:</strong> Python 3.11+ (optional frontend Next.js / Streamlit).</li>
-  <li><strong>Embeddings:</strong> OpenAI text-embedding-3-small ($0.02/1M tok) or BGE-M3 self-hosted (free).</li>
-  <li><strong>Vector DB:</strong> Qdrant self-hosted or Chroma local to start; Pinecone Serverless if zero-ops.</li>
-  <li><strong>Generation:</strong> Claude Sonnet 4.6 (balance quality/cost/context) or DeepSeek V4 Pro.</li>
-  <li><strong>Chunking:</strong> RecursiveCharacterTextSplitter (LangChain) with chunk_size=512, overlap=50. Or semantic chunking for technical corpus.</li>
-  <li><strong>Frameworks:</strong> LangChain or LlamaIndex for the pipeline; Instructor for structured outputs.</li>
-  <li><strong>Eval:</strong> RAGAS (faithfulness, answer relevancy, context precision/recall).</li>
+  <li><strong>Language:</strong> Python 3.12+ (optional frontend Next.js 15+ / Streamlit).</li>
+  <li><strong>Embeddings:</strong> your provider's latest embedding model — OpenAI <code>text-embedding-4</code>, Cohere <code>embed-v4</code>, Voyage <code>voyage-3</code>, NVIDIA <code>NV-Embed-v2</code>. Self-host: BGE-M3 or the most current embedding model on HuggingFace. Generation matters: higher dimensions (3072 vs 1536) lift retrieval quality ~3-5pp.</li>
+  <li><strong>Vector DB:</strong> Qdrant self-hosted or Chroma local to start; Pinecone Serverless if zero-ops; Milvus 2.5+ for massive scale. <strong>Use the latest LTS</strong> — v1→v2 schema changes improve performance 2-3×.</li>
+  <li><strong>Generation:</strong> the moment's "balance" frontier — Claude Sonnet 4.6 at the start of 2026, Sonnet 5+ once shipped. Alternatives: GPT-5 Mini / GPT-5, Gemini 2.5 Flash / Pro, DeepSeek V4 Pro / V5. Make sure the model supports structured outputs with strict JSON Schema.</li>
+  <li><strong>Re-ranker (recommended):</strong> Cohere Rerank v4 or BGE-reranker-v2-m3. Lifts context precision 10-20pp with marginal cost.</li>
+  <li><strong>Chunking:</strong> RecursiveCharacterTextSplitter (LangChain 0.3+) with chunk_size=512, overlap=50. Or semantic chunking for technical corpus.</li>
+  <li><strong>Frameworks:</strong> LangChain 0.3+ or LlamaIndex 0.13+ for the pipeline; Instructor 1.7+ for structured outputs.</li>
+  <li><strong>Eval:</strong> RAGAS 0.2+ (faithfulness, answer relevancy, context precision/recall).</li>
 </ul>
 </div>
 
@@ -402,12 +430,15 @@
 </div>
 
 <div class="card card-accent">
-<div class="card-title">🛠️ Hardware target sugerido</div>
+<div class="card-title">🛠️ Hardware target sugerido <span style="font-size:11px;color:var(--text-muted);">(usa la generación más reciente disponible)</span></div>
 <ul>
-  <li><strong>Mínimo:</strong> RTX 4090 (24 GB VRAM) o Mac M3 Pro 36 GB unified memory → Qwen3-32B Q4_K_M, ~25 tok/s.</li>
-  <li><strong>Recomendado:</strong> RTX 5090 (32 GB) o dual 4090 (48 GB) → Qwen3-32B Q5_K_M o Llama 4 70B Q4, ~20-30 tok/s.</li>
-  <li><strong>Servidor:</strong> 4× A100 80GB → Llama 4 70B FP16 con vLLM, 100+ tok/s en producción.</li>
+  <li><strong>Mínimo:</strong> RTX 4090 (24 GB VRAM, sigue viable como floor) o Mac M4 Pro 36-48 GB unified memory → Qwen3-32B Q4_K_M, ~25 tok/s. Si tienes RTX 5070 Ti / 5080 (16 GB), Qwen3-14B Q5 o Phi-5 Q5.</li>
+  <li><strong>Recomendado 2026:</strong> RTX 5090 (32 GB GDDR7) o Mac M4 Max 64-128 GB unified memory → Qwen3-32B Q5_K_M / Q6 o Llama 4 70B Q4, ~30-50 tok/s. La latencia memoria GDDR7 mejora ~30% vs 4090.</li>
+  <li><strong>Workstation:</strong> dual RTX 5090 (64 GB combinados) o RTX PRO 6000 Blackwell (96 GB) → Qwen3-72B Q5 o Llama 4 70B Q6, ~40-60 tok/s.</li>
+  <li><strong>Servidor:</strong> 4-8× H100 80GB / H200 141GB → Llama 4 70B / 405B FP16 con vLLM, 100-300 tok/s en producción. Si NVIDIA B200/GB200 está disponible, va al doble. Para deploy enterprise serio con MoE grandes (DeepSeek V3 671B-MoE), un nodo HGX H200 8× es el punto de entrada.</li>
+  <li><strong>Edge / on-device:</strong> Mac mini M4 Pro / iPad Pro M5 → Gemma 3 4B o Phi-5 mini Q4 vía MLX, ~30-60 tok/s con &lt;10W consumo.</li>
 </ul>
+<p style="font-size:12px;color:var(--text-dim);margin-top:8px;">Si NVIDIA, Apple o AMD anuncian nueva generación entre la lectura de esto y tu start del proyecto, ese es tu nuevo target. Las relaciones rendimiento/coste se mantienen razonablemente estables — el "tier consumer top" siempre ronda 24-32 GB VRAM, el "tier workstation" 48-96 GB, el "tier datacenter" 80+ GB con NVLink.</p>
 </div>
 
 <div class="card card-orange">
@@ -468,12 +499,15 @@
 </div>
 
 <div class="card card-accent">
-<div class="card-title">🛠️ Suggested target hardware</div>
+<div class="card-title">🛠️ Suggested target hardware <span style="font-size:11px;color:var(--text-muted);">(use the latest generation available)</span></div>
 <ul>
-  <li><strong>Minimum:</strong> RTX 4090 (24 GB VRAM) or Mac M3 Pro 36 GB unified memory → Qwen3-32B Q4_K_M, ~25 tok/s.</li>
-  <li><strong>Recommended:</strong> RTX 5090 (32 GB) or dual 4090 (48 GB) → Qwen3-32B Q5_K_M or Llama 4 70B Q4, ~20-30 tok/s.</li>
-  <li><strong>Server:</strong> 4× A100 80GB → Llama 4 70B FP16 with vLLM, 100+ tok/s in production.</li>
+  <li><strong>Minimum:</strong> RTX 4090 (24 GB VRAM, still a viable floor) or Mac M4 Pro 36-48 GB unified memory → Qwen3-32B Q4_K_M, ~25 tok/s. With RTX 5070 Ti / 5080 (16 GB), Qwen3-14B Q5 or Phi-5 Q5.</li>
+  <li><strong>2026 recommended:</strong> RTX 5090 (32 GB GDDR7) or Mac M4 Max 64-128 GB unified memory → Qwen3-32B Q5_K_M / Q6 or Llama 4 70B Q4, ~30-50 tok/s. GDDR7 memory latency lifts ~30% vs 4090.</li>
+  <li><strong>Workstation:</strong> dual RTX 5090 (64 GB combined) or RTX PRO 6000 Blackwell (96 GB) → Qwen3-72B Q5 or Llama 4 70B Q6, ~40-60 tok/s.</li>
+  <li><strong>Server:</strong> 4-8× H100 80GB / H200 141GB → Llama 4 70B / 405B FP16 with vLLM, 100-300 tok/s in production. If NVIDIA B200/GB200 is available, double those numbers. For serious enterprise with large MoEs (DeepSeek V3 671B-MoE), an 8× H200 HGX node is the entry point.</li>
+  <li><strong>Edge / on-device:</strong> Mac mini M4 Pro / iPad Pro M5 → Gemma 3 4B or Phi-5 mini Q4 via MLX, ~30-60 tok/s at &lt;10W.</li>
 </ul>
+<p style="font-size:12px;color:var(--text-dim);margin-top:8px;">If NVIDIA, Apple or AMD ship a new generation between the time you read this and your project start, that's your new target. Performance/cost ratios stay roughly stable — the "consumer top tier" always lands around 24-32 GB VRAM, "workstation" 48-96 GB, "datacenter" 80+ GB with NVLink.</p>
 </div>
 
 <div class="card card-orange">
@@ -559,16 +593,17 @@
 </div>
 
 <div class="card card-accent">
-<div class="card-title">🛠️ Stack sugerido</div>
+<div class="card-title">🛠️ Stack sugerido <span style="font-size:11px;color:var(--text-muted);">(usa la versión más reciente de cada uno)</span></div>
 <ul>
-  <li><strong>Orquestación:</strong> LangGraph (mejor para grafos con condiciones) o CrewAI (más simple).</li>
-  <li><strong>Researcher:</strong> Claude Haiku 4.5 (barato, ágil) + Tavily Search API o Brave Search API.</li>
-  <li><strong>Analyst:</strong> Claude Sonnet 4.6 (síntesis sólida).</li>
-  <li><strong>Critic:</strong> Claude Opus 4.7 (necesita el modelo más capaz para encontrar fallos sutiles).</li>
-  <li><strong>Writer:</strong> Claude Sonnet 4.6 o GPT-5.5.</li>
-  <li><strong>Supervisor:</strong> reglas determinista en lugar de LLM (más barato, más predecible).</li>
-  <li><strong>Memory:</strong> archivos markdown en disco entre agentes — auditable, reproducible.</li>
+  <li><strong>Orquestación:</strong> LangGraph 0.4+ (mejor para grafos con condiciones) o CrewAI 0.80+ (más simple). Si OpenAI Swarm o el sucesor está estable cuando empieces, considéralo.</li>
+  <li><strong>Researcher:</strong> el tier "fast cheap" actual — Claude Haiku 4.5+ / GPT-5 Mini / Gemini 2.5 Flash / DeepSeek V4 Flash. Cualquiera barato &lt; $1/M tokens. + Tavily Search v2 / Brave Search API / Exa AI.</li>
+  <li><strong>Analyst:</strong> el tier "balance" del momento — Claude Sonnet 4.6+ o GPT-5 (sin "mini") o Gemini 2.5 Pro. Síntesis sólida sin coste de Opus.</li>
+  <li><strong>Critic:</strong> el frontier más capaz disponible — Claude Opus 4.7 / Opus 5+ cuando salga, o GPT-5.5+/GPT-6. El crítico necesita el modelo más capaz porque su tarea es encontrar fallos sutiles que los otros agentes pasaron por alto.</li>
+  <li><strong>Writer:</strong> el tier "balance" — Claude Sonnet 4.6+ o GPT-5.5 o Gemini 2.5 Pro.</li>
+  <li><strong>Supervisor:</strong> reglas deterministas en lugar de LLM (más barato, más predecible). Solo escala a Haiku/Mini si la coordinación necesita razonamiento.</li>
+  <li><strong>Memory:</strong> archivos markdown en disco entre agentes — auditable, reproducible. Alternativa: vector DB local (ChromaDB) si los reportes acumulados crecen.</li>
 </ul>
+<p style="font-size:12px;color:var(--text-dim);margin-top:8px;">El patrón de tier-mixing (Haiku/Mini para búsqueda → Sonnet/medio para síntesis → Opus/top para crítica) sigue siendo válido con cualquier generación posterior. Sustituye los nombres de modelo por los más recientes manteniendo la misma estructura de tiers.</p>
 </div>
 
 <div class="card card-accent">
@@ -636,16 +671,17 @@
 </div>
 
 <div class="card card-accent">
-<div class="card-title">🛠️ Suggested stack</div>
+<div class="card-title">🛠️ Suggested stack <span style="font-size:11px;color:var(--text-muted);">(use the latest available version of each)</span></div>
 <ul>
-  <li><strong>Orchestration:</strong> LangGraph (better for conditional graphs) or CrewAI (simpler).</li>
-  <li><strong>Researcher:</strong> Claude Haiku 4.5 (cheap, fast) + Tavily Search API or Brave Search API.</li>
-  <li><strong>Analyst:</strong> Claude Sonnet 4.6 (solid synthesis).</li>
-  <li><strong>Critic:</strong> Claude Opus 4.7 (needs the most capable model to catch subtle flaws).</li>
-  <li><strong>Writer:</strong> Claude Sonnet 4.6 or GPT-5.5.</li>
-  <li><strong>Supervisor:</strong> deterministic rules instead of an LLM (cheaper, more predictable).</li>
-  <li><strong>Memory:</strong> markdown files on disk between agents — auditable, reproducible.</li>
+  <li><strong>Orchestration:</strong> LangGraph 0.4+ (better for conditional graphs) or CrewAI 0.80+ (simpler). If OpenAI Swarm or its successor is stable by start time, consider it.</li>
+  <li><strong>Researcher:</strong> current "fast cheap" tier — Claude Haiku 4.5+ / GPT-5 Mini / Gemini 2.5 Flash / DeepSeek V4 Flash. Any cheap model &lt; $1/M tokens. + Tavily Search v2 / Brave Search API / Exa AI.</li>
+  <li><strong>Analyst:</strong> the moment's "balance" tier — Claude Sonnet 4.6+ or GPT-5 (no "mini") or Gemini 2.5 Pro. Solid synthesis without Opus cost.</li>
+  <li><strong>Critic:</strong> the most capable frontier available — Claude Opus 4.7 / Opus 5+ when shipped, or GPT-5.5+/GPT-6. The critic needs the most capable model because its job is catching subtle flaws the others missed.</li>
+  <li><strong>Writer:</strong> the "balance" tier — Claude Sonnet 4.6+ or GPT-5.5 or Gemini 2.5 Pro.</li>
+  <li><strong>Supervisor:</strong> deterministic rules instead of an LLM (cheaper, more predictable). Only escalate to Haiku/Mini if coordination needs reasoning.</li>
+  <li><strong>Memory:</strong> markdown files on disk between agents — auditable, reproducible. Alternative: local vector DB (ChromaDB) if accumulated reports grow.</li>
 </ul>
+<p style="font-size:12px;color:var(--text-dim);margin-top:8px;">The tier-mixing pattern (Haiku/Mini for search → Sonnet/mid for synthesis → Opus/top for critique) stays valid across future generations. Swap model names for the latest while keeping the same tier structure.</p>
 </div>
 
 <div class="card card-accent">
