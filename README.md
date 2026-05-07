@@ -1,6 +1,6 @@
 # 🧠 Prompt Engineering Master Course
 
-A comprehensive, interactive web-based course on LLM prompt engineering — optimized for **Claude Opus 4.7** and **DeepSeek V4 Pro**. Built as a single-page application with zero build step, zero dependencies (except a CDN polyfill), and full bilingual support (ES/EN).
+A comprehensive, interactive web-based course on LLM prompt engineering covering the full **2026 model ecosystem** — frontier proprietary (Claude, GPT, Gemini, Grok), Chinese frontier (DeepSeek, Kimi, MiniMax, Qwen, GLM), open-weights (Llama, Qwen, Gemma, Mistral, DeepSeek, Phi), and local deployment (Ollama, llama.cpp, MLX, vLLM). Built as a single-page application with zero build step, zero dependencies (except a CDN polyfill), and full bilingual support (ES/EN).
 
 🔗 **Live demo:** [gs-run.github.io/prompt-engineering-course](https://gs-run.github.io/prompt-engineering-course/)
 
@@ -15,7 +15,7 @@ A comprehensive, interactive web-based course on LLM prompt engineering — opti
 | **3. Advanced** | Thinking/Reasoning, prompt chaining, ReAct, long documents |
 | **4. Agents & Skills** | Agents, SKILL.md, sub-agents, CLAUDE.md/AGENTS.md, project roles, MCP, agent comparison |
 | **5. Claude Opus 4.7** | Effort levels, adaptive thinking, tool use, frontend design, code review |
-| **6. DeepSeek V4 Pro** | Claude vs DeepSeek, OpenCode, AGENTS.md config, tools & limits |
+| **6. Frontier Models 2026** | Full comparison (Claude, GPT, Gemini, DeepSeek, Kimi, MiniMax, Qwen, GLM, Grok, Mistral), OpenCode, AGENTS.md config |
 | **7. Exercises** | 5 interactive exercises with real-time scoring (0-100%) |
 | **8. Diagrams** | 3 animated Canvas diagrams (prompt flow, agent architecture, skills vs sub-agents) |
 | **9. Production** | Structured outputs, prompt caching, evals, prompt injection defense, costs |
@@ -35,7 +35,7 @@ A comprehensive, interactive web-based course on LLM prompt engineering — opti
 ### 🛠️ Interactive Tools
 
 - **Token Counter** — real-time token estimation
-- **Cost Calculator** — compare costs across 6 models with caching
+- **Cost Calculator** — compare costs across 18 frontier and OSS models grouped by region (US / China / EU / Other) with caching
 - **Prompt Diff Comparator** — A/B test two prompts with 5-criteria scoring
 - **Prompt Simulator** — toggle 6 techniques and see how response quality changes
 - **12 Quizzes** — multiple choice with localStorage persistence
@@ -110,9 +110,15 @@ The i18n system is in `js/i18n.js` — add new translation keys there to extend 
 Content compiled from official documentation:
 - [Anthropic Prompt Engineering Guide](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview)
 - [Anthropic Claude Code Docs](https://code.claude.com/docs/en/overview)
-- [DeepSeek API Docs](https://platform.deepseek.com/api-docs/)
-- [OpenCode Docs](https://opencode.ai/docs)
 - [OpenAI Prompt Engineering](https://platform.openai.com/docs/guides/prompt-engineering)
+- [Google Gemini Prompt Best Practices](https://ai.google.dev/gemini-api/docs/prompting-strategies)
+- [DeepSeek API Docs](https://platform.deepseek.com/api-docs/)
+- [Moonshot Kimi Open Platform](https://platform.moonshot.ai/)
+- [Alibaba Qwen / DashScope Docs](https://help.aliyun.com/zh/dashscope/)
+- [Zhipu BigModel / GLM Docs](https://open.bigmodel.cn/dev/api)
+- [Mistral La Plateforme Docs](https://docs.mistral.ai/)
+- [Meta Llama Cookbook](https://github.com/meta-llama/llama-cookbook)
+- [OpenCode Docs](https://opencode.ai/docs)
 - [DAIR.AI Prompt Engineering Guide](https://www.promptingguide.ai/)
 
 ---

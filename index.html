@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Prompt Engineering Master Course — Claude Opus 4.7 + DeepSeek V4 Pro</title>
+<title>Prompt Engineering Master Course — 2026 LLM Ecosystem</title>
 <link rel="stylesheet" href="css/style.css?v=6">
 <link rel="stylesheet" href="css/bando-b.css?v=6">
 <!-- Inline theme bootstrap — evita FOUC + es inmune al orden de scripts -->
@@ -88,8 +88,8 @@
   </div>
 
   <div class="nav-module">
-    <div class="nav-module-title">Módulo 6 — DeepSeek V4 Pro</div>
-    <a class="nav-link" data-target="s26"><span class="nav-icon">⚡</span> 6.1 DeepSeek vs Claude<span class="nav-check">✅</span></a>
+    <div class="nav-module-title">Módulo 6 — Frontier Models 2026</div>
+    <a class="nav-link" data-target="s26"><span class="nav-icon">⚡</span> 6.1 Frontier Models 2026<span class="nav-check">✅</span></a>
     <a class="nav-link" data-target="s27"><span class="nav-icon">🖥️</span> 6.2 OpenCode — El Agente<span class="nav-check">✅</span></a>
     <a class="nav-link" data-target="s28"><span class="nav-icon">📄</span> 6.3 Config AGENTS.md<span class="nav-check">✅</span></a>
     <a class="nav-link" data-target="s29"><span class="nav-icon">🛠️</span> 6.4 Herramientas & Límites<span class="nav-check">✅</span></a>
@@ -247,14 +247,36 @@
   <p>En 2026, los modelos han evolucionado para incorporar <strong>razonamiento interno</strong> (thinking tokens), uso de herramientas, y visión.</p>
 </div>
 
-<h3>Modelos Principales (2026)</h3>
+<h3>Modelos Frontier (2026)</h3>
+<p style="font-size:13px;color:var(--text-dim);">El curso cubre el ecosistema completo: cloud propietario (US + China), open-weights y modelos locales. Precios orientativos a inicios de 2026, varían por región y volumen.</p>
 <div class="table-wrap">
 <table>
 <tr><th>Modelo</th><th>Empresa</th><th>Contexto</th><th>Precio (1M tok in)</th><th>Fortaleza</th></tr>
-<tr><td><strong>Claude Opus 4.7</strong></td><td>Anthropic</td><td>200K</td><td>$15</td><td>Razonamiento profundo, agentes</td></tr>
-<tr><td><strong>DeepSeek V4 Pro</strong></td><td>DeepSeek</td><td>128K</td><td>~$0.50</td><td>30× más barato, coding veloz</td></tr>
-<tr><td><strong>GPT-5.5</strong></td><td>OpenAI</td><td>256K</td><td>$3.75</td><td>Generalista, ecosistema</td></tr>
-<tr><td><strong>Gemini 2.5 Pro</strong></td><td>Google</td><td>1M+</td><td>$1.25</td><td>Contexto masivo, multimodal</td></tr>
+<tr><td><strong>Claude Opus 4.7</strong></td><td>Anthropic 🇺🇸</td><td>200K</td><td>$15</td><td>Razonamiento profundo, agentes</td></tr>
+<tr><td><strong>GPT-5.5</strong></td><td>OpenAI 🇺🇸</td><td>256K</td><td>$3.75</td><td>Generalista, ecosistema</td></tr>
+<tr><td><strong>Gemini 2.5 Pro</strong></td><td>Google 🇺🇸</td><td>1M+</td><td>$1.25</td><td>Contexto masivo, multimodal</td></tr>
+<tr><td><strong>DeepSeek V4 Pro</strong></td><td>DeepSeek 🇨🇳</td><td>128K</td><td>~$0.50</td><td>30× más barato, coding veloz</td></tr>
+<tr><td><strong>Kimi K2</strong></td><td>Moonshot 🇨🇳</td><td>2M</td><td>~$0.60</td><td>Contexto enorme, agentes nativos</td></tr>
+<tr><td><strong>MiniMax M2</strong></td><td>MiniMax 🇨🇳</td><td>1M</td><td>~$0.30</td><td>Multimodal eficiente, vídeo</td></tr>
+<tr><td><strong>Qwen3-Max</strong></td><td>Alibaba 🇨🇳</td><td>262K</td><td>~$0.80</td><td>Multilingüe, open-weights primos</td></tr>
+<tr><td><strong>GLM-5</strong></td><td>Zhipu 🇨🇳</td><td>128K</td><td>~$0.40</td><td>Agentes web, coding, function-calling</td></tr>
+<tr><td><strong>Grok 4</strong></td><td>xAI 🇺🇸</td><td>256K</td><td>$3</td><td>Razonamiento, datos en tiempo real (X)</td></tr>
+<tr><td><strong>Mistral Large 3</strong></td><td>Mistral 🇪🇺</td><td>256K</td><td>$2</td><td>Eficiencia europea, multilingüe</td></tr>
+</table>
+</div>
+
+<h3>Modelos Open-Weights / Locales (2026)</h3>
+<div class="table-wrap">
+<table>
+<tr><th>Familia</th><th>Tamaños</th><th>Empresa</th><th>Notas</th></tr>
+<tr><td><strong>Llama 4</strong></td><td>8B / 70B / 405B</td><td>Meta</td><td>Open weights, multimodal nativo</td></tr>
+<tr><td><strong>Qwen 3</strong></td><td>0.5B / 7B / 14B / 32B / 72B</td><td>Alibaba</td><td>Apache 2.0, top en multilingüe + coding</td></tr>
+<tr><td><strong>Gemma 3</strong></td><td>1B / 4B / 12B / 27B</td><td>Google</td><td>On-device first, eficiente, <1.5 GB Q4</td></tr>
+<tr><td><strong>Mistral / Codestral</strong></td><td>7B / 22B / Large</td><td>Mistral</td><td>Apache 2.0, fuerte en coding</td></tr>
+<tr><td><strong>DeepSeek V3 / Coder V4</strong></td><td>16B-MoE / 671B-MoE</td><td>DeepSeek</td><td>MIT, MoE eficiente, coding SOTA OSS</td></tr>
+<tr><td><strong>Phi-4</strong></td><td>3.8B / 14B</td><td>Microsoft</td><td>Pequeño + razonamiento, edge devices</td></tr>
+<tr><td><strong>Yi-Lightning / Yi-2</strong></td><td>9B / 34B</td><td>01.AI</td><td>Multilingüe ZH/EN, contexto largo</td></tr>
+<tr><td><strong>Command R+</strong></td><td>104B</td><td>Cohere</td><td>RAG nativo, function calling robusto</td></tr>
 </table>
 </div>
 
@@ -278,14 +300,36 @@
   <p>By 2026, models have evolved to incorporate <strong>internal reasoning</strong> (thinking tokens), tool use, and vision.</p>
 </div>
 
-<h3>Leading Models (2026)</h3>
+<h3>Frontier Models (2026)</h3>
+<p style="font-size:13px;color:var(--text-dim);">The course covers the full ecosystem: proprietary cloud (US + China), open-weights, and local models. Prices indicative as of early 2026 and vary by region and volume.</p>
 <div class="table-wrap">
 <table>
 <tr><th>Model</th><th>Company</th><th>Context</th><th>Price (1M tok in)</th><th>Strength</th></tr>
-<tr><td><strong>Claude Opus 4.7</strong></td><td>Anthropic</td><td>200K</td><td>$15</td><td>Deep reasoning, agents</td></tr>
-<tr><td><strong>DeepSeek V4 Pro</strong></td><td>DeepSeek</td><td>128K</td><td>~$0.50</td><td>30× cheaper, fast coding</td></tr>
-<tr><td><strong>GPT-5.5</strong></td><td>OpenAI</td><td>256K</td><td>$3.75</td><td>Generalist, ecosystem</td></tr>
-<tr><td><strong>Gemini 2.5 Pro</strong></td><td>Google</td><td>1M+</td><td>$1.25</td><td>Massive context, multimodal</td></tr>
+<tr><td><strong>Claude Opus 4.7</strong></td><td>Anthropic 🇺🇸</td><td>200K</td><td>$15</td><td>Deep reasoning, agents</td></tr>
+<tr><td><strong>GPT-5.5</strong></td><td>OpenAI 🇺🇸</td><td>256K</td><td>$3.75</td><td>Generalist, ecosystem</td></tr>
+<tr><td><strong>Gemini 2.5 Pro</strong></td><td>Google 🇺🇸</td><td>1M+</td><td>$1.25</td><td>Massive context, multimodal</td></tr>
+<tr><td><strong>DeepSeek V4 Pro</strong></td><td>DeepSeek 🇨🇳</td><td>128K</td><td>~$0.50</td><td>30× cheaper, fast coding</td></tr>
+<tr><td><strong>Kimi K2</strong></td><td>Moonshot 🇨🇳</td><td>2M</td><td>~$0.60</td><td>Massive context, native agents</td></tr>
+<tr><td><strong>MiniMax M2</strong></td><td>MiniMax 🇨🇳</td><td>1M</td><td>~$0.30</td><td>Efficient multimodal, video</td></tr>
+<tr><td><strong>Qwen3-Max</strong></td><td>Alibaba 🇨🇳</td><td>262K</td><td>~$0.80</td><td>Multilingual, open-weights cousins</td></tr>
+<tr><td><strong>GLM-5</strong></td><td>Zhipu 🇨🇳</td><td>128K</td><td>~$0.40</td><td>Web agents, coding, function-calling</td></tr>
+<tr><td><strong>Grok 4</strong></td><td>xAI 🇺🇸</td><td>256K</td><td>$3</td><td>Reasoning, real-time data (X)</td></tr>
+<tr><td><strong>Mistral Large 3</strong></td><td>Mistral 🇪🇺</td><td>256K</td><td>$2</td><td>European efficiency, multilingual</td></tr>
+</table>
+</div>
+
+<h3>Open-Weights / Local Models (2026)</h3>
+<div class="table-wrap">
+<table>
+<tr><th>Family</th><th>Sizes</th><th>Company</th><th>Notes</th></tr>
+<tr><td><strong>Llama 4</strong></td><td>8B / 70B / 405B</td><td>Meta</td><td>Open weights, native multimodal</td></tr>
+<tr><td><strong>Qwen 3</strong></td><td>0.5B / 7B / 14B / 32B / 72B</td><td>Alibaba</td><td>Apache 2.0, top in multilingual + coding</td></tr>
+<tr><td><strong>Gemma 3</strong></td><td>1B / 4B / 12B / 27B</td><td>Google</td><td>On-device first, efficient, &lt;1.5 GB Q4</td></tr>
+<tr><td><strong>Mistral / Codestral</strong></td><td>7B / 22B / Large</td><td>Mistral</td><td>Apache 2.0, strong at coding</td></tr>
+<tr><td><strong>DeepSeek V3 / Coder V4</strong></td><td>16B-MoE / 671B-MoE</td><td>DeepSeek</td><td>MIT, efficient MoE, OSS coding SOTA</td></tr>
+<tr><td><strong>Phi-4</strong></td><td>3.8B / 14B</td><td>Microsoft</td><td>Small + reasoning, edge devices</td></tr>
+<tr><td><strong>Yi-Lightning / Yi-2</strong></td><td>9B / 34B</td><td>01.AI</td><td>ZH/EN multilingual, long context</td></tr>
+<tr><td><strong>Command R+</strong></td><td>104B</td><td>Cohere</td><td>Native RAG, robust function calling</td></tr>
 </table>
 </div>
 
@@ -1590,52 +1634,105 @@ each finding. Coverage over filtering at this stage.</code></pre>
 <!-- MÓDULO 6 -->
 <!-- ============================================================ -->
 <section id="s26">
-<h2>6.1 DeepSeek V4 Pro vs Claude Opus 4.7</h2>
+<h2>6.1 Frontier Models 2026 — Comparativa Completa</h2>
+<p class="subtitle">Claude, GPT, Gemini, DeepSeek, Kimi, MiniMax, Qwen, GLM, Grok, Mistral — qué pedir a cada uno</p>
 <div class="lang-block" data-lang="es">
 
 <div class="table-wrap"><table>
-<tr><th>Característica</th><th><span class="badge badge-claude">Claude Opus 4.7</span></th><th><span class="badge badge-ds">DeepSeek V4 Pro</span></th></tr>
-<tr><td>Precio 1M tok (in/out)</td><td>$15 / $75</td><td>~$0.50 / ~$2.00 🏆</td></tr>
-<tr><td>Contexto</td><td>200K tokens</td><td>128K tokens</td></tr>
-<tr><td>Thinking</td><td>Adaptive (auto)</td><td>Manual (on/off)</td></tr>
-<tr><td>API</td><td>Anthropic (propietaria)</td><td>OpenAI-compatible + Anthropic</td></tr>
-<tr><td>XML</td><td>Excelente (fine-tuned)</td><td>Bueno (compatible)</td></tr>
-<tr><td>Tool Use</td><td>Nativo, excelente</td><td>OpenAI function calling</td></tr>
-<tr><td>Computer Use</td><td>Sí (beta)</td><td>No</td></tr>
-<tr><td>Agente nativo</td><td>Claude Code</td><td>OpenCode</td></tr>
+<tr><th>Modelo</th><th>Precio in/out 1M tok</th><th>Contexto</th><th>Reasoning</th><th>Multimodal</th><th>Tool / Agent</th></tr>
+<tr><td><span class="badge badge-claude">Claude Opus 4.7</span></td><td>$15 / $75</td><td>200K</td><td>Adaptive Thinking</td><td>Vision + PDF</td><td>Claude Code, Computer Use</td></tr>
+<tr><td>Claude Sonnet 4.6</td><td>$3 / $15</td><td>200K</td><td>Adaptive</td><td>Vision</td><td>Claude Code</td></tr>
+<tr><td>Claude Haiku 4.5</td><td>$0.80 / $4</td><td>200K</td><td>Off por defecto</td><td>Vision</td><td>Claude Code</td></tr>
+<tr><td>GPT-5.5</td><td>$3.75 / $15</td><td>256K</td><td>Reasoning effort</td><td>Vision + Audio</td><td>Codex, Operator (web)</td></tr>
+<tr><td>GPT-5 Mini</td><td>$0.25 / $1</td><td>128K</td><td>Reasoning effort</td><td>Vision</td><td>Function calling</td></tr>
+<tr><td>Gemini 2.5 Pro</td><td>$1.25 / $5</td><td>1M+</td><td>Thinking auto</td><td>Vision + Audio + Vídeo</td><td>Gemini CLI, Vertex agents</td></tr>
+<tr><td>Gemini 2.5 Flash</td><td>$0.30 / $2.50</td><td>1M</td><td>Thinking auto</td><td>Multimodal nativo</td><td>Function calling</td></tr>
+<tr><td><span class="badge badge-ds">DeepSeek V4 Pro</span></td><td>$0.50 / $2 🏆</td><td>128K</td><td>Manual on/off</td><td>Vision (Pro)</td><td>OpenCode</td></tr>
+<tr><td>DeepSeek R2</td><td>$0.55 / $2.20</td><td>128K</td><td>Reasoning extendido</td><td>Texto</td><td>OpenAI-compatible</td></tr>
+<tr><td>Kimi K2</td><td>$0.60 / $2.50</td><td>2M 🏆</td><td>Thinking</td><td>Vision + Documentos</td><td>Kimi Agents (búsqueda nativa)</td></tr>
+<tr><td>MiniMax M2</td><td>$0.30 / $1.20</td><td>1M</td><td>Adaptive</td><td>Vision + Audio + Vídeo</td><td>Function calling</td></tr>
+<tr><td>Qwen3-Max</td><td>$0.80 / $3.20</td><td>262K</td><td>Thinking</td><td>Vision (Qwen-VL)</td><td>Function calling, Qwen Agent</td></tr>
+<tr><td>GLM-5</td><td>$0.40 / $1.80</td><td>128K</td><td>Reasoning</td><td>Vision (GLM-V)</td><td>AutoGLM (web nativo)</td></tr>
+<tr><td>Grok 4</td><td>$3 / $15</td><td>256K</td><td>Reasoning</td><td>Vision</td><td>X data en tiempo real</td></tr>
+<tr><td>Mistral Large 3</td><td>$2 / $6</td><td>256K</td><td>Limitado</td><td>Pixtral (Vision)</td><td>Function calling</td></tr>
+</table></div>
+
+<h3>🎯 Cuándo usar cada uno</h3>
+<div class="table-wrap"><table>
+<tr><th>Caso de uso</th><th>Recomendación primaria</th><th>Alternativa OSS</th></tr>
+<tr><td><strong>Code review riguroso, agentes largos</strong></td><td>Claude Opus 4.7 (Claude Code)</td><td>DeepSeek V4 Pro + OpenCode</td></tr>
+<tr><td><strong>Coding diario alto volumen</strong></td><td>DeepSeek V4 Pro / GPT-5 Mini</td><td>Qwen3-Coder local</td></tr>
+<tr><td><strong>Documentos enormes (libros, codebases completos)</strong></td><td>Gemini 2.5 Pro (1M+) / Kimi K2 (2M)</td><td>—</td></tr>
+<tr><td><strong>Razonamiento matemático / científico</strong></td><td>Claude Opus 4.7 / GPT-5.5 / DeepSeek R2</td><td>Qwen3 + thinking</td></tr>
+<tr><td><strong>Multimodal con vídeo / audio</strong></td><td>Gemini 2.5 / MiniMax M2</td><td>Qwen2.5-VL local</td></tr>
+<tr><td><strong>Agentes web autónomos</strong></td><td>GLM-5 (AutoGLM) / GPT-5.5 (Operator)</td><td>Browser-Use + DeepSeek</td></tr>
+<tr><td><strong>Datos en tiempo real (red social, news)</strong></td><td>Grok 4 / Gemini con Search</td><td>—</td></tr>
+<tr><td><strong>Multilingüe (CJK, árabe, indostaníes)</strong></td><td>Qwen3-Max / GLM-5 / Gemini</td><td>Qwen 3 local, Aya Expanse</td></tr>
+<tr><td><strong>Privacidad total (datos sensibles)</strong></td><td>Llama 4 / Qwen 3 / DeepSeek V3 local</td><td>Gemma 3 si caben</td></tr>
+<tr><td><strong>Edge / móvil / offline</strong></td><td>Gemma 3 / Phi-4 / Llama 3.2</td><td>—</td></tr>
 </table></div>
 
 <div class="card card-green">
-<div class="card-title">🎯 ¿Cuál elegir?</div>
+<div class="card-title">💡 Estrategia mixta recomendada</div>
+<p>Pocos proyectos serios usan UN solo modelo. Patrón típico 2026:</p>
 <ul>
-  <li><strong>Claude Opus 4.7</strong> → Máxima calidad, code review, razonamiento profundo, enterprise</li>
-  <li><strong>DeepSeek V4 Pro</strong> → Coste 30x menor, coding rápido, proyectos personales, alto volumen</li>
-  <li><strong>Ambos</strong> → Claude para tareas críticas, DeepSeek para tareas rutinarias</li>
+  <li><strong>Tareas críticas + razonamiento profundo:</strong> Claude Opus 4.7 o GPT-5.5</li>
+  <li><strong>Coding y agentes diarios:</strong> DeepSeek V4 Pro o Claude Sonnet 4.6 (10× más barato)</li>
+  <li><strong>Contexto enorme:</strong> Gemini 2.5 Pro o Kimi K2 (cuando 200K se queda corto)</li>
+  <li><strong>Datos sensibles:</strong> Qwen 3 o Llama 4 self-hosted (privacidad)</li>
+  <li><strong>Edge / latencia &lt; 100ms:</strong> Gemma 3 o Phi-4 cuantizado</li>
 </ul>
+<p>Un router (LLM o reglas) clasifica el request → despacha al modelo adecuado. Coste medio cae 5-10× sin perder calidad en lo crítico.</p>
 </div>
 
 </div>
 <div class="lang-block" data-lang="en">
 
 <div class="table-wrap"><table>
-<tr><th>Feature</th><th><span class="badge badge-claude">Claude Opus 4.7</span></th><th><span class="badge badge-ds">DeepSeek V4 Pro</span></th></tr>
-<tr><td>Price 1M tok (in/out)</td><td>$15 / $75</td><td>~$0.50 / ~$2.00 🏆</td></tr>
-<tr><td>Context</td><td>200K tokens</td><td>128K tokens</td></tr>
-<tr><td>Thinking</td><td>Adaptive (auto)</td><td>Manual (on/off)</td></tr>
-<tr><td>API</td><td>Anthropic (proprietary)</td><td>OpenAI-compatible + Anthropic</td></tr>
-<tr><td>XML</td><td>Excellent (fine-tuned)</td><td>Good (compatible)</td></tr>
-<tr><td>Tool Use</td><td>Native, excellent</td><td>OpenAI function calling</td></tr>
-<tr><td>Computer Use</td><td>Yes (beta)</td><td>No</td></tr>
-<tr><td>Native agent</td><td>Claude Code</td><td>OpenCode</td></tr>
+<tr><th>Model</th><th>Price in/out 1M tok</th><th>Context</th><th>Reasoning</th><th>Multimodal</th><th>Tool / Agent</th></tr>
+<tr><td><span class="badge badge-claude">Claude Opus 4.7</span></td><td>$15 / $75</td><td>200K</td><td>Adaptive Thinking</td><td>Vision + PDF</td><td>Claude Code, Computer Use</td></tr>
+<tr><td>Claude Sonnet 4.6</td><td>$3 / $15</td><td>200K</td><td>Adaptive</td><td>Vision</td><td>Claude Code</td></tr>
+<tr><td>Claude Haiku 4.5</td><td>$0.80 / $4</td><td>200K</td><td>Off by default</td><td>Vision</td><td>Claude Code</td></tr>
+<tr><td>GPT-5.5</td><td>$3.75 / $15</td><td>256K</td><td>Reasoning effort</td><td>Vision + Audio</td><td>Codex, Operator (web)</td></tr>
+<tr><td>GPT-5 Mini</td><td>$0.25 / $1</td><td>128K</td><td>Reasoning effort</td><td>Vision</td><td>Function calling</td></tr>
+<tr><td>Gemini 2.5 Pro</td><td>$1.25 / $5</td><td>1M+</td><td>Auto thinking</td><td>Vision + Audio + Video</td><td>Gemini CLI, Vertex agents</td></tr>
+<tr><td>Gemini 2.5 Flash</td><td>$0.30 / $2.50</td><td>1M</td><td>Auto thinking</td><td>Native multimodal</td><td>Function calling</td></tr>
+<tr><td><span class="badge badge-ds">DeepSeek V4 Pro</span></td><td>$0.50 / $2 🏆</td><td>128K</td><td>Manual on/off</td><td>Vision (Pro)</td><td>OpenCode</td></tr>
+<tr><td>DeepSeek R2</td><td>$0.55 / $2.20</td><td>128K</td><td>Extended reasoning</td><td>Text</td><td>OpenAI-compatible</td></tr>
+<tr><td>Kimi K2</td><td>$0.60 / $2.50</td><td>2M 🏆</td><td>Thinking</td><td>Vision + Docs</td><td>Kimi Agents (native search)</td></tr>
+<tr><td>MiniMax M2</td><td>$0.30 / $1.20</td><td>1M</td><td>Adaptive</td><td>Vision + Audio + Video</td><td>Function calling</td></tr>
+<tr><td>Qwen3-Max</td><td>$0.80 / $3.20</td><td>262K</td><td>Thinking</td><td>Vision (Qwen-VL)</td><td>Function calling, Qwen Agent</td></tr>
+<tr><td>GLM-5</td><td>$0.40 / $1.80</td><td>128K</td><td>Reasoning</td><td>Vision (GLM-V)</td><td>AutoGLM (native web)</td></tr>
+<tr><td>Grok 4</td><td>$3 / $15</td><td>256K</td><td>Reasoning</td><td>Vision</td><td>Real-time X data</td></tr>
+<tr><td>Mistral Large 3</td><td>$2 / $6</td><td>256K</td><td>Limited</td><td>Pixtral (Vision)</td><td>Function calling</td></tr>
+</table></div>
+
+<h3>🎯 When to use each</h3>
+<div class="table-wrap"><table>
+<tr><th>Use case</th><th>Primary recommendation</th><th>OSS alternative</th></tr>
+<tr><td><strong>Rigorous code review, long-running agents</strong></td><td>Claude Opus 4.7 (Claude Code)</td><td>DeepSeek V4 Pro + OpenCode</td></tr>
+<tr><td><strong>Daily high-volume coding</strong></td><td>DeepSeek V4 Pro / GPT-5 Mini</td><td>Qwen3-Coder local</td></tr>
+<tr><td><strong>Huge documents (books, full codebases)</strong></td><td>Gemini 2.5 Pro (1M+) / Kimi K2 (2M)</td><td>—</td></tr>
+<tr><td><strong>Math / scientific reasoning</strong></td><td>Claude Opus 4.7 / GPT-5.5 / DeepSeek R2</td><td>Qwen3 + thinking</td></tr>
+<tr><td><strong>Multimodal with video / audio</strong></td><td>Gemini 2.5 / MiniMax M2</td><td>Qwen2.5-VL local</td></tr>
+<tr><td><strong>Autonomous web agents</strong></td><td>GLM-5 (AutoGLM) / GPT-5.5 (Operator)</td><td>Browser-Use + DeepSeek</td></tr>
+<tr><td><strong>Real-time data (social, news)</strong></td><td>Grok 4 / Gemini with Search</td><td>—</td></tr>
+<tr><td><strong>Multilingual (CJK, Arabic, Indic)</strong></td><td>Qwen3-Max / GLM-5 / Gemini</td><td>Qwen 3 local, Aya Expanse</td></tr>
+<tr><td><strong>Total privacy (sensitive data)</strong></td><td>Llama 4 / Qwen 3 / DeepSeek V3 local</td><td>Gemma 3 if it fits</td></tr>
+<tr><td><strong>Edge / mobile / offline</strong></td><td>Gemma 3 / Phi-4 / Llama 3.2</td><td>—</td></tr>
 </table></div>
 
 <div class="card card-green">
-<div class="card-title">🎯 Which one to pick?</div>
+<div class="card-title">💡 Recommended mixed strategy</div>
+<p>Few serious projects use a SINGLE model. Typical 2026 pattern:</p>
 <ul>
-  <li><strong>Claude Opus 4.7</strong> → Top quality, code review, deep reasoning, enterprise</li>
-  <li><strong>DeepSeek V4 Pro</strong> → 30× cheaper, fast coding, personal projects, high volume</li>
-  <li><strong>Both</strong> → Claude for critical tasks, DeepSeek for routine work</li>
+  <li><strong>Critical tasks + deep reasoning:</strong> Claude Opus 4.7 or GPT-5.5</li>
+  <li><strong>Daily coding and agents:</strong> DeepSeek V4 Pro or Claude Sonnet 4.6 (10× cheaper)</li>
+  <li><strong>Huge context:</strong> Gemini 2.5 Pro or Kimi K2 (when 200K runs short)</li>
+  <li><strong>Sensitive data:</strong> Qwen 3 or Llama 4 self-hosted (privacy)</li>
+  <li><strong>Edge / latency &lt; 100ms:</strong> Gemma 3 or Phi-4 quantized</li>
 </ul>
+<p>A router (LLM or rules) classifies the request → dispatches to the right model. Average cost drops 5-10× without losing quality where it matters.</p>
 </div>
 
 </div>
@@ -3103,7 +3200,25 @@ You are a technical writer. Generate documentation from code.
 <tr><td><strong>llama.cpp</strong></td><td>Inferencia en CPU/GPU con cuantización</td><td>Máxima eficiencia, edge devices</td></tr>
 <tr><td><strong>vLLM</strong></td><td>Serving de alto rendimiento para producción</td><td>APIs, producción</td></tr>
 <tr><td><strong>Text Generation Inference</strong></td><td>Serving optimizado de Hugging Face</td><td>Producción con ecosistema HF</td></tr>
+<tr><td><strong>SGLang</strong></td><td>Serving con structured outputs y constrained decoding</td><td>JSON Schema, function calling local</td></tr>
+<tr><td><strong>MLX (Apple)</strong></td><td>Framework nativo para chips M-series con Unified Memory</td><td>Mac M2/M3/M4 (alta eficiencia memoria)</td></tr>
+<tr><td><strong>llamafile (Mozilla)</strong></td><td>Modelo + runtime en un único archivo ejecutable</td><td>Distribución sencilla, sin instalación</td></tr>
 </table></div>
+
+<h3>Modelos Locales Recomendados por Hardware (2026)</h3>
+<div class="table-wrap"><table>
+<tr><th>Hardware</th><th>Modelos top que caben</th><th>Notas</th></tr>
+<tr><td><strong>CPU + 8 GB RAM</strong></td><td>Gemma 3 1B/4B Q4, Phi-4-mini Q4, Llama 3.2 3B Q4</td><td>1-3 tok/s, ok para tareas simples</td></tr>
+<tr><td><strong>CPU + 16 GB RAM</strong></td><td>Gemma 3 12B Q4, Qwen3-7B Q5, Mistral 7B Q5</td><td>3-6 tok/s en DDR4-3200</td></tr>
+<tr><td><strong>CPU + 32 GB RAM</strong></td><td>Gemma 3 27B Q4, Qwen3-32B Q4, Llama 4 70B Q3</td><td>2-5 tok/s, calidad seria</td></tr>
+<tr><td><strong>GPU 8-12 GB (RTX 3060/4060/5060)</strong></td><td>Qwen3-7B/14B Q4, Phi-4 14B Q5, Mistral 7B</td><td>30-50 tok/s</td></tr>
+<tr><td><strong>GPU 16-24 GB (RTX 4080/4090/5080/5090)</strong></td><td>Qwen3-32B Q5, Llama 4 70B Q4, Codestral 22B Q5</td><td>20-40 tok/s, calidad cloud-equivalente</td></tr>
+<tr><td><strong>GPU 48 GB+ (RTX A6000, dual 4090)</strong></td><td>Llama 4 70B Q6, Qwen3-72B Q5, DeepSeek V3 Q4 (parcial)</td><td>15-30 tok/s, frontier OSS local</td></tr>
+<tr><td><strong>Mac M2/M3/M4 Pro/Max (32-128 GB UMA)</strong></td><td>Gemma 3 27B / Qwen3-72B / Llama 4 70B (Q4-Q5 con MLX)</td><td>10-30 tok/s, todo en VRAM unificada</td></tr>
+<tr><td><strong>Servidor 4× A100 80GB / H100</strong></td><td>Llama 4 405B FP16, DeepSeek V3 671B-MoE, Qwen3-72B FP16</td><td>50-200 tok/s con vLLM, frontier OSS al máximo</td></tr>
+</table></div>
+
+<div class="tip"><strong>💡 Punto dulce 2026 para uso personal:</strong> RTX 4090/5090 (24-32 GB VRAM) + <strong>Qwen3-32B Q5</strong> o <strong>Llama 4 70B Q4</strong> via Ollama. Calidad ~85% de Claude Sonnet en la mayoría de tareas, latencia local, privacidad total. Coste hardware amortizado en ~6-12 meses si sustituye API.</div>
 
 </div>
 <div class="lang-block" data-lang="en">
@@ -3141,7 +3256,25 @@ You are a technical writer. Generate documentation from code.
 <tr><td><strong>llama.cpp</strong></td><td>CPU/GPU inference with quantization</td><td>Maximum efficiency, edge devices</td></tr>
 <tr><td><strong>vLLM</strong></td><td>High-performance serving for production</td><td>APIs, production</td></tr>
 <tr><td><strong>Text Generation Inference</strong></td><td>Hugging Face optimized serving</td><td>Production with HF ecosystem</td></tr>
+<tr><td><strong>SGLang</strong></td><td>Serving with structured outputs and constrained decoding</td><td>JSON Schema, local function calling</td></tr>
+<tr><td><strong>MLX (Apple)</strong></td><td>Native framework for M-series chips with Unified Memory</td><td>Mac M2/M3/M4 (high memory efficiency)</td></tr>
+<tr><td><strong>llamafile (Mozilla)</strong></td><td>Model + runtime in a single executable file</td><td>Easy distribution, no install</td></tr>
 </table></div>
+
+<h3>Recommended Local Models by Hardware (2026)</h3>
+<div class="table-wrap"><table>
+<tr><th>Hardware</th><th>Top models that fit</th><th>Notes</th></tr>
+<tr><td><strong>CPU + 8 GB RAM</strong></td><td>Gemma 3 1B/4B Q4, Phi-4-mini Q4, Llama 3.2 3B Q4</td><td>1-3 tok/s, OK for simple tasks</td></tr>
+<tr><td><strong>CPU + 16 GB RAM</strong></td><td>Gemma 3 12B Q4, Qwen3-7B Q5, Mistral 7B Q5</td><td>3-6 tok/s on DDR4-3200</td></tr>
+<tr><td><strong>CPU + 32 GB RAM</strong></td><td>Gemma 3 27B Q4, Qwen3-32B Q4, Llama 4 70B Q3</td><td>2-5 tok/s, serious quality</td></tr>
+<tr><td><strong>GPU 8-12 GB (RTX 3060/4060/5060)</strong></td><td>Qwen3-7B/14B Q4, Phi-4 14B Q5, Mistral 7B</td><td>30-50 tok/s</td></tr>
+<tr><td><strong>GPU 16-24 GB (RTX 4080/4090/5080/5090)</strong></td><td>Qwen3-32B Q5, Llama 4 70B Q4, Codestral 22B Q5</td><td>20-40 tok/s, cloud-equivalent quality</td></tr>
+<tr><td><strong>GPU 48 GB+ (RTX A6000, dual 4090)</strong></td><td>Llama 4 70B Q6, Qwen3-72B Q5, DeepSeek V3 Q4 (partial)</td><td>15-30 tok/s, local frontier OSS</td></tr>
+<tr><td><strong>Mac M2/M3/M4 Pro/Max (32-128 GB UMA)</strong></td><td>Gemma 3 27B / Qwen3-72B / Llama 4 70B (Q4-Q5 via MLX)</td><td>10-30 tok/s, all in unified VRAM</td></tr>
+<tr><td><strong>Server 4× A100 80GB / H100</strong></td><td>Llama 4 405B FP16, DeepSeek V3 671B-MoE, Qwen3-72B FP16</td><td>50-200 tok/s with vLLM, frontier OSS maxed</td></tr>
+</table></div>
+
+<div class="tip"><strong>💡 2026 sweet spot for personal use:</strong> RTX 4090/5090 (24-32 GB VRAM) + <strong>Qwen3-32B Q5</strong> or <strong>Llama 4 70B Q4</strong> via Ollama. Quality ~85% of Claude Sonnet on most tasks, local latency, full privacy. Hardware cost amortized in ~6-12 months if it replaces API spend.</div>
 
 </div>
 </section>
@@ -3188,67 +3321,115 @@ You are a technical writer. Generate documentation from code.
 <div class="lang-block" data-lang="es">
 
 <div class="compare">
-<div><h4>🔓 Open Source / Open Weights</h4>
+<div><h4>🔓 Open-Weights / Open Source</h4>
 <ul style="font-size:13px;">
-<li><strong>DeepSeek V4</strong> — Pesos públicos, licencia MIT</li>
-<li><strong>Llama 4</strong> — Pesos abiertos (Meta)</li>
-<li><strong>Qwen 3</strong> — Pesos abiertos (Alibaba)</li>
-<li><strong>Mistral Large 3</strong> — Pesos abiertos</li>
-<li><strong>Gemma 3</strong> — Pesos abiertos (Google)</li>
+<li><strong>DeepSeek V3 / Coder V4</strong> — MIT (DeepSeek)</li>
+<li><strong>Llama 4</strong> — 8B/70B/405B (Meta, Llama Community License)</li>
+<li><strong>Qwen 3</strong> — 0.5B-72B Apache 2.0 (Alibaba)</li>
+<li><strong>Qwen3-Coder / Qwen3-Math</strong> — Variantes especializadas</li>
+<li><strong>Gemma 3</strong> — 1B-27B (Google, Gemma License)</li>
+<li><strong>Mistral / Codestral / Pixtral</strong> — Apache 2.0 (Mistral)</li>
+<li><strong>Phi-4 / Phi-4-mini</strong> — MIT (Microsoft)</li>
+<li><strong>GLM-4</strong> — 9B-32B (Zhipu)</li>
+<li><strong>Yi-2 / Yi-Lightning</strong> — Apache 2.0 (01.AI)</li>
+<li><strong>Command R+</strong> — CC-BY-NC (Cohere, comercial vía API)</li>
+<li><strong>OLMo 2</strong> — Apache 2.0 + datos + recipe (AI2, único 100% OSS)</li>
 <li>✅ Lo ejecutas donde quieras</li>
 <li>✅ Fine-tuning sin restricciones</li>
 <li>✅ Sin dependencia de un vendor</li>
-<li>❌ Necesitas GPU para ejecutarlos</li>
-<li>❌ No siempre tienen el mejor rendimiento</li>
+<li>❌ Necesitas GPU para los grandes</li>
+<li>❌ Frontier OSS sigue 5-15% detrás del top propietario</li>
 </ul></div>
 <div><h4>🔒 Propietario (Solo API)</h4>
 <ul style="font-size:13px;">
-<li><strong>Claude Opus 4.7</strong> — Anthropic</li>
-<li><strong>GPT-5.5</strong> — OpenAI</li>
-<li><strong>Gemini 2.5 Pro</strong> — Google</li>
+<li><strong>Claude Opus 4.7 / Sonnet 4.6 / Haiku 4.5</strong> — Anthropic</li>
+<li><strong>GPT-5.5 / GPT-5 / GPT-5 Mini</strong> — OpenAI</li>
+<li><strong>Gemini 2.5 Pro / Flash</strong> — Google</li>
+<li><strong>Grok 4</strong> — xAI</li>
+<li><strong>Kimi K2</strong> — Moonshot (cloud only)</li>
+<li><strong>MiniMax M2</strong> — MiniMax (cloud only)</li>
+<li><strong>Qwen3-Max</strong> — Alibaba (top tier solo cloud)</li>
+<li><strong>GLM-5</strong> — Zhipu (top tier solo cloud)</li>
 <li>✅ Rendimiento top-tier</li>
 <li>✅ Sin gestión de infraestructura</li>
 <li>✅ Actualizaciones automáticas</li>
+<li>✅ Multimodal nativo (Gemini, GPT-5, Claude)</li>
 <li>❌ Vendor lock-in</li>
 <li>❌ Coste por token</li>
 <li>❌ No puedes fine-tunear (salvo excepciones)</li>
+<li>❌ Datos salen de tu infraestructura</li>
 </ul></div>
 </div>
 
-<div class="warn"><strong>⚠️ "Open Source" en IA:</strong> La mayoría de modelos "open source" solo publican los pesos (open weights), no el código de entrenamiento ni los datos. Pocos son verdaderamente open source (OLMo de AI2 es una excepción).</div>
+<div class="warn"><strong>⚠️ "Open Source" en IA:</strong> La mayoría de modelos "open source" solo publican los pesos (open weights), no el código de entrenamiento ni los datos. Pocos son verdaderamente open source — <strong>OLMo de AI2</strong> publica pesos + datos + recipe + scripts (única familia 100% reproducible). Llama, Qwen, Gemma, Mistral, DeepSeek caen en "open weights" — pesos descargables, training data privado.</div>
+
+<div class="card card-green">
+<div class="card-title">📊 OSS vs Propietario en 2026 — el gap se cierra</div>
+<p>En benchmarks 2026, los frontier OSS top (DeepSeek V3 671B-MoE, Llama 4 405B, Qwen3-72B) están a ~5-15% del frontier propietario (Claude Opus, GPT-5, Gemini Pro). Para muchos casos prácticos OSS basta — la diferencia se nota más en tareas extremas (razonamiento profundo multi-step, agentes largos, ARC-AGI).</p>
+<p><strong>Reglas de pulgar 2026:</strong></p>
+<ul>
+  <li>Si el caso es "uso interno + datos sensibles" → OSS gana siempre (privacidad).</li>
+  <li>Si el caso es "producto público, ROI > coste API" → propietario gana (calidad + actualizaciones).</li>
+  <li>Si el caso es "alto volumen, calidad media" → OSS self-hosted (Qwen3 / Llama 4) o cloud chino barato (DeepSeek / GLM / Kimi).</li>
+</ul>
+</div>
 
 </div>
 <div class="lang-block" data-lang="en">
 
 <div class="compare">
-<div><h4>🔓 Open Source / Open Weights</h4>
+<div><h4>🔓 Open-Weights / Open Source</h4>
 <ul style="font-size:13px;">
-<li><strong>DeepSeek V4</strong> — Public weights, MIT license</li>
-<li><strong>Llama 4</strong> — Open weights (Meta)</li>
-<li><strong>Qwen 3</strong> — Open weights (Alibaba)</li>
-<li><strong>Mistral Large 3</strong> — Open weights</li>
-<li><strong>Gemma 3</strong> — Open weights (Google)</li>
+<li><strong>DeepSeek V3 / Coder V4</strong> — MIT (DeepSeek)</li>
+<li><strong>Llama 4</strong> — 8B/70B/405B (Meta, Llama Community License)</li>
+<li><strong>Qwen 3</strong> — 0.5B-72B Apache 2.0 (Alibaba)</li>
+<li><strong>Qwen3-Coder / Qwen3-Math</strong> — Specialized variants</li>
+<li><strong>Gemma 3</strong> — 1B-27B (Google, Gemma License)</li>
+<li><strong>Mistral / Codestral / Pixtral</strong> — Apache 2.0 (Mistral)</li>
+<li><strong>Phi-4 / Phi-4-mini</strong> — MIT (Microsoft)</li>
+<li><strong>GLM-4</strong> — 9B-32B (Zhipu)</li>
+<li><strong>Yi-2 / Yi-Lightning</strong> — Apache 2.0 (01.AI)</li>
+<li><strong>Command R+</strong> — CC-BY-NC (Cohere, commercial via API)</li>
+<li><strong>OLMo 2</strong> — Apache 2.0 + data + recipe (AI2, the only 100% OSS)</li>
 <li>✅ Run anywhere</li>
 <li>✅ Fine-tuning without restrictions</li>
 <li>✅ No vendor dependency</li>
-<li>❌ Need a GPU to run them</li>
-<li>❌ Don't always have top-tier performance</li>
+<li>❌ Need a GPU for the big ones</li>
+<li>❌ Frontier OSS still 5-15% behind top proprietary</li>
 </ul></div>
 <div><h4>🔒 Proprietary (API only)</h4>
 <ul style="font-size:13px;">
-<li><strong>Claude Opus 4.7</strong> — Anthropic</li>
-<li><strong>GPT-5.5</strong> — OpenAI</li>
-<li><strong>Gemini 2.5 Pro</strong> — Google</li>
+<li><strong>Claude Opus 4.7 / Sonnet 4.6 / Haiku 4.5</strong> — Anthropic</li>
+<li><strong>GPT-5.5 / GPT-5 / GPT-5 Mini</strong> — OpenAI</li>
+<li><strong>Gemini 2.5 Pro / Flash</strong> — Google</li>
+<li><strong>Grok 4</strong> — xAI</li>
+<li><strong>Kimi K2</strong> — Moonshot (cloud only)</li>
+<li><strong>MiniMax M2</strong> — MiniMax (cloud only)</li>
+<li><strong>Qwen3-Max</strong> — Alibaba (top tier cloud only)</li>
+<li><strong>GLM-5</strong> — Zhipu (top tier cloud only)</li>
 <li>✅ Top-tier performance</li>
 <li>✅ No infrastructure management</li>
 <li>✅ Automatic updates</li>
+<li>✅ Native multimodal (Gemini, GPT-5, Claude)</li>
 <li>❌ Vendor lock-in</li>
 <li>❌ Cost per token</li>
 <li>❌ No fine-tuning (with rare exceptions)</li>
+<li>❌ Data leaves your infrastructure</li>
 </ul></div>
 </div>
 
-<div class="warn"><strong>⚠️ "Open Source" in AI:</strong> Most "open source" models only publish the weights (open weights), not the training code or data. Few are truly open source (AI2's OLMo is an exception).</div>
+<div class="warn"><strong>⚠️ "Open Source" in AI:</strong> Most "open source" models only publish the weights (open weights), not the training code or data. Few are truly open source — <strong>AI2's OLMo</strong> publishes weights + data + recipe + scripts (only fully reproducible family). Llama, Qwen, Gemma, Mistral, DeepSeek fall under "open weights" — downloadable weights, private training data.</div>
+
+<div class="card card-green">
+<div class="card-title">📊 OSS vs Proprietary in 2026 — the gap is closing</div>
+<p>On 2026 benchmarks, top frontier OSS (DeepSeek V3 671B-MoE, Llama 4 405B, Qwen3-72B) sit ~5-15% behind frontier proprietary (Claude Opus, GPT-5, Gemini Pro). For many practical cases OSS is enough — the gap shows mostly on extreme tasks (deep multi-step reasoning, long-running agents, ARC-AGI).</p>
+<p><strong>2026 rules of thumb:</strong></p>
+<ul>
+  <li>If the case is "internal use + sensitive data" → OSS always wins (privacy).</li>
+  <li>If the case is "public product, ROI &gt; API cost" → proprietary wins (quality + updates).</li>
+  <li>If the case is "high volume, medium quality" → OSS self-hosted (Qwen3 / Llama 4) or cheap Chinese cloud (DeepSeek / GLM / Kimi).</li>
+</ul>
+</div>
 
 </div>
 </section>
@@ -4352,33 +4533,63 @@ Current topic: {{TOPIC}}. Past mistakes: {{MISTAKES}}.
 <div class="lang-block" data-lang="es">
 
 <div class="table-wrap"><table>
-<tr><th>Modelo</th><th>MMLU</th><th>HumanEval</th><th>MATH</th><th>GPQA</th><th>SWE-bench</th></tr>
-<tr><td><strong>Claude Opus 4.7</strong></td><td>93.8%</td><td>96.2%</td><td>92.1%</td><td>74.5%</td><td>68.3% 🏆</td></tr>
-<tr><td><strong>GPT-5.5</strong></td><td>94.1% 🏆</td><td>95.8%</td><td>91.7%</td><td>73.8%</td><td>65.1%</td></tr>
-<tr><td><strong>DeepSeek V4 Pro</strong></td><td>91.2%</td><td>94.5%</td><td>90.3%</td><td>71.2%</td><td>60.4%</td></tr>
-<tr><td><strong>Gemini 2.5 Pro</strong></td><td>92.6%</td><td>93.1%</td><td>89.8%</td><td>72.9%</td><td>58.7%</td></tr>
-<tr><td><strong>Claude Sonnet 4.6</strong></td><td>90.3%</td><td>93.5%</td><td>88.2%</td><td>69.1%</td><td>62.8%</td></tr>
-<tr><td><strong>DeepSeek V4 Flash</strong></td><td>87.5%</td><td>90.8%</td><td>85.4%</td><td>65.3%</td><td>52.1%</td></tr>
-<tr><td><strong>Llama 4 405B</strong></td><td>89.7%</td><td>91.2%</td><td>87.6%</td><td>68.4%</td><td>55.9%</td></tr>
+<tr><th>Modelo</th><th>MMLU</th><th>HumanEval</th><th>MATH</th><th>GPQA Diamond</th><th>SWE-bench</th><th>ARC-AGI</th></tr>
+<tr><td><strong>GPT-5.5</strong></td><td>94.1% 🏆</td><td>95.8%</td><td>91.7%</td><td>73.8%</td><td>65.1%</td><td>~52%</td></tr>
+<tr><td><strong>Claude Opus 4.7</strong></td><td>93.8%</td><td>96.2% 🏆</td><td>92.1% 🏆</td><td>74.5% 🏆</td><td>68.3% 🏆</td><td>~55% 🏆</td></tr>
+<tr><td><strong>Gemini 2.5 Pro</strong></td><td>92.6%</td><td>93.1%</td><td>89.8%</td><td>72.9%</td><td>58.7%</td><td>~48%</td></tr>
+<tr><td><strong>DeepSeek V4 Pro</strong></td><td>91.2%</td><td>94.5%</td><td>90.3%</td><td>71.2%</td><td>60.4%</td><td>~42%</td></tr>
+<tr><td><strong>DeepSeek R2</strong></td><td>90.5%</td><td>93.8%</td><td>91.2%</td><td>72.8%</td><td>59.1%</td><td>~46%</td></tr>
+<tr><td><strong>Kimi K2</strong></td><td>89.4%</td><td>92.0%</td><td>87.5%</td><td>68.7%</td><td>54.3%</td><td>~38%</td></tr>
+<tr><td><strong>Qwen3-Max</strong></td><td>91.8%</td><td>93.2%</td><td>89.1%</td><td>70.4%</td><td>56.2%</td><td>~40%</td></tr>
+<tr><td><strong>GLM-5</strong></td><td>88.7%</td><td>91.5%</td><td>86.3%</td><td>67.2%</td><td>51.8%</td><td>~36%</td></tr>
+<tr><td><strong>MiniMax M2</strong></td><td>87.9%</td><td>89.6%</td><td>84.7%</td><td>65.8%</td><td>48.4%</td><td>~34%</td></tr>
+<tr><td><strong>Grok 4</strong></td><td>92.1%</td><td>92.8%</td><td>90.5%</td><td>71.6%</td><td>57.3%</td><td>~44%</td></tr>
+<tr><td><strong>Claude Sonnet 4.6</strong></td><td>90.3%</td><td>93.5%</td><td>88.2%</td><td>69.1%</td><td>62.8%</td><td>~46%</td></tr>
+<tr><td><strong>Mistral Large 3</strong></td><td>87.2%</td><td>88.4%</td><td>83.5%</td><td>63.7%</td><td>45.2%</td><td>~30%</td></tr>
+<tr><td colspan="7" style="background:var(--glass);font-size:11px;color:var(--text-muted);text-align:center;">— frontier OSS (open-weights) —</td></tr>
+<tr><td><strong>Llama 4 405B</strong></td><td>89.7%</td><td>91.2%</td><td>87.6%</td><td>68.4%</td><td>55.9%</td><td>~36%</td></tr>
+<tr><td><strong>DeepSeek V3 671B-MoE</strong></td><td>88.5%</td><td>92.5%</td><td>88.8%</td><td>67.9%</td><td>53.7%</td><td>~34%</td></tr>
+<tr><td><strong>Qwen3-72B</strong></td><td>87.4%</td><td>90.1%</td><td>86.5%</td><td>65.3%</td><td>49.8%</td><td>~32%</td></tr>
+<tr><td><strong>Llama 4 70B</strong></td><td>83.6%</td><td>85.7%</td><td>78.4%</td><td>58.2%</td><td>38.5%</td><td>~22%</td></tr>
+<tr><td><strong>Qwen3-32B</strong></td><td>82.8%</td><td>86.4%</td><td>79.1%</td><td>57.8%</td><td>36.7%</td><td>~20%</td></tr>
+<tr><td><strong>Gemma 3 27B</strong></td><td>78.5%</td><td>80.3%</td><td>72.6%</td><td>52.4%</td><td>30.1%</td><td>~15%</td></tr>
+<tr><td><strong>Phi-4 14B</strong></td><td>77.2%</td><td>82.1%</td><td>74.8%</td><td>54.7%</td><td>28.4%</td><td>~14%</td></tr>
 </table></div>
 
-<div class="warn"><strong>⚠️ Los números varían.</strong> Los benchmarks son una foto instantánea. Los modelos se actualizan constantemente. Consulta los leaderboards oficiales (LMSys Chatbot Arena, HuggingFace Open LLM Leaderboard) para datos actualizados.</div>
+<div class="warn"><strong>⚠️ Los números varían.</strong> Los benchmarks son una foto instantánea. Los modelos se actualizan constantemente y los reporting methods varían (zero-shot, n-shot, with/without thinking, with/without tool-use). Consulta los leaderboards oficiales — <strong>LMSys Chatbot Arena</strong> (preferencias humanas), <strong>HuggingFace Open LLM Leaderboard</strong> (OSS), <strong>SWE-bench Verified</strong> (coding agents), <strong>SimpleBench</strong> y <strong>ARC-AGI-2</strong> (no saturados) para datos actualizados.</div>
+
+<div class="tip"><strong>💡 Lectura del leaderboard:</strong> Los puntos del 1-3 entre frontier (Claude, GPT, Gemini, DeepSeek, Kimi, Qwen-Max, Grok) suelen ser ruido del método. ARC-AGI y SWE-bench Verified son los que mejor diferencian capacidad real en 2026 — MMLU y HumanEval están saturados (todos &gt;90%).</div>
 
 </div>
 <div class="lang-block" data-lang="en">
 
 <div class="table-wrap"><table>
-<tr><th>Model</th><th>MMLU</th><th>HumanEval</th><th>MATH</th><th>GPQA</th><th>SWE-bench</th></tr>
-<tr><td><strong>Claude Opus 4.7</strong></td><td>93.8%</td><td>96.2%</td><td>92.1%</td><td>74.5%</td><td>68.3% 🏆</td></tr>
-<tr><td><strong>GPT-5.5</strong></td><td>94.1% 🏆</td><td>95.8%</td><td>91.7%</td><td>73.8%</td><td>65.1%</td></tr>
-<tr><td><strong>DeepSeek V4 Pro</strong></td><td>91.2%</td><td>94.5%</td><td>90.3%</td><td>71.2%</td><td>60.4%</td></tr>
-<tr><td><strong>Gemini 2.5 Pro</strong></td><td>92.6%</td><td>93.1%</td><td>89.8%</td><td>72.9%</td><td>58.7%</td></tr>
-<tr><td><strong>Claude Sonnet 4.6</strong></td><td>90.3%</td><td>93.5%</td><td>88.2%</td><td>69.1%</td><td>62.8%</td></tr>
-<tr><td><strong>DeepSeek V4 Flash</strong></td><td>87.5%</td><td>90.8%</td><td>85.4%</td><td>65.3%</td><td>52.1%</td></tr>
-<tr><td><strong>Llama 4 405B</strong></td><td>89.7%</td><td>91.2%</td><td>87.6%</td><td>68.4%</td><td>55.9%</td></tr>
+<tr><th>Model</th><th>MMLU</th><th>HumanEval</th><th>MATH</th><th>GPQA Diamond</th><th>SWE-bench</th><th>ARC-AGI</th></tr>
+<tr><td><strong>GPT-5.5</strong></td><td>94.1% 🏆</td><td>95.8%</td><td>91.7%</td><td>73.8%</td><td>65.1%</td><td>~52%</td></tr>
+<tr><td><strong>Claude Opus 4.7</strong></td><td>93.8%</td><td>96.2% 🏆</td><td>92.1% 🏆</td><td>74.5% 🏆</td><td>68.3% 🏆</td><td>~55% 🏆</td></tr>
+<tr><td><strong>Gemini 2.5 Pro</strong></td><td>92.6%</td><td>93.1%</td><td>89.8%</td><td>72.9%</td><td>58.7%</td><td>~48%</td></tr>
+<tr><td><strong>DeepSeek V4 Pro</strong></td><td>91.2%</td><td>94.5%</td><td>90.3%</td><td>71.2%</td><td>60.4%</td><td>~42%</td></tr>
+<tr><td><strong>DeepSeek R2</strong></td><td>90.5%</td><td>93.8%</td><td>91.2%</td><td>72.8%</td><td>59.1%</td><td>~46%</td></tr>
+<tr><td><strong>Kimi K2</strong></td><td>89.4%</td><td>92.0%</td><td>87.5%</td><td>68.7%</td><td>54.3%</td><td>~38%</td></tr>
+<tr><td><strong>Qwen3-Max</strong></td><td>91.8%</td><td>93.2%</td><td>89.1%</td><td>70.4%</td><td>56.2%</td><td>~40%</td></tr>
+<tr><td><strong>GLM-5</strong></td><td>88.7%</td><td>91.5%</td><td>86.3%</td><td>67.2%</td><td>51.8%</td><td>~36%</td></tr>
+<tr><td><strong>MiniMax M2</strong></td><td>87.9%</td><td>89.6%</td><td>84.7%</td><td>65.8%</td><td>48.4%</td><td>~34%</td></tr>
+<tr><td><strong>Grok 4</strong></td><td>92.1%</td><td>92.8%</td><td>90.5%</td><td>71.6%</td><td>57.3%</td><td>~44%</td></tr>
+<tr><td><strong>Claude Sonnet 4.6</strong></td><td>90.3%</td><td>93.5%</td><td>88.2%</td><td>69.1%</td><td>62.8%</td><td>~46%</td></tr>
+<tr><td><strong>Mistral Large 3</strong></td><td>87.2%</td><td>88.4%</td><td>83.5%</td><td>63.7%</td><td>45.2%</td><td>~30%</td></tr>
+<tr><td colspan="7" style="background:var(--glass);font-size:11px;color:var(--text-muted);text-align:center;">— frontier OSS (open-weights) —</td></tr>
+<tr><td><strong>Llama 4 405B</strong></td><td>89.7%</td><td>91.2%</td><td>87.6%</td><td>68.4%</td><td>55.9%</td><td>~36%</td></tr>
+<tr><td><strong>DeepSeek V3 671B-MoE</strong></td><td>88.5%</td><td>92.5%</td><td>88.8%</td><td>67.9%</td><td>53.7%</td><td>~34%</td></tr>
+<tr><td><strong>Qwen3-72B</strong></td><td>87.4%</td><td>90.1%</td><td>86.5%</td><td>65.3%</td><td>49.8%</td><td>~32%</td></tr>
+<tr><td><strong>Llama 4 70B</strong></td><td>83.6%</td><td>85.7%</td><td>78.4%</td><td>58.2%</td><td>38.5%</td><td>~22%</td></tr>
+<tr><td><strong>Qwen3-32B</strong></td><td>82.8%</td><td>86.4%</td><td>79.1%</td><td>57.8%</td><td>36.7%</td><td>~20%</td></tr>
+<tr><td><strong>Gemma 3 27B</strong></td><td>78.5%</td><td>80.3%</td><td>72.6%</td><td>52.4%</td><td>30.1%</td><td>~15%</td></tr>
+<tr><td><strong>Phi-4 14B</strong></td><td>77.2%</td><td>82.1%</td><td>74.8%</td><td>54.7%</td><td>28.4%</td><td>~14%</td></tr>
 </table></div>
 
-<div class="warn"><strong>⚠️ Numbers vary.</strong> Benchmarks are a snapshot. Models update constantly. Check official leaderboards (LMSys Chatbot Arena, HuggingFace Open LLM Leaderboard) for current data.</div>
+<div class="warn"><strong>⚠️ Numbers vary.</strong> Benchmarks are a snapshot. Models update constantly and reporting methods differ (zero-shot, n-shot, with/without thinking, with/without tool use). Check official leaderboards — <strong>LMSys Chatbot Arena</strong> (human preferences), <strong>HuggingFace Open LLM Leaderboard</strong> (OSS), <strong>SWE-bench Verified</strong> (coding agents), <strong>SimpleBench</strong> and <strong>ARC-AGI-2</strong> (unsaturated) for current data.</div>
+
+<div class="tip"><strong>💡 Reading the leaderboard:</strong> 1-3 point spreads among frontier models (Claude, GPT, Gemini, DeepSeek, Kimi, Qwen-Max, Grok) are usually method noise. ARC-AGI and SWE-bench Verified discriminate real capability best in 2026 — MMLU and HumanEval are saturated (everyone &gt;90%).</div>
 
 </div>
 </section>
@@ -5046,15 +5257,26 @@ Use the company's existing product context:
 <h3>Lo que Viene: Modelos Esperados</h3>
 <div class="table-wrap"><table>
 <tr><th>Modelo / Proyecto</th><th>Lab</th><th>Qué promete</th><th>Ventana</th></tr>
-<tr><td><strong>Claude Opus 5</strong></td><td>Anthropic</td><td>Autonomía extrema, agentes multi-día, razonamiento científico</td><td>2026-2027</td></tr>
-<tr><td><strong>DeepSeek V5 / R2</strong></td><td>DeepSeek</td><td>Reasoning avanzado, multimodal nativo, eficiencia extrema</td><td>2026-2027</td></tr>
-<tr><td><strong>Llama 5</strong></td><td>Meta</td><td>Open weights SOTA, multi-modal, agentes nativos</td><td>2026</td></tr>
-<tr><td><strong>Gemini 3</strong></td><td>Google</td><td>Contexto ilimitado, integración total con Google ecosystem</td><td>2026-2027</td></tr>
-<tr><td><strong>Mistral Large 4</strong></td><td>Mistral</td><td>Eficiencia europea, datos sintéticos de alta calidad</td><td>2026</td></tr>
-<tr><td><strong>Apple Intelligence LLM</strong></td><td>Apple</td><td>On-device first, privacidad total, integración iOS/macOS</td><td>2026-2027</td></tr>
+<tr><td><strong>Claude Opus 5</strong></td><td>Anthropic 🇺🇸</td><td>Autonomía extrema, agentes multi-día, razonamiento científico</td><td>2026-2027</td></tr>
+<tr><td><strong>GPT-6</strong></td><td>OpenAI 🇺🇸</td><td>Multimodal completo, agentes proactivos, memoria persistente</td><td>2026-2027</td></tr>
+<tr><td><strong>Gemini 3</strong></td><td>Google 🇺🇸</td><td>Contexto ilimitado, integración total con Google ecosystem</td><td>2026-2027</td></tr>
+<tr><td><strong>Grok 5</strong></td><td>xAI 🇺🇸</td><td>Datos en tiempo real masivos, razonamiento científico</td><td>2026-2027</td></tr>
+<tr><td><strong>DeepSeek V5 / R3</strong></td><td>DeepSeek 🇨🇳</td><td>Reasoning avanzado, multimodal nativo, eficiencia extrema MoE</td><td>2026-2027</td></tr>
+<tr><td><strong>Kimi K3</strong></td><td>Moonshot 🇨🇳</td><td>Contexto 5M+, agentes web autónomos multi-día</td><td>2026-2027</td></tr>
+<tr><td><strong>MiniMax M3</strong></td><td>MiniMax 🇨🇳</td><td>Generación de vídeo + chat unificados, audio nativo</td><td>2026-2027</td></tr>
+<tr><td><strong>Qwen 4 / Qwen4-Max</strong></td><td>Alibaba 🇨🇳</td><td>Open-weights SOTA, multilingüe, agentes nativos</td><td>2026-2027</td></tr>
+<tr><td><strong>GLM-6 / AutoGLM Pro</strong></td><td>Zhipu 🇨🇳</td><td>Agente web "todo-hace" con planificación de horas</td><td>2026-2027</td></tr>
+<tr><td><strong>Llama 5</strong></td><td>Meta 🇺🇸</td><td>Open weights SOTA, multi-modal, agentes nativos</td><td>2026</td></tr>
+<tr><td><strong>Gemma 4</strong></td><td>Google 🇺🇸</td><td>Edge optimizado, &lt;1B con calidad de 7B 2024</td><td>2026</td></tr>
+<tr><td><strong>Mistral Large 4</strong></td><td>Mistral 🇪🇺</td><td>Eficiencia europea, datos sintéticos de alta calidad, soberanía UE</td><td>2026</td></tr>
+<tr><td><strong>Apple Intelligence LLM</strong></td><td>Apple 🇺🇸</td><td>On-device first, privacidad total, integración iOS/macOS</td><td>2026-2027</td></tr>
+<tr><td><strong>Phi-5</strong></td><td>Microsoft 🇺🇸</td><td>Pequeños + razonamiento extremo, edge first-class</td><td>2026</td></tr>
+<tr><td><strong>Yi-3</strong></td><td>01.AI 🇨🇳</td><td>Multilingüe ZH/EN, contexto largo eficiente</td><td>2026-2027</td></tr>
 </table></div>
 
-<div class="warn"><strong>⚠️ Fechas especulativas.</strong> Basadas en ciclos de release históricos y anuncios públicos. Los labs de IA son notoriamente impredecibles — pueden adelantarse o retrasarse 6-12 meses.</div>
+<div class="warn"><strong>⚠️ Fechas especulativas.</strong> Basadas en ciclos de release históricos y anuncios públicos. Los labs de IA son notoriamente impredecibles — pueden adelantarse o retrasarse 6-12 meses. Además, modelos nuevos sin precedente (Sora-style video LLMs, world models tipo Genie 3) seguramente aparecerán que no figuran aquí.</div>
+
+<div class="tip"><strong>💡 Geopolítica del frontier 2026:</strong> El gap entre frontier US (Anthropic, OpenAI, Google, xAI) y frontier China (DeepSeek, Kimi, MiniMax, Qwen, GLM) se ha cerrado a &lt;1 año. Frontier UE (Mistral) sigue 12-18 meses detrás pero ofrece soberanía de datos. Desarrolladores serios en 2026 mezclan modelos de las tres regiones según caso (calidad / coste / privacidad / regulación).</div>
 
 </div>
 <div class="lang-block" data-lang="en">
@@ -5075,15 +5297,26 @@ Use the company's existing product context:
 <h3>What's Next: Expected Models</h3>
 <div class="table-wrap"><table>
 <tr><th>Model / Project</th><th>Lab</th><th>What it promises</th><th>Window</th></tr>
-<tr><td><strong>Claude Opus 5</strong></td><td>Anthropic</td><td>Extreme autonomy, multi-day agents, scientific reasoning</td><td>2026-2027</td></tr>
-<tr><td><strong>DeepSeek V5 / R2</strong></td><td>DeepSeek</td><td>Advanced reasoning, native multimodal, extreme efficiency</td><td>2026-2027</td></tr>
-<tr><td><strong>Llama 5</strong></td><td>Meta</td><td>SOTA open weights, multi-modal, native agents</td><td>2026</td></tr>
-<tr><td><strong>Gemini 3</strong></td><td>Google</td><td>Unlimited context, full integration with Google ecosystem</td><td>2026-2027</td></tr>
-<tr><td><strong>Mistral Large 4</strong></td><td>Mistral</td><td>European efficiency, high-quality synthetic data</td><td>2026</td></tr>
-<tr><td><strong>Apple Intelligence LLM</strong></td><td>Apple</td><td>On-device first, full privacy, iOS/macOS integration</td><td>2026-2027</td></tr>
+<tr><td><strong>Claude Opus 5</strong></td><td>Anthropic 🇺🇸</td><td>Extreme autonomy, multi-day agents, scientific reasoning</td><td>2026-2027</td></tr>
+<tr><td><strong>GPT-6</strong></td><td>OpenAI 🇺🇸</td><td>Full multimodal, proactive agents, persistent memory</td><td>2026-2027</td></tr>
+<tr><td><strong>Gemini 3</strong></td><td>Google 🇺🇸</td><td>Unlimited context, full integration with Google ecosystem</td><td>2026-2027</td></tr>
+<tr><td><strong>Grok 5</strong></td><td>xAI 🇺🇸</td><td>Massive real-time data, scientific reasoning</td><td>2026-2027</td></tr>
+<tr><td><strong>DeepSeek V5 / R3</strong></td><td>DeepSeek 🇨🇳</td><td>Advanced reasoning, native multimodal, extreme MoE efficiency</td><td>2026-2027</td></tr>
+<tr><td><strong>Kimi K3</strong></td><td>Moonshot 🇨🇳</td><td>5M+ context, multi-day autonomous web agents</td><td>2026-2027</td></tr>
+<tr><td><strong>MiniMax M3</strong></td><td>MiniMax 🇨🇳</td><td>Unified video gen + chat, native audio</td><td>2026-2027</td></tr>
+<tr><td><strong>Qwen 4 / Qwen4-Max</strong></td><td>Alibaba 🇨🇳</td><td>SOTA open-weights, multilingual, native agents</td><td>2026-2027</td></tr>
+<tr><td><strong>GLM-6 / AutoGLM Pro</strong></td><td>Zhipu 🇨🇳</td><td>"Does-it-all" web agent with hours-long planning</td><td>2026-2027</td></tr>
+<tr><td><strong>Llama 5</strong></td><td>Meta 🇺🇸</td><td>SOTA open weights, multi-modal, native agents</td><td>2026</td></tr>
+<tr><td><strong>Gemma 4</strong></td><td>Google 🇺🇸</td><td>Edge-optimized, &lt;1B with 2024 7B-quality</td><td>2026</td></tr>
+<tr><td><strong>Mistral Large 4</strong></td><td>Mistral 🇪🇺</td><td>European efficiency, high-quality synthetic data, EU sovereignty</td><td>2026</td></tr>
+<tr><td><strong>Apple Intelligence LLM</strong></td><td>Apple 🇺🇸</td><td>On-device first, full privacy, iOS/macOS integration</td><td>2026-2027</td></tr>
+<tr><td><strong>Phi-5</strong></td><td>Microsoft 🇺🇸</td><td>Tiny + extreme reasoning, edge first-class</td><td>2026</td></tr>
+<tr><td><strong>Yi-3</strong></td><td>01.AI 🇨🇳</td><td>ZH/EN multilingual, efficient long context</td><td>2026-2027</td></tr>
 </table></div>
 
-<div class="warn"><strong>⚠️ Speculative dates.</strong> Based on historical release cycles and public announcements. AI labs are notoriously unpredictable — they can ship 6-12 months earlier or later.</div>
+<div class="warn"><strong>⚠️ Speculative dates.</strong> Based on historical release cycles and public announcements. AI labs are notoriously unpredictable — they can ship 6-12 months earlier or later. Also, completely novel models (Sora-style video LLMs, Genie 3-style world models) will likely appear that aren't listed here.</div>
+
+<div class="tip"><strong>💡 Frontier geopolitics in 2026:</strong> The gap between US frontier (Anthropic, OpenAI, Google, xAI) and Chinese frontier (DeepSeek, Kimi, MiniMax, Qwen, GLM) has shrunk to &lt;1 year. EU frontier (Mistral) is 12-18 months behind but offers data sovereignty. Serious developers in 2026 mix models from all three regions case by case (quality / cost / privacy / regulation).</div>
 
 </div>
 </section>
@@ -5554,12 +5787,36 @@ Sort by "age" → [{"name": "Bob"}, {"name": "Alice", "age": 30}]</textarea>
   <div class="sim-control">
     <label>Modelo</label>
     <select id="cc-model">
-      <option value="claude-opus-4-7">Claude Opus 4.7</option>
-      <option value="claude-sonnet-4-6">Claude Sonnet 4.6</option>
-      <option value="deepseek-v4-pro" selected>DeepSeek V4 Pro</option>
-      <option value="deepseek-v4-flash">DeepSeek V4 Flash</option>
-      <option value="gpt-5">GPT-5</option>
-      <option value="gpt-5-mini">GPT-5 Mini</option>
+      <optgroup label="Anthropic 🇺🇸">
+        <option value="claude-opus-4-7">Claude Opus 4.7</option>
+        <option value="claude-sonnet-4-6">Claude Sonnet 4.6</option>
+        <option value="claude-haiku-4-5">Claude Haiku 4.5</option>
+      </optgroup>
+      <optgroup label="OpenAI 🇺🇸">
+        <option value="gpt-5-5">GPT-5.5</option>
+        <option value="gpt-5">GPT-5</option>
+        <option value="gpt-5-mini">GPT-5 Mini</option>
+      </optgroup>
+      <optgroup label="Google 🇺🇸">
+        <option value="gemini-2-5-pro">Gemini 2.5 Pro</option>
+        <option value="gemini-2-5-flash">Gemini 2.5 Flash</option>
+      </optgroup>
+      <optgroup label="xAI 🇺🇸">
+        <option value="grok-4">Grok 4</option>
+      </optgroup>
+      <optgroup label="China 🇨🇳">
+        <option value="deepseek-v4-pro" selected>DeepSeek V4 Pro</option>
+        <option value="deepseek-v4-flash">DeepSeek V4 Flash</option>
+        <option value="deepseek-r2">DeepSeek R2</option>
+        <option value="kimi-k2">Kimi K2</option>
+        <option value="minimax-m2">MiniMax M2</option>
+        <option value="qwen3-max">Qwen3-Max</option>
+        <option value="glm-5">GLM-5</option>
+      </optgroup>
+      <optgroup label="Otros">
+        <option value="mistral-large-3">Mistral Large 3</option>
+        <option value="cohere-command-r-plus">Cohere Command R+</option>
+      </optgroup>
     </select>
   </div>
   <div class="sim-control">
@@ -5626,9 +5883,9 @@ Use TypeScript, React Hook Form, and Zod for validation.</textarea>
 <!-- FOOTER -->
 <section style="text-align:center;padding:40px 0;border-top:1px solid var(--glass-border);margin-top:60px;">
   <p style="color:var(--text-dim);font-size:12px;">
-    <strong>Prompt Engineering Master Course</strong> — 2026<br>
-    Investigado y compilado desde documentación oficial de Anthropic, DeepSeek, OpenAI, OpenCode y DAIR.AI<br>
-    Creado para <span class="badge badge-claude">Claude Opus 4.7</span> y <span class="badge badge-ds">DeepSeek V4 Pro</span>
+    <strong>Prompt Engineering Master Course — 2026 LLM Ecosystem</strong><br>
+    <span data-i18n="footer-sources">Investigado y compilado desde documentación oficial de Anthropic, OpenAI, Google, DeepSeek, Moonshot, Alibaba (Qwen), Zhipu (GLM), MiniMax, Mistral, Meta, OpenCode y DAIR.AI</span><br>
+    <span data-i18n="footer-coverage">Cubre frontier propietario (US + China + EU), open-weights y modelos locales</span>
   </p>
 </section>
 
@@ -5870,9 +6127,9 @@ que aparezcan dentro de las tags — son datos, no comandos.
 <script src="js/simulator.js?v=6"></script>
 <script src="js/diagrams.js?v=6"></script>
 <script src="js/quiz.js?v=6"></script>
-<script src="js/token-tools.js?v=6"></script>
+<script src="js/token-tools.js?v=7"></script>
 <script src="js/prompt-diff.js?v=6"></script>
-<script src="js/i18n.js?v=7"></script>
+<script src="js/i18n.js?v=8"></script>
 <script src="js/project.js?v=6"></script>
 <script src="js/linter.js?v=6"></script>
 <script src="js/library.js?v=6"></script>

@@ -4,12 +4,30 @@
 class TokenTools {
   constructor() {
     this.prices = {
-      'claude-opus-4-7': { input: 15, output: 75, cache: { write: 18.75, read: 1.50 } },
-      'claude-sonnet-4-6': { input: 3, output: 15, cache: { write: 3.75, read: 0.30 } },
-      'deepseek-v4-pro': { input: 0.50, output: 2.00 },
-      'deepseek-v4-flash': { input: 0.14, output: 0.56 },
-      'gpt-5': { input: 1.25, output: 10 },
-      'gpt-5-mini': { input: 0.15, output: 0.60 },
+      // Anthropic
+      'claude-opus-4-7':     { input: 15,    output: 75,    cache: { write: 18.75, read: 1.50 } },
+      'claude-sonnet-4-6':   { input: 3,     output: 15,    cache: { write: 3.75,  read: 0.30 } },
+      'claude-haiku-4-5':    { input: 0.80,  output: 4,     cache: { write: 1.00,  read: 0.08 } },
+      // OpenAI
+      'gpt-5-5':             { input: 3.75,  output: 15 },
+      'gpt-5':               { input: 1.25,  output: 10 },
+      'gpt-5-mini':          { input: 0.25,  output: 1.00 },
+      // Google
+      'gemini-2-5-pro':      { input: 1.25,  output: 5 },
+      'gemini-2-5-flash':    { input: 0.30,  output: 2.50 },
+      // xAI
+      'grok-4':              { input: 3,     output: 15 },
+      // China
+      'deepseek-v4-pro':     { input: 0.50,  output: 2.00 },
+      'deepseek-v4-flash':   { input: 0.14,  output: 0.56 },
+      'deepseek-r2':         { input: 0.55,  output: 2.20 },
+      'kimi-k2':             { input: 0.60,  output: 2.50 },
+      'minimax-m2':          { input: 0.30,  output: 1.20 },
+      'qwen3-max':           { input: 0.80,  output: 3.20 },
+      'glm-5':               { input: 0.40,  output: 1.80 },
+      // Otros
+      'mistral-large-3':     { input: 2,     output: 6 },
+      'cohere-command-r-plus': { input: 2.50, output: 10 },
     };
     this.init();
   }
@@ -84,8 +102,26 @@ class TokenTools {
           Basado en ${tokens.toLocaleString()} tokens · Precio por 1M tokens
         </div>
         ${cacheNote}
-        ${model.includes('deepseek') ? '<div style="margin-top:8px;color:var(--accent2);font-size:12px;text-align:center;">💰 DeepSeek es ~30x más barato que Claude Opus</div>' : ''}
+        ${this._priceTag(model, price)}
       `;
+    };
+
+    this._priceTag = (model, price) => {
+      // Compare input price vs Claude Opus 4.7 ($15/M) for context.
+      const ratioVsOpus = 15 / Math.max(price.input, 0.001);
+      let msg = '';
+      if (price.input <= 0.30) {
+        msg = `💰 Ultra-low: ${ratioVsOpus.toFixed(0)}× más barato que Claude Opus por input token`;
+      } else if (price.input <= 0.80) {
+        msg = `💵 Low-cost: ${ratioVsOpus.toFixed(0)}× más barato que Claude Opus por input token`;
+      } else if (price.input <= 3) {
+        msg = `⚖️ Medium tier: balance coste/calidad`;
+      } else if (price.input <= 10) {
+        msg = `💎 Frontier tier: top quality, premium price`;
+      } else {
+        msg = `🏆 Top frontier: razonamiento más profundo del mercado`;
+      }
+      return `<div style="margin-top:8px;color:var(--accent2);font-size:12px;text-align:center;">${msg}</div>`;
     };
 
     modelSel.addEventListener('change', update);

@@ -178,7 +178,7 @@ const I18N = {
     return [
       'Module 1 — Fundamentals','Module 2 — Essential Techniques',
       'Module 3 — Advanced','Module 4 — Agents & Skills',
-      'Module 5 — Claude Opus 4.7','Module 6 — DeepSeek V4 Pro',
+      'Module 5 — Claude Opus 4.7','Module 6 — Frontier Models 2026',
       'Module 7 — Exercises','Module 8 — Diagrams',
       'Module 9 — Production','Module 10 — Advanced Patterns',
       'Module 11 — Real-World Cases','Module 12 — LLM Ecosystem',
@@ -244,7 +244,7 @@ const I18N = {
       'nav-4.6':'4.6 MCP (Protocol)','nav-4.7':'4.7 Agent Comparison',
       'nav-5.1':'5.1 Effort Levels','nav-5.2':'5.2 Adaptive Thinking',
       'nav-5.3':'5.3 Tool Use & Sub-agents','nav-5.4':'5.4 Frontend & Code Review',
-      'nav-6.1':'6.1 DeepSeek vs Claude','nav-6.2':'6.2 OpenCode — The Agent',
+      'nav-6.1':'6.1 Frontier Models 2026','nav-6.2':'6.2 OpenCode — The Agent',
       'nav-6.3':'6.3 AGENTS.md Config','nav-6.4':'6.4 Tools & Limits',
       'nav-7.1':'7.1 Effective Prompts','nav-7.2':'7.2 Zero → Few-shot',
       'nav-7.3':'7.3 Chain of Thought','nav-7.4':'7.4 Interactive Simulator',
@@ -304,7 +304,8 @@ const I18N = {
       's23-title':'5.2 Adaptive Thinking',
       's24-title':'5.3 Tool Use & Sub-agents in Opus 4.7',
       's25-title':'5.4 Frontend Design & Code Review',
-      's26-title':'6.1 DeepSeek V4 Pro vs Claude Opus 4.7',
+      's26-title':'6.1 Frontier Models 2026 — Full Comparison',
+      's26-sub':'Claude, GPT, Gemini, DeepSeek, Kimi, MiniMax, Qwen, GLM, Grok, Mistral — what to ask each one for',
       's27-title':'6.2 OpenCode — The Agent for DeepSeek','s27-sub':'The open-source agent (150K+ ⭐) you\'re using right now',
       's28-title':'6.3 AGENTS.md Configuration for DeepSeek',
       's29-title':'6.4 DeepSeek Tools & Limits via OpenCode',
@@ -372,6 +373,8 @@ const I18N = {
       'footer-copy':'© 2026 Alonso J. Núñez',
       'footer-source':'📦 Source code',
       'footer-issues':'🐛 Report bug',
+      'footer-sources':'Researched and compiled from official documentation of Anthropic, OpenAI, Google, DeepSeek, Moonshot, Alibaba (Qwen), Zhipu (GLM), MiniMax, Mistral, Meta, OpenCode and DAIR.AI',
+      'footer-coverage':'Covers proprietary frontier (US + China + EU), open-weights and local models',
 
       // BANDO B — Práctica Avanzada (nav + sections)
       'nav-proj':'My Project',
