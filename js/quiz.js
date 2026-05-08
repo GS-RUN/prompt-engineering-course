@@ -319,7 +319,7 @@ class QuizEngine {
         correct: 1,
         explanation: '256-512 tokens balancea precisión (chunks pequeños identifican mejor el pasaje exacto) y contexto (chunks grandes preservan más significado). Con overlap 10-20%.' },
       { id: 'kc06-2', section: 'kc-06',
-        question: 'Para un proyecto personal con &lt;10K documentos, el vector DB recomendado es:',
+        question: 'Para un proyecto personal con <10K documentos, el vector DB recomendado es:',
         options: ['Pinecone Enterprise', 'Milvus distributed', 'FAISS sin abstracción', 'ChromaDB local o pgvector'],
         correct: 3,
         explanation: 'ChromaDB embebido o pgvector (si ya tienes Postgres) sobran. Pinecone serverless es un buen segundo paso si pasas a SaaS. Milvus solo tiene sentido a partir de cientos de millones de vectores.' },
@@ -482,7 +482,7 @@ class QuizEngine {
         explanation: 'Multi-day autonomous agents: asignas una tarea el lunes, está lista el miércoles. Self-state management, error correction, progress reporting. Frontier emergente.' },
       { id: 'kc12-2', section: 'kc-12',
         question: 'El gap entre frontier US y frontier China en 2026 se ha:',
-        options: ['Ampliado a 3+ años', 'No existe el frontier chino', 'Cerrado a &lt;1 año', 'Se ha invertido'],
+        options: ['Ampliado a 3+ años', 'No existe el frontier chino', 'Cerrado a <1 año', 'Se ha invertido'],
         correct: 2,
         explanation: 'Cerrado a <1 año. DeepSeek, Kimi, MiniMax, Qwen, GLM están a 5-15% del frontier US en benchmarks 2026. Frontier UE (Mistral) ~12-18 meses detrás pero aporta soberanía de datos.' },
       { id: 'kc12-3', section: 'kc-12',
@@ -590,9 +590,14 @@ class QuizEngine {
     const saved = localStorage.getItem('quiz_' + q.id);
     const answered = saved !== null;
     const correct = saved === 'correct';
+    const esc = (s) => String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
 
     let html = `<h4>🧠 Quick Quiz #${i+1}</h4>`;
-    html += `<div class="quiz-question">${q.question}</div>`;
+    html += `<div class="quiz-question">${esc(q.question)}</div>`;
 
     q.options.forEach((opt, j) => {
       let cls = 'quiz-option';
@@ -600,10 +605,10 @@ class QuizEngine {
         if (j === q.correct) cls += ' correct';
         else if (saved === String(j)) cls += ' wrong';
       }
-      html += `<div class="${cls}" data-quiz="${q.id}" data-idx="${j}">${String.fromCharCode(65+j)}) ${opt}</div>`;
+      html += `<div class="${cls}" data-quiz="${q.id}" data-idx="${j}">${String.fromCharCode(65+j)}) ${esc(opt)}</div>`;
     });
 
-    html += `<div class="quiz-feedback" id="fb-${q.id}">${answered ? (correct ? '✅ ' : '❌ ') + q.explanation : ''}</div>`;
+    html += `<div class="quiz-feedback" id="fb-${q.id}">${answered ? (correct ? '✅ ' : '❌ ') + esc(q.explanation) : ''}</div>`;
     return html;
   }
 

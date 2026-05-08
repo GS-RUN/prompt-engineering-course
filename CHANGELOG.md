@@ -2,6 +2,30 @@
 
 All notable changes to this course are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.2.5] — 2026-05-08
+
+### Fixed — quiz options containing < / > were eaten by the HTML parser
+
+`renderQuiz` was inserting `q.question`, each `opt` and `q.explanation`
+via raw template-literal interpolation. Anything that looked like a
+tag was parsed as HTML. Two examples surfaced:
+
+- `quiz4` option A and explanation: `~/.claude/skills/<name>/SKILL.md`
+  rendered with `<name>` swallowed by the parser, so the user saw
+  `~/.claude/skills//SKILL.md` (a chunk vanished mid-string).
+- `kc04-3` explanation: `<user_input>...</user_input>` was rendered as
+  empty tags instead of the literal XML the explanation refers to.
+
+Two other places had the bug worked around by manually entity-escaping
+in the source data — `kc06-2` question and `kc12-2` option D, both
+containing `&lt;1` / `&lt;10K`. After this fix the source can hold
+plain `<` and the renderer escapes safely.
+
+- Added a small `esc()` helper inside `QuizEngine.renderQuiz` and
+  applied it to question, options and explanation. Click handler
+  already used `textContent` so it was safe.
+- Cleaned the two pre-escaped strings to plain `<`.
+
 ## [2.2.4] — 2026-05-08
 
 ### Fixed — stale quiz selections after the 2.2.3 rebalance
