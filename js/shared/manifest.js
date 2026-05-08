@@ -9,7 +9,7 @@
    ============================================================ */
 
 window.COURSE_MANIFEST = {
-  version: '2.2.1',
+  version: '2.2.3',
   lastUpdated: '2026-05-08',
   blocks: [
     {
@@ -134,7 +134,7 @@ window.COURSE_MANIFEST = {
       icon: '🤖',
       level: 'intermediate',
       timeMinutes: 180,
-      sections: ['s16', 's17', 's18', 's19', 's20', 's21', 's92', 's79', 's80', 's81'],
+      sections: ['s16', 's17', 's18', 's19', 's19b', 's20', 's21', 's92', 's79', 's80', 's81'],
       objectives: {
         es: [
           'Distinguir chat, workflow y agente con criterios precisos.',

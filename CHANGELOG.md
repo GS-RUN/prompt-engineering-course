@@ -2,6 +2,58 @@
 
 All notable changes to this course are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.2.3] — 2026-05-08
+
+### Fixed — answer-position bias in all 92 quizzes
+
+A reader noticed that finishing Block V's knowledge check meant marking
+B five times in a row. An audit confirmed a strong bias across the full
+course: of 92 multiple-choice questions, the correct answer was in
+position B in 62 (67%), C in 25 (27%), and only 2 in A and 3 in D.
+Several blocks had 5/5 or 4/5 of their kc questions answered by B —
+enough that an attentive student stopped reading the options after
+two or three quizzes.
+
+This is a known pathology when questions are drafted with LLM
+assistance: the model tends to write the correct answer second and
+fill distractors around it. Left unchecked, it undermines the academic
+posture the course claims.
+
+- **`js/quiz.js`:** for every question, the correct option's position
+  was reassigned via a deterministic seeded shuffle of round-robin
+  slots (0,1,2,3,0,1,2,3,…). Distribution now exactly **23/23/23/23
+  across the 92 questions**.
+- **No content changed.** Each correct answer is still the same string;
+  only its index inside `options[]` moved, and `correct:` was updated
+  to match. Explanations untouched.
+- **`scripts/rebalance_quiz_answers.js`:** committed the one-shot
+  rewrite tool with the seed used. Running it again is a no-op once
+  the file is balanced; it can be re-run safely if new questions are
+  added later.
+
+## [2.2.2] — 2026-05-08
+
+### Added — Block V: file-based governance as an alternative posture
+
+Reader feedback (sintmk on r/PromptEngineering) flagged that Block V
+covers in-prompt scaffolding (CLAUDE.md / AGENTS.md, skills, system
+messages, tool descriptions) without contrasting it against the
+file-based-governance school of thought, which keeps authority outside
+the prompt in versioned artifacts the agent consults.
+
+- **New section 4.4-bis "Authority-in-files: an alternative posture"**
+  inserted between §4.4 (CLAUDE.md / AGENTS.md) and §4.5 (Roles).
+  Bilingual ES + EN. Introduces DMF (Drift Management Framework) and
+  its four invariants (authority-in-files, halt on conflict, halt on
+  missing authority, label inference). Closes with the practical
+  heuristic: scaffold the prompt when your unit is one call; scaffold
+  the project when the agent inhabits it; production usually does both.
+- **References:** added `m-public/dmf` to Block V references in
+  `js/shared/references.js`, labelled "file-based agent governance" so
+  the lookup is readable without clicking through.
+- **Manifest:** registered new section id `s19b` in the Block V
+  sections array.
+
 ## [2.2.1] — 2026-05-08
 
 ### Changed — capstone stacks now use latest available models + hardware

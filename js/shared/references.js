@@ -44,7 +44,8 @@
       { label: 'OpenCode docs', url: 'https://opencode.ai/docs/' },
       { label: 'CrewAI documentation', url: 'https://docs.crewai.com/' },
       { label: 'AutoGen (Microsoft) documentation', url: 'https://microsoft.github.io/autogen/' },
-      { label: 'LangGraph documentation', url: 'https://langchain-ai.github.io/langgraph/' }
+      { label: 'LangGraph documentation', url: 'https://langchain-ai.github.io/langgraph/' },
+      { label: 'Sintmk — DMF: Drift Management Framework (file-based agent governance)', url: 'https://github.com/m-public/dmf' }
     ],
     '06': [
       { label: 'LangChain — RAG conceptual guide', url: 'https://python.langchain.com/docs/concepts/rag/' },

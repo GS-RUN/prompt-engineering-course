@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bloque V — Agentes y Multi-agente — Prompt Engineering Master Course</title>
-<link rel="stylesheet" href="../css/style.css?v=8">
-<link rel="stylesheet" href="../css/bando-b.css?v=8">
+<link rel="stylesheet" href="../css/style.css?v=10">
+<link rel="stylesheet" href="../css/bando-b.css?v=10">
 <script>
   (function() {
     try {
@@ -265,6 +265,55 @@ across items or reading multiple files.</code></pre>
 
 <div class="tip"><strong>💡 Key difference:</strong> CLAUDE.md is read by Claude Code directly. AGENTS.md is read by OpenCode and its content is injected into the system prompt. Same concept, different implementation.</div>
 
+</div>
+</section>
+
+<section id="s19b">
+<h2>
+  <span class="lang-block" data-lang="es">4.4-bis Authority-in-files: una postura alternativa</span>
+  <span class="lang-block" data-lang="en">4.4-bis Authority-in-files: an alternative posture</span>
+</h2>
+
+<div class="lang-block" data-lang="es">
+<div class="card card-accent">
+<div class="card-title">🪶 Una corriente alternativa</div>
+<p>Los patrones anteriores ponen las reglas del agente <strong>dentro del prompt</strong> — system message, skills, descripciones de herramientas, CLAUDE.md/AGENTS.md inyectados en contexto. Existe una corriente que sostiene que ése no es el sitio adecuado para la autoridad.</p>
+
+<p><strong>DMF (Drift Management Framework)</strong> saca la autoridad fuera del prompt y la coloca en archivos versionados que el agente consulta. Cuatro invariantes gobiernan cada sesión:</p>
+<ol>
+  <li><strong>Authority-in-files:</strong> la autoridad existe sólo en archivos. La conversación no es vinculante.</li>
+  <li><strong>Halt on conflict:</strong> cuando dos artefactos autoritativos se contradicen, paras y resuelves antes de seguir.</li>
+  <li><strong>Halt on missing authority:</strong> cuando falta un artefacto requerido, paras y lo creas o recuperas antes de seguir.</li>
+  <li><strong>Label inference:</strong> toda inferencia se etiqueta. Una inferencia sin marcar nunca es autoridad.</li>
+</ol>
+
+<p>La apuesta: para agentes de larga vida — un agente de coding viviendo en un repo durante semanas — el <em>drift</em> es peor enemigo que la optimización por llamada, y los archivos son lo único que sobrevive entre sesiones.</p>
+</div>
+
+<div class="tip"><strong>💡 ¿Cuándo importa?</strong> A grandes rasgos: si tu unidad de trabajo es <strong>una llamada</strong>, andamia el prompt. Si es <strong>un proyecto que el agente habita</strong>, andamia el proyecto. La mayoría de despliegues acaban haciendo ambas cosas: governance en archivos por arriba, scaffolding en prompt por abajo.</div>
+
+<p style="font-size:13px;color:var(--text-muted)">📎 Repo: <a href="https://github.com/m-public/dmf" target="_blank" rel="noopener">m-public/dmf</a> · Spec: <a href="https://github.com/m-public/dmf/blob/main/template/AGENTS.md" target="_blank" rel="noopener">template/AGENTS.md</a></p>
+</div>
+
+<div class="lang-block" data-lang="en">
+<div class="card card-accent">
+<div class="card-title">🪶 An alternative school</div>
+<p>The patterns above put the agent's rules <strong>inside the prompt</strong> — system message, skills, tool descriptions, CLAUDE.md/AGENTS.md injected into context. There's a school of thought that says that's the wrong place for authority.</p>
+
+<p><strong>DMF (Drift Management Framework)</strong> moves authority out of the prompt into versioned project files the agent reads. Four invariants govern every session:</p>
+<ol>
+  <li><strong>Authority-in-files:</strong> authority exists only in files. Conversation is not binding.</li>
+  <li><strong>Halt on conflict:</strong> when authoritative artifacts disagree, stop and resolve before proceeding.</li>
+  <li><strong>Halt on missing authority:</strong> when a required artifact is absent, stop and create or recover before proceeding.</li>
+  <li><strong>Label inference:</strong> every inference must be labeled. An unlabeled inference is never authority.</li>
+</ol>
+
+<p>The bet: for long-lived agents — a coding agent living in a repo for weeks — <em>drift</em> is a bigger enemy than per-call optimization, and files are the only thing that survives across sessions.</p>
+</div>
+
+<div class="tip"><strong>💡 When does it matter?</strong> Roughly: if your unit of work is <strong>one call</strong>, scaffold the prompt. If it's <strong>a project the agent inhabits</strong>, scaffold the project. Most production setups end up doing both: file-based governance on top, in-prompt scaffolding underneath.</div>
+
+<p style="font-size:13px;color:var(--text-muted)">📎 Repo: <a href="https://github.com/m-public/dmf" target="_blank" rel="noopener">m-public/dmf</a> · Spec: <a href="https://github.com/m-public/dmf/blob/main/template/AGENTS.md" target="_blank" rel="noopener">template/AGENTS.md</a></p>
 </div>
 </section>
 
@@ -677,12 +726,12 @@ result = crew.kickoff()</code></pre>
 </main>
 </div>
 
-<script src="../js/shared/manifest.js?v=8"></script>
-<script src="../js/shared/sidebar.js?v=8"></script>
-<script src="../js/shared/references.js?v=8"></script>
-<script src="../js/i18n.js?v=8"></script>
-<script src="../js/quiz.js?v=9"></script>
-<script src="../js/glossary.js?v=8"></script>
-<script src="../js/app.js?v=8"></script>
+<script src="../js/shared/manifest.js?v=10"></script>
+<script src="../js/shared/sidebar.js?v=10"></script>
+<script src="../js/shared/references.js?v=10"></script>
+<script src="../js/i18n.js?v=10"></script>
+<script src="../js/quiz.js?v=10"></script>
+<script src="../js/glossary.js?v=10"></script>
+<script src="../js/app.js?v=10"></script>
 </body>
 </html>
