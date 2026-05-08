@@ -1,6 +1,12 @@
 /* ============================================================
    Quiz System — Multiple choice with scoring & progress
    ============================================================ */
+
+// Bumped whenever option order or correct-index changes across the
+// course. Old quiz_* localStorage entries are wiped on mismatch so
+// stale answers don't paint nonsensical positions.
+const QUIZ_SCHEMA_VERSION = '2';
+
 class QuizEngine {
   constructor() {
     this.currentQuiz = 0;
@@ -553,6 +559,7 @@ class QuizEngine {
   }
 
   init() {
+    this.migrateState();
     // Inject quiz panels into sections
     this.quizzes.forEach((q, i) => {
       const section = document.getElementById(q.section);
@@ -563,6 +570,20 @@ class QuizEngine {
       panel.innerHTML = this.renderQuiz(q, i);
       section.appendChild(panel);
     });
+  }
+
+  migrateState() {
+    try {
+      const stored = localStorage.getItem('quiz_schema_version');
+      if (stored === QUIZ_SCHEMA_VERSION) return;
+      const stale = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k && k.startsWith('quiz_') && k !== 'quiz_schema_version') stale.push(k);
+      }
+      stale.forEach(k => localStorage.removeItem(k));
+      localStorage.setItem('quiz_schema_version', QUIZ_SCHEMA_VERSION);
+    } catch (e) { /* localStorage unavailable, no-op */ }
   }
 
   renderQuiz(q, i) {

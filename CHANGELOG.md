@@ -2,6 +2,27 @@
 
 All notable changes to this course are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.2.4] — 2026-05-08
+
+### Fixed — stale quiz selections after the 2.2.3 rebalance
+
+The 2.2.3 rebalance shifted correct-answer indices, but
+`localStorage` quiz state was indexed by position (`'correct'`,
+`'0'`, `'1'`, …). Returning users saw the OLD selections painted
+on the NEW layout — the green checkmark moved to the new correct
+position, but a previously clicked wrong index could now sit on a
+totally unrelated option, producing nonsensical "wrong" highlights.
+
+- `QUIZ_SCHEMA_VERSION = '2'` constant added at the top of
+  `js/quiz.js`. On load, `QuizEngine.migrateState()` compares the
+  stored schema version against the current one and, on mismatch,
+  wipes every `quiz_*` key (excluding the version key itself) and
+  records the new schema version. Wrapped in try/catch so private-
+  mode browsers without `localStorage` no-op cleanly.
+- Cost: returning users lose past quiz answers once. Acceptable —
+  the alternative is incoherent UI for everyone who used the course
+  before today.
+
 ## [2.2.3] — 2026-05-08
 
 ### Fixed — answer-position bias in all 92 quizzes
