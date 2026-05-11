@@ -871,6 +871,32 @@ html[data-i18n-lang="en"] section[data-untranslated="1"] .lang-block[data-lang="
   color: var(--text); white-space: pre-wrap; word-wrap: break-word;
   font-family: monospace;
 }
+
+/* Prompt Linter output */
+.lint-empty { color: var(--text-muted); font-style: italic; padding: 14px; }
+.lint-summary {
+  font-size: 14px; color: var(--text);
+  padding: 10px 14px;
+  background: rgba(245,165,36,0.07);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px; margin-bottom: 10px;
+}
+.lint-score { font-weight: 700; font-size: 18px; margin-right: 8px; }
+.lint-list { list-style: none; padding: 0; margin: 0; }
+.lint-list li {
+  display: grid; grid-template-columns: 22px 130px 1fr; gap: 8px;
+  padding: 8px 10px; border-bottom: 1px dashed var(--glass-border);
+  font-size: 13px; align-items: start;
+}
+.lint-list li:last-child { border-bottom: none; }
+.lint-icon { font-weight: 700; text-align: center; }
+.lint-label { font-weight: 600; color: var(--text); }
+.lint-msg { color: var(--text-dim); }
+.lint-ok   .lint-icon { color: #6EBE7F; }
+.lint-warn .lint-icon { color: #F5A524; }
+.lint-info .lint-icon { color: #9A958E; }
+.lint-warn .lint-label { color: #F5A524; }
+.lint-ok   .lint-label { color: #6EBE7F; }
 .glossary-diagram svg.agent-diagram           { max-width: 600px; min-width: 420px; }
 .glossary-diagram svg.transformer-diagram     { max-width: 480px; min-width: 360px; }
 

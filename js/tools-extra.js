@@ -70,6 +70,113 @@
     });
   }
 
+  // ----- Prompt Linter -------------------------------------------------
+  function lintPrompt(prompt) {
+    const checks = [];
+    const len = prompt.length;
+    const trimmed = prompt.trim();
+
+    // 1. Length
+    if (len < 60) {
+      checks.push({ status: 'warn', label: 'Longitud', msg: 'Muy corto (' + len + ' chars). Considera más contexto sobre rol, formato y restricciones.' });
+    } else if (len > 4000) {
+      checks.push({ status: 'warn', label: 'Longitud', msg: 'Muy largo (' + len + ' chars). Si lo reutilizas, activa prompt caching para abaratar 80-90%.' });
+    } else {
+      checks.push({ status: 'ok', label: 'Longitud', msg: len + ' chars — tamaño razonable.' });
+    }
+
+    // 2. Role / persona
+    const hasRole = /\byou are\b|\bact as\b|\byour role\b|\beres un\b|\bactúa como\b|\btu rol\b/i.test(prompt);
+    checks.push({
+      status: hasRole ? 'ok' : 'warn',
+      label: 'Rol',
+      msg: hasRole ? 'Define un rol/persona.' : 'No detecto un rol. Empieza con "You are a..." / "Eres un..." — cambia tono y profundidad.'
+    });
+
+    // 3. Examples / few-shot
+    const hasExamples = /<example|<examples|example:|ejemplo:|<input>|<output>|input:.*output:/is.test(prompt);
+    checks.push({
+      status: hasExamples ? 'ok' : 'warn',
+      label: 'Ejemplos',
+      msg: hasExamples ? 'Incluye ejemplos few-shot.' : 'Sin ejemplos. Para formato específico o dominio, 3-5 ejemplos rinden mucho mejor.'
+    });
+
+    // 4. Output format
+    const hasFormat = /\bjson\b|\bmarkdown\b|\bformat:|\boutput (in|as|format)\b|\brespuesta en\b|\bformato\b|\bxml\b|\byaml\b/i.test(prompt);
+    checks.push({
+      status: hasFormat ? 'ok' : 'warn',
+      label: 'Formato',
+      msg: hasFormat ? 'Especifica el formato de salida.' : 'No detecto formato. Indica si quieres JSON, lista, markdown… o el modelo improvisa.'
+    });
+
+    // 5. XML structure
+    const hasXml = /<[a-z][a-z_-]*>/i.test(prompt);
+    checks.push({
+      status: hasXml ? 'ok' : 'info',
+      label: 'Estructura XML',
+      msg: hasXml ? 'Usa tags XML — Claude las parsea bien.' : 'Sin tags XML. Para Claude, considera <instructions>, <context>, <examples>.'
+    });
+
+    // 6. CoT / reasoning trigger
+    const hasCoT = /step by step|paso a paso|let'?s think|piensa|reasoning|razonamiento/i.test(prompt);
+    checks.push({
+      status: hasCoT ? 'ok' : 'info',
+      label: 'CoT',
+      msg: hasCoT ? 'Activa Chain of Thought.' : 'Sin CoT explícito. Útil en modelos sin thinking nativo para tareas multi-paso.'
+    });
+
+    // 7. User data smell — looks like the user pasted raw user data into the system prompt
+    const userSmell = /\$\{[^}]+\}|\{\{[^}]+\}\}|the user (said|wrote|asked)|el usuario (dijo|escribió|preguntó)/i.test(prompt);
+    if (userSmell) {
+      checks.push({
+        status: 'warn',
+        label: 'Datos del usuario',
+        msg: 'El prompt parece contener datos del usuario o placeholders sin sanear. Mantén user-data en mensajes user, no en system.'
+      });
+    } else {
+      checks.push({ status: 'ok', label: 'Datos del usuario', msg: 'No detecto user-data mezclado.' });
+    }
+
+    return checks;
+  }
+
+  function initLinter() {
+    const btn = $('lint-run');
+    if (!btn) return;
+    btn.addEventListener('click', () => {
+      const prompt = ($('lint-input').value || '').trim();
+      const out = $('lint-output');
+      if (!out) return;
+      if (!prompt) {
+        out.innerHTML = '<div class="lint-empty">Pega un system prompt arriba para lintarlo.</div>';
+        out.classList.add('show');
+        return;
+      }
+      const checks = lintPrompt(prompt);
+      const okCount = checks.filter(c => c.status === 'ok').length;
+      const warnCount = checks.filter(c => c.status === 'warn').length;
+      const infoCount = checks.filter(c => c.status === 'info').length;
+      const score = Math.round((okCount / checks.length) * 100);
+      const scoreColor = score >= 80 ? '#6EBE7F' : score >= 50 ? '#F5A524' : '#E05F5F';
+      const html = [];
+      html.push('<div class="lint-summary"><span class="lint-score" style="color:' + scoreColor + ';">' + score + '%</span> · ' +
+                '<span style="color:#6EBE7F;">✓ ' + okCount + '</span>  ' +
+                '<span style="color:#F5A524;">⚠ ' + warnCount + '</span>  ' +
+                '<span style="color:#9A958E;">ℹ ' + infoCount + '</span></div>');
+      html.push('<ul class="lint-list">');
+      for (const c of checks) {
+        const icon = c.status === 'ok' ? '✓' : c.status === 'warn' ? '⚠' : 'ℹ';
+        const colorClass = 'lint-' + c.status;
+        html.push('<li class="' + colorClass + '"><span class="lint-icon">' + icon + '</span>' +
+                  '<span class="lint-label">' + esc(c.label) + '</span>' +
+                  '<span class="lint-msg">' + esc(c.msg) + '</span></li>');
+      }
+      html.push('</ul>');
+      out.innerHTML = html.join('');
+      out.classList.add('show');
+    });
+  }
+
   // ----- Shared copy-to-clipboard handler ------------------------------
   function initCopyHandler() {
     document.addEventListener('click', (e) => {
@@ -93,6 +200,7 @@
   document.addEventListener('DOMContentLoaded', () => {
     initSkillBuilder();
     initAgentComposer();
+    initLinter();
     initCopyHandler();
   });
 })();

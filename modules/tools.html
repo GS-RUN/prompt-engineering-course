@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Herramientas — Prompt Engineering Master Course</title>
-<link rel="stylesheet" href="../css/style.css?v=29">
-<link rel="stylesheet" href="../css/bando-b.css?v=29">
+<link rel="stylesheet" href="../css/style.css?v=30">
+<link rel="stylesheet" href="../css/bando-b.css?v=30">
 <script>
   (function() {
     try {
@@ -48,6 +48,7 @@
         <li>Comparar dos prompts con scoring multi-criterio.</li>
         <li>Componer un archivo SKILL.md válido para Claude Code / OpenCode.</li>
         <li>Estructurar un prompt de agente con rol, objetivo, restricciones y criterios de éxito.</li>
+        <li>Lintar un system prompt contra buenas prácticas (rol, ejemplos, formato, longitud, XML, CoT).</li>
       </ul>
     </div>
     <div class="lang-block" data-lang="en">
@@ -57,6 +58,7 @@
         <li>Compare two prompts with multi-criteria scoring.</li>
         <li>Compose a valid SKILL.md file for Claude Code / OpenCode.</li>
         <li>Structure an agent prompt with role, goal, constraints and success criteria.</li>
+        <li>Lint a system prompt against best practices (role, examples, format, length, XML, CoT).</li>
       </ul>
     </div>
   </div>
@@ -198,7 +200,7 @@ Use TypeScript, React Hook Form, and Zod for validation.</textarea>
 
 
 
-<section id="s55">
+<section id="s93">
 <h2>🪄 SKILL.md Builder</h2>
 <p class="subtitle">Compón un archivo SKILL.md (Claude Code / OpenCode) en segundos</p>
 <div class="lang-block" data-lang="es">
@@ -257,7 +259,7 @@ Use TypeScript, React Hook Form, and Zod for validation.</textarea>
 </section>
 
 
-<section id="s56">
+<section id="s94">
 <h2>🎯 Agent Goal Composer</h2>
 <p class="subtitle">Estructura un prompt de agente con rol, objetivo, restricciones y criterios de éxito</p>
 <div class="lang-block" data-lang="es">
@@ -304,6 +306,43 @@ Cada item con archivo:línea y reproducción breve.</textarea>
 </section>
 
 
+<section id="s95">
+<h2>🩺 Prompt Linter</h2>
+<p class="subtitle">Pega un system prompt y recibe checks sobre rol, ejemplos, formato y longitud</p>
+<div class="lang-block" data-lang="es">
+
+<div class="exercise-panel">
+<div class="sim-control">
+  <label>system prompt</label>
+  <textarea class="ex-editor" id="lint-input" style="min-height:180px;font-family:monospace;">You are a senior code reviewer for a TypeScript codebase.
+
+Your job is to review pull requests and identify:
+- Bugs and logic errors
+- Security issues (auth, input validation, secrets)
+- Architectural concerns (coupling, naming, layering)
+
+When you find something, cite the file and line number, and give a 1-line reproduction.
+
+Output format: Markdown with H2 sections per category (Bugs, Security, Architecture, Minor). If a category has no findings, write "none" — do not invent.</textarea>
+</div>
+<button class="btn btn-primary" id="lint-run" style="margin-top:12px;">🩺 Lintar prompt</button>
+<div class="ex-output" id="lint-output" style="margin-top:16px;"></div>
+<div style="margin-top:12px;font-size:11px;color:var(--text-muted);">
+  Checks rápidos basados en la guía de prompt engineering de Anthropic: rol, ejemplos, formato, longitud, XML, CoT.
+</div>
+</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="exercise-panel">
+<div class="tip">The Prompt Linter runs in <strong>Spanish mode</strong>. Switch to ES to lint a system prompt against Anthropic-style best practices.</div>
+</div>
+
+</div>
+</section>
+
+
 <section class="module-references">
   <h3 data-i18n="ref-header">Referencias</h3>
   <p style="font-size:13px;color:var(--text-dim);" data-i18n="ref-intro">
@@ -315,16 +354,16 @@ Cada item con archivo:línea y reproducción breve.</textarea>
 </main>
 </div>
 
-<script src="../js/shared/manifest.js?v=29"></script>
-<script src="../js/shared/sidebar.js?v=29"></script>
-<script src="../js/shared/references.js?v=29"></script>
-<script src="../js/i18n.js?v=29"></script>
-<script src="../js/token-tools.js?v=29"></script>
-<script src="../js/prompt-diff.js?v=29"></script>
-<script src="../js/tools-extra.js?v=29"></script>
-<script src="../js/quiz.js?v=29"></script>
-<script src="../js/shared/glossary-data.js?v=29"></script>
-<script src="../js/glossary.js?v=29"></script>
-<script src="../js/app.js?v=29"></script>
+<script src="../js/shared/manifest.js?v=30"></script>
+<script src="../js/shared/sidebar.js?v=30"></script>
+<script src="../js/shared/references.js?v=30"></script>
+<script src="../js/i18n.js?v=30"></script>
+<script src="../js/token-tools.js?v=30"></script>
+<script src="../js/prompt-diff.js?v=30"></script>
+<script src="../js/tools-extra.js?v=30"></script>
+<script src="../js/quiz.js?v=30"></script>
+<script src="../js/shared/glossary-data.js?v=30"></script>
+<script src="../js/glossary.js?v=30"></script>
+<script src="../js/app.js?v=30"></script>
 </body>
 </html>

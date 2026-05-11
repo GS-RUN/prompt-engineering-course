@@ -9,7 +9,7 @@
    ============================================================ */
 
 window.COURSE_MANIFEST = {
-  version: '2.3.15',
+  version: '2.3.16',
   lastUpdated: '2026-05-08',
   blocks: [
     {
@@ -352,7 +352,7 @@ window.COURSE_MANIFEST = {
       icon: '🧰',
       level: 'all',
       timeMinutes: 30,
-      sections: ['s52', 's53', 's54'],
+      sections: ['s52', 's53', 's54', 's93', 's94', 's95'],
       objectives: {
         es: [
           'Estimar tokens y coste por modelo.',

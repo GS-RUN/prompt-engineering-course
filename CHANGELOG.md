@@ -2,6 +2,52 @@
 
 All notable changes to this course are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.3.16] — 2026-05-08
+
+### Fixed — quiz13 was being injected into the Tools page
+
+`quiz13` ("¿Qué herramienta permite ejecutar LLMs localmente con un
+solo comando?", answer: Ollama) is bound to `section: 's56'` from the
+legacy split. My v2.3.15 Agent Goal Composer was also using `s56` as
+its section id, so `QuizEngine.init()` found that id on tools.html
+and rendered the Ollama quiz inside the Agent Goal Composer card.
+
+Renamed the new tool sections to IDs outside any quiz reference
+range:
+
+- SKILL.md Builder: `s55` → `s93`
+- Agent Goal Composer: `s56` → `s94`
+- (new) Prompt Linter: `s95`
+
+Manifest `tools` block's `sections` array updated to include all
+three new section IDs.
+
+### Added — 🩺 Prompt Linter (third new tool)
+
+A quick health-check for system prompts. Paste your prompt, get a
+score + 7 checks based on Anthropic's prompt-engineering guide:
+
+1. **Length** — too short (< 60 chars) or too long (> 4000 chars,
+   suggests prompt caching).
+2. **Rol** — detects `you are` / `act as` / `eres un` patterns.
+3. **Ejemplos** — looks for `<example>` / `Q:` / `input:` few-shot
+   markers.
+4. **Formato** — checks for explicit output-format mention (JSON,
+   markdown, XML, YAML).
+5. **Estructura XML** — flags absence of `<tag>` patterns
+   (recommended for Claude).
+6. **CoT** — checks for `step by step` / `let's think` triggers.
+7. **Datos del usuario** — warns if the prompt contains placeholders
+   (`${...}`, `{{...}}`) or "the user said" patterns that suggest
+   user data leaked into the system prompt.
+
+Renders as a coloured checklist (green ✓ / amber ⚠ / grey ℹ) with a
+percent score at the top.
+
+Pre-filled example: a "senior code reviewer" prompt.
+
+Cache buster bumped v=29 → v=30.
+
 ## [2.3.15] — 2026-05-08
 
 ### Added — two new tools: SKILL.md Builder + Agent Goal Composer
