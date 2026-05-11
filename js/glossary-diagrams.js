@@ -1927,13 +1927,16 @@
   // ====================================================================
   // 38. Alignment — base → SFT → RLHF/DPO → CAI → instruct
   // ====================================================================
-  function alignmentDiagram(lang) {
+  function alignmentDiagram(lang, focus) {
     const L = lang === 'en' ? {
       base: 'Base model',      baseSub: 'predicts next token',
       sft: 'SFT',               sftSub: '(input, ideal output)',
       rlhf: 'RLHF / DPO',       rlhfSub: 'human preferences',
       cai: 'Constitutional AI', caiSub: 'principle-guided',
       instruct: 'Instruct',     instructSub: 'follows instructions',
+      viewSft: 'Viewing: SFT',
+      viewRlhf: 'Viewing: RLHF / DPO',
+      viewCai: 'Viewing: Constitutional AI',
       foot: 'Alignment turns a base model into a helpful, safe assistant. Each step adds preference signal.'
     } : {
       base: 'Base model',      baseSub: 'predice token siguiente',
@@ -1941,30 +1944,39 @@
       rlhf: 'RLHF / DPO',       rlhfSub: 'preferencias humanas',
       cai: 'Constitutional AI', caiSub: 'guiado por principios',
       instruct: 'Instruct',     instructSub: 'sigue instrucciones',
+      viewSft: 'Viendo: SFT',
+      viewRlhf: 'Viendo: RLHF / DPO',
+      viewCai: 'Viendo: Constitutional AI',
       foot: 'Alignment convierte un base model en un asistente útil y seguro. Cada paso añade señal de preferencia.'
     };
     let out = '';
+    // Optional focus title
+    if (focus) {
+      const title = focus === 'sft' ? L.viewSft : focus === 'rlhf' ? L.viewRlhf : L.viewCai;
+      out += '<text x="360" y="28" text-anchor="middle" class="rd-label" fill="' + P.accent + '">' + title + '</text>';
+    }
     const items = [
       { label: L.base,     sub: L.baseSub,     variant: 'dim',   w: 110 },
-      { label: L.sft,      sub: L.sftSub,      variant: null,    w: 120 },
-      { label: L.rlhf,     sub: L.rlhfSub,     variant: null,    w: 120 },
-      { label: L.cai,      sub: L.caiSub,      variant: null,    w: 130 },
+      { label: L.sft,      sub: L.sftSub,      variant: null,    w: 120, glow: focus === 'sft' },
+      { label: L.rlhf,     sub: L.rlhfSub,     variant: null,    w: 120, glow: focus === 'rlhf' },
+      { label: L.cai,      sub: L.caiSub,      variant: null,    w: 130, glow: focus === 'cai' },
       { label: L.instruct, sub: L.instructSub, variant: 'final', w: 130 }
     ];
     const gap = 10;
     const total = items.reduce((s, it) => s + it.w, 0) + (items.length - 1) * gap;
     let x = (720 - total) / 2;
-    const y = 90, h = 80;
+    const y = focus ? 100 : 90;
+    const h = 80;
     for (let i = 0; i < items.length; i++) {
       const it = items[i];
-      out += box(x, y, it.w, h, it.label, it.sub, { variant: it.variant });
+      out += box(x, y, it.w, h, it.label, it.sub, { variant: it.variant, glow: it.glow });
       if (i < items.length - 1) {
         out += line(x + it.w + 1, y + h / 2, x + it.w + gap - 1, y + h / 2, 'align');
       }
       x += it.w + gap;
     }
-    out += foot(L.foot, 360, 220);
-    return svgOpen('alignment-diagram', '0 0 720 240') + defs('align') + out + '</svg>';
+    out += foot(L.foot, 360, focus ? 230 : 220);
+    return svgOpen('alignment-diagram', '0 0 720 ' + (focus ? 250 : 240)) + defs('align') + out + '</svg>';
   }
 
   // ====================================================================
@@ -2036,6 +2048,201 @@
     return svgOpen('cai-diagram', '0 0 720 290') + defs('cai') + out + '</svg>';
   }
 
+  // ====================================================================
+  // 41. Benchmark — grouped bars: 3 models × 4 benchmarks
+  // ====================================================================
+  function benchmarkDiagram(lang) {
+    const L = lang === 'en' ? {
+      foot: 'Frontier models saturate classic benchmarks. SWE-bench (real GitHub issues) is the current ceiling.'
+    } : {
+      foot: 'Los frontier saturan los benchmarks clásicos. SWE-bench (issues reales de GitHub) es el techo actual.'
+    };
+    let out = '';
+    const benchmarks = [
+      { name: 'MMLU',      scores: [92, 93, 90] },
+      { name: 'HumanEval', scores: [97, 96, 94] },
+      { name: 'GPQA',      scores: [88, 85, 82] },
+      { name: 'SWE-bench', scores: [68, 63, 58] }
+    ];
+    const models = [
+      { name: 'Claude Opus 4.7', color: P.accent },
+      { name: 'GPT-5.5',         color: '#C77D0B' },
+      { name: 'DeepSeek V4',     color: P.green }
+    ];
+    // Legend (top)
+    const legendX = 90, legendY = 50;
+    for (let i = 0; i < models.length; i++) {
+      const lx = legendX + i * 200;
+      out += '<rect x="' + lx + '" y="' + (legendY - 9) + '" width="12" height="12" fill="' + models[i].color + '"/>';
+      out += '<text x="' + (lx + 18) + '" y="' + legendY + '" class="rd-sub" fill="' + models[i].color + '">' + models[i].name + '</text>';
+    }
+    // Chart axes
+    const baseY = 240, maxH = 150;
+    const groupW = 130, groupGap = 30;
+    const totalW = benchmarks.length * groupW + (benchmarks.length - 1) * groupGap;
+    const chartStartX = (720 - totalW) / 2;
+    out += '<line x1="' + (chartStartX - 14) + '" y1="' + baseY + '" x2="' + (chartStartX + totalW + 14) + '" y2="' + baseY + '" stroke="' + P.dim + '" stroke-width="1"/>';
+    // Grid lines for 80%, 90%, 100%
+    for (const v of [80, 90]) {
+      const gy = baseY - (v / 100) * maxH;
+      out += '<line x1="' + (chartStartX - 14) + '" y1="' + gy + '" x2="' + (chartStartX + totalW + 14) + '" y2="' + gy + '" stroke="' + P.dim + '" stroke-width="0.5" stroke-dasharray="3 3" opacity="0.4"/>';
+      out += '<text x="' + (chartStartX - 20) + '" y="' + (gy + 4) + '" text-anchor="end" class="rd-sub" fill="' + P.textDim + '">' + v + '%</text>';
+    }
+    // Bars per group
+    for (let g = 0; g < benchmarks.length; g++) {
+      const b = benchmarks[g];
+      const groupX = chartStartX + g * (groupW + groupGap);
+      const barW = (groupW - 2 * 4) / 3;   // 3 bars, 2 internal 4-px gaps
+      for (let m = 0; m < 3; m++) {
+        const x = groupX + m * (barW + 4);
+        const h = (b.scores[m] / 100) * maxH;
+        out += '<rect x="' + x + '" y="' + (baseY - h) + '" width="' + barW + '" height="' + h + '" rx="3" fill="' + models[m].color + '" opacity="0.85"/>';
+        out += '<text x="' + (x + barW/2) + '" y="' + (baseY - h - 6) + '" text-anchor="middle" class="rd-sub" fill="' + models[m].color + '" font-size="10">' + b.scores[m] + '</text>';
+      }
+      // Benchmark name below
+      out += '<text x="' + (groupX + groupW/2) + '" y="' + (baseY + 22) + '" text-anchor="middle" class="rd-label">' + b.name + '</text>';
+    }
+    out += foot(L.foot, 360, 290);
+    return svgOpen('benchmark-diagram', '0 0 720 310') + defs('bm') + out + '</svg>';
+  }
+
+  // ====================================================================
+  // 42. Drift — agent behavior diverges from written rules over time
+  // ====================================================================
+  function driftDiagram(lang) {
+    const L = lang === 'en' ? {
+      rules: 'Rules (in files)', behavior: 'Agent behavior',
+      session: 'session',
+      foot: 'Without governance, agent decisions slowly diverge from the written rules over sessions and model updates.'
+    } : {
+      rules: 'Reglas (en archivos)', behavior: 'Comportamiento del agente',
+      session: 'sesión',
+      foot: 'Sin governance, las decisiones del agente derivan de las reglas escritas a lo largo de sesiones y actualizaciones del modelo.'
+    };
+    let out = '';
+    // Legend at top
+    out += '<line x1="80" y1="44" x2="110" y2="44" stroke="' + P.green + '" stroke-width="2.5"/>';
+    out += '<text x="116" y="48" class="rd-sub" fill="' + P.green + '">' + L.rules + '</text>';
+    out += '<line x1="320" y1="44" x2="350" y2="44" stroke="' + P.red + '" stroke-width="2.5"/>';
+    out += '<text x="356" y="48" class="rd-sub" fill="' + P.red + '">' + L.behavior + '</text>';
+
+    const x0 = 70, x1 = 660, baseY = 220;
+    // Time axis with session ticks
+    out += '<line x1="' + x0 + '" y1="' + baseY + '" x2="' + (x1 + 6) + '" y2="' + baseY + '" stroke="' + P.dim + '" stroke-width="1" marker-end="url(#drift-arr-dim)"/>';
+    const ptsX = [];
+    for (let i = 0; i < 5; i++) {
+      const x = x0 + (i / 4) * (x1 - x0);
+      ptsX.push(x);
+      out += '<line x1="' + x + '" y1="' + baseY + '" x2="' + x + '" y2="' + (baseY + 5) + '" stroke="' + P.dim + '" stroke-width="1"/>';
+      out += '<text x="' + x + '" y="' + (baseY + 20) + '" text-anchor="middle" class="rd-sub">' + L.session + ' ' + (i + 1) + '</text>';
+    }
+    // Rules line (green, flat at y=150)
+    out += '<line x1="' + x0 + '" y1="150" x2="' + x1 + '" y2="150" stroke="' + P.green + '" stroke-width="2.5"/>';
+    // Behavior line: starts at rules, drifts up (lower y = further from rules)
+    const ptsY = [150, 142, 128, 102, 75];
+    let path = 'M ' + ptsX[0] + ' ' + ptsY[0];
+    for (let i = 1; i < 5; i++) {
+      // smooth curve
+      const cx1 = (ptsX[i - 1] + ptsX[i]) / 2;
+      path += ' C ' + cx1 + ' ' + ptsY[i - 1] + ', ' + cx1 + ' ' + ptsY[i] + ', ' + ptsX[i] + ' ' + ptsY[i];
+    }
+    out += '<path d="' + path + '" fill="none" stroke="' + P.red + '" stroke-width="2.5"/>';
+    // Dots at each session
+    for (let i = 0; i < 5; i++) {
+      const color = i === 0 ? P.green : i < 2 ? P.accent : P.red;
+      out += '<circle cx="' + ptsX[i] + '" cy="' + ptsY[i] + '" r="5" fill="' + color + '"/>';
+    }
+    // Drift gap indicator at the end
+    out += '<line x1="' + (ptsX[4] + 14) + '" y1="' + ptsY[4] + '" x2="' + (ptsX[4] + 14) + '" y2="150" stroke="' + P.red + '" stroke-width="1" stroke-dasharray="3 3"/>';
+    out += '<text x="' + (ptsX[4] + 22) + '" y="115" class="rd-sub" fill="' + P.red + '">drift</text>';
+
+    out += foot(L.foot, 360, 268);
+    return svgOpen('drift-diagram', '0 0 720 285') + defs('drift') + out + '</svg>';
+  }
+
+  // ====================================================================
+  // 43. ASL — Anthropic Safety Levels, escalating deployment requirements
+  // ====================================================================
+  function aslDiagram(lang) {
+    const L = lang === 'en' ? {
+      title: 'Anthropic Safety Levels — requirements escalate ↓',
+      levels: [
+        { name: 'ASL-1',  desc: 'low risk · no special requirements',     color: P.green,   w: 80 },
+        { name: 'ASL-2',  desc: 'moderate · basic safeguards',           color: P.accent,  w: 150 },
+        { name: 'ASL-3',  desc: 'high risk · restricted deployment',     color: '#C77D0B', w: 230 },
+        { name: 'ASL-4+', desc: 'catastrophic · no public deployment',   color: P.red,     w: 310 }
+      ],
+      foot: 'Each level raises the safety bar before a model can ship. ASL-4+ may forbid public release.'
+    } : {
+      title: 'Anthropic Safety Levels — los requisitos suben ↓',
+      levels: [
+        { name: 'ASL-1',  desc: 'riesgo bajo · sin requisitos especiales',  color: P.green,   w: 80 },
+        { name: 'ASL-2',  desc: 'riesgo moderado · mitigaciones básicas',  color: P.accent,  w: 150 },
+        { name: 'ASL-3',  desc: 'riesgo alto · despliegue restringido',    color: '#C77D0B', w: 230 },
+        { name: 'ASL-4+', desc: 'riesgo catastrófico · sin despliegue público', color: P.red, w: 310 }
+      ],
+      foot: 'Cada nivel sube el listón de seguridad antes de poder desplegar. ASL-4+ puede prohibir release público.'
+    };
+    let out = '';
+    out += '<text x="360" y="36" text-anchor="middle" class="rd-sub" fill="' + P.textDim + '">' + L.title + '</text>';
+
+    const startY = 60, rowH = 44, gap = 12;
+    for (let i = 0; i < L.levels.length; i++) {
+      const lvl = L.levels[i];
+      const y = startY + i * (rowH + gap);
+      // Level name (left)
+      out += '<text x="50" y="' + (y + rowH / 2 + 5) + '" class="rd-label" fill="' + lvl.color + '">' + lvl.name + '</text>';
+      // Bar
+      out += '<rect x="110" y="' + y + '" width="' + lvl.w + '" height="' + rowH + '" rx="6" fill="' + lvl.color + '" opacity="0.18" stroke="' + lvl.color + '" stroke-width="1.5"/>';
+      // Description, right of bar
+      out += '<text x="440" y="' + (y + rowH / 2 + 5) + '" class="rd-sub" fill="' + lvl.color + '">' + lvl.desc + '</text>';
+    }
+    out += foot(L.foot, 360, 295);
+    return svgOpen('asl-diagram', '0 0 720 315') + defs('asl') + out + '</svg>';
+  }
+
+  // ====================================================================
+  // 44. AGI — capability axis, where current LLMs sit on it
+  // ====================================================================
+  function agiDiagram(lang) {
+    const L = lang === 'en' ? {
+      ani: 'ANI', aniSub: 'narrow · 2026 LLMs',
+      agi: 'AGI', agiSub: 'human-level general',
+      asi: 'ASI', asiSub: 'beyond human',
+      here: 'we are here',
+      capability: 'capability',
+      foot: 'AGI has no agreed technical definition. In 2026, frontier LLMs are ANI: superhuman on some tasks, brittle on others.'
+    } : {
+      ani: 'ANI', aniSub: 'estrecha · LLMs 2026',
+      agi: 'AGI', agiSub: 'nivel humano general',
+      asi: 'ASI', asiSub: 'más allá del humano',
+      here: 'estamos aquí',
+      capability: 'capacidad',
+      foot: 'AGI no tiene definición técnica acordada. En 2026 los frontier LLMs son ANI: superhumanos en algunas tareas, frágiles en otras.'
+    };
+    let out = '';
+    const x0 = 70, x1 = 640, y = 140;
+    // Axis
+    out += '<line x1="' + x0 + '" y1="' + y + '" x2="' + (x1 + 6) + '" y2="' + y + '" stroke="' + P.dim + '" stroke-width="1.5" marker-end="url(#agi-arr-dim)"/>';
+    out += '<text x="' + (x1 + 14) + '" y="' + (y + 5) + '" class="rd-sub" fill="' + P.textDim + '">' + L.capability + '</text>';
+
+    const positions = [
+      { x: 160, label: L.ani, sub: L.aniSub, color: P.green,  current: true  },
+      { x: 380, label: L.agi, sub: L.agiSub, color: P.accent, current: false },
+      { x: 580, label: L.asi, sub: L.asiSub, color: P.red,    current: false }
+    ];
+    for (const p of positions) {
+      out += '<line x1="' + p.x + '" y1="' + (y - 20) + '" x2="' + p.x + '" y2="' + (y + 8) + '" stroke="' + p.color + '" stroke-width="' + (p.current ? '3' : '1.5') + '"/>';
+      out += '<text x="' + p.x + '" y="' + (y - 28) + '" text-anchor="middle" class="rd-label" font-size="16" fill="' + p.color + '">' + p.label + '</text>';
+      out += '<text x="' + p.x + '" y="' + (y + 28) + '" text-anchor="middle" class="rd-sub" fill="' + P.textDim + '">' + p.sub + '</text>';
+      if (p.current) {
+        out += '<text x="' + p.x + '" y="' + (y + 52) + '" text-anchor="middle" class="rd-sub" fill="' + P.green + '">↑ ' + L.here + '</text>';
+      }
+    }
+    out += foot(L.foot, 360, 240);
+    return svgOpen('agi-diagram', '0 0 720 260') + defs('agi') + out + '</svg>';
+  }
+
   // ----- Public registry -------------------------------------------------
   window.GLOSSARY_DIAGRAMS = {
     rag: ragDiagram,
@@ -2086,7 +2293,18 @@
     'effort-levels': effortLevelsDiagram,
     'reasoning-effort': effortLevelsDiagram,
     alignment: alignmentDiagram,
+    sft: (lang) => alignmentDiagram(lang, 'sft'),
+    rlhf: (lang) => alignmentDiagram(lang, 'rlhf'),
+    dpo: (lang) => alignmentDiagram(lang, 'rlhf'),     // DPO shares the same alignment step
     'fine-tuning': fineTuningVsRagDiagram,
-    'constitutional-ai': constitutionalAiDiagram
+    'constitutional-ai': constitutionalAiDiagram,
+    benchmark: benchmarkDiagram,
+    mmlu: benchmarkDiagram,
+    humaneval: benchmarkDiagram,
+    gpqa: benchmarkDiagram,
+    'swe-bench': benchmarkDiagram,
+    drift: driftDiagram,
+    asl: aslDiagram,
+    agi: agiDiagram
   };
 })();

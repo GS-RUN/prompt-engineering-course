@@ -2,6 +2,33 @@
 
 All notable changes to this course are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.3.12] — 2026-05-08
+
+### Added — 4 more diagrams + alignment refactor with focus (57 entries)
+
+- **`benchmark`** (and `mmlu`, `humaneval`, `gpqa`, `swe-bench` reuse)
+  — grouped bar chart, 3 models (Claude / GPT / DeepSeek) × 4
+  benchmarks. Reference grid lines at 80% and 90%, score labels above
+  each bar, legend at top.
+- **`drift`** — divergent line chart. Green flat line = rules in
+  files; red curve drifts upward over 5 sessions. Vertical dashed
+  marker at the end shows the "drift" gap. Legend at top.
+- **`asl`** — 4-row vertical chart, ASL-1 (green, narrow bar) → ASL-2
+  → ASL-3 → ASL-4+ (red, widest). Bar width and colour escalate with
+  risk; description shown right of each bar.
+- **`agi`** — capability axis with three ticks (ANI, AGI, ASI). ANI
+  highlighted in green with "we are here" pointer underneath.
+
+### Changed — alignment diagram now supports per-step focus
+
+`alignmentDiagram(lang, focus)` accepts an optional focus key. The
+`sft`, `rlhf` and `dpo` entries each register their own focus so the
+relevant phase box gets a glow and a "Viewing: ..." title appears at
+top. DPO shares the RLHF box (same alignment step). Plain `alignment`
+keeps the neutral view (no glow, no title).
+
+Cache buster bumped v=25 → v=26.
+
 ## [2.3.11] — 2026-05-08
 
 ### Fixed — frontier-model labels were floating away from their dots

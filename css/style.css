@@ -833,7 +833,11 @@ html[data-i18n-lang="en"] section[data-untranslated="1"] .lang-block[data-lang="
 .glossary-diagram svg.effort-diagram,
 .glossary-diagram svg.alignment-diagram,
 .glossary-diagram svg.ftrag-diagram,
-.glossary-diagram svg.cai-diagram             { max-width: 720px; min-width: 520px; }
+.glossary-diagram svg.cai-diagram,
+.glossary-diagram svg.benchmark-diagram,
+.glossary-diagram svg.drift-diagram,
+.glossary-diagram svg.asl-diagram,
+.glossary-diagram svg.agi-diagram             { max-width: 720px; min-width: 520px; }
 .glossary-diagram svg.agent-diagram           { max-width: 600px; min-width: 420px; }
 .glossary-diagram svg.transformer-diagram     { max-width: 480px; min-width: 360px; }
 
