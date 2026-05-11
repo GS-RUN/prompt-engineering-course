@@ -6,7 +6,7 @@ Vendor-agnostic by default. Cross-API translation tables for every technique. Bi
 
 🔗 **Live demo:** [gs-run.github.io/prompt-engineering-course](https://gs-run.github.io/prompt-engineering-course/)
 
-📋 **Current version:** 2.2.1 (see [CHANGELOG](CHANGELOG.md))
+📋 **Current version:** 2.3.16 (see [CHANGELOG](CHANGELOG.md))
 
 ---
 
@@ -39,10 +39,13 @@ The course is organised into **14 academic blocks** + an orientation block + wor
 - **Token Counter** — real-time token estimation.
 - **Cost Calculator** — 18 frontier + OSS models grouped by region (US / China / EU), with caching scenarios.
 - **Prompt Diff Comparator** — A/B two prompts with 5-criteria scoring.
+- **🪄 SKILL.md Builder** — fill in name, description, allowed-tools, context and body; copy the generated SKILL.md ready to drop into `~/.claude/skills/<name>/`.
+- **🎯 Agent Goal Composer** — compose a structured agent prompt with role, goal, constraints, success criteria and output format (Anthropic-style XML tags).
+- **🩺 Prompt Linter** — paste a system prompt and get 7 checks + score (length, role, examples, format, XML structure, CoT, user-data leak) based on Anthropic's prompt-engineering guide.
 - **Prompt Simulator** — toggle 6 techniques and see simulated response quality.
 - **5 Coding Exercises** with real-time scoring.
-- **92 quizzes total** — 22 inline formative + 70 end-of-block knowledge checks.
-- **Glossary** — 64 technical terms ES + EN with live filter, linked from every block.
+- **92 quizzes total** — 22 inline formative + 70 end-of-block knowledge checks, distributed 23/23/23/23 across A/B/C/D (rebalanced in 2.2.3).
+- **Glossary** — 89 technical terms ES + EN with rich schema (short tooltip + long-form definition + examples + related-term chips). 73 entries carry a hand-tuned inline SVG diagram (RAG flow, attention weights, agent loop, MoE routing, transformer stack, KV cache, LoRA decomp, fine-tuning vs RAG, sampling distributions, training timeline, prompt injection flow, frontier scatter, MCP topology, and 60+ more). In-text auto-link wraps every detected term in a clickable link that opens the glossary in a new tab.
 
 ---
 
@@ -80,8 +83,8 @@ prompt-engineering-course/
 │   ├── 12-future.html          # Research frontiers, expected models, AI + science
 │   ├── 13-workshop.html        # Bando B: project, linter, library, evolution
 │   ├── 14-capstone.html        # 4 end-to-end project specs with rubrics
-│   ├── glossary.html           # 64 terms ES + EN, live filter
-│   └── tools.html              # Token counter, cost calc, prompt diff
+│   ├── glossary.html           # 89 terms ES + EN, rich schema, anchored, in-text auto-linking
+│   └── tools.html              # 6 tools: tokens, cost, prompt diff, SKILL.md, agent goal, linter
 ├── css/
 │   ├── style.css               # Carbón + Ámbar palette, dark + light themes
 │   └── bando-b.css             # Workshop-specific styling
@@ -91,27 +94,31 @@ prompt-engineering-course/
 │   │   ├── sidebar.js          # Generates sidebar dynamically per page
 │   │   ├── landing.js          # Renders block grid on home page
 │   │   ├── references.js       # Per-block bibliography
-│   │   └── glossary-data.js    # 64 term definitions
+│   │   └── glossary-data.js    # 89 term definitions with rich schema (short + long + examples + related)
 │   ├── app.js                  # Theme controller, defensive widget instantiation
 │   ├── i18n.js                 # ES + EN toggle (CSS-driven via lang-blocks)
-│   ├── quiz.js                 # 92 multiple-choice quizzes
+│   ├── quiz.js                 # 92 multiple-choice quizzes with schema-versioned localStorage migration
 │   ├── exercises.js            # 5 interactive scoring exercises
 │   ├── simulator.js            # Technique-toggle prompt simulator
-│   ├── diagrams.js             # Animated Canvas diagrams
+│   ├── diagrams.js             # Animated Canvas diagrams (legacy block visuals)
+│   ├── glossary-diagrams.js    # 73 hand-tuned inline-SVG diagrams for the glossary (RAG flow, attention, MoE, KV cache, etc.)
+│   ├── glossary.js             # In-text auto-link wrapping → links to glossary.html in a new tab + hover tooltip
+│   ├── glossary-page.js        # Renderer for the dedicated glossary page (anchored entries, smooth scroll, search)
 │   ├── token-tools.js          # Token counter + cost calculator
 │   ├── prompt-diff.js          # A/B prompt comparator
-│   ├── linter.js               # Prompt linter (Bando B)
+│   ├── tools-extra.js          # SKILL.md Builder + Agent Goal Composer + Prompt Linter
+│   ├── linter.js               # Prompt linter (Bando B workshop, separate from the v2.3.16 Prompt Linter tool)
 │   ├── library.js              # Prompt library (Bando B)
 │   ├── evolution.js            # Prompt evolution tracker (Bando B)
-│   ├── project.js              # User project panel (Bando B)
-│   └── glossary.js             # In-text glossary popovers
+│   └── project.js              # User project panel (Bando B)
 ├── scripts/
-│   ├── split_modules.js        # One-shot: extract sections from index.legacy.html into modules/
-│   ├── add_knowledge_checks.js # One-shot: insert kc-NN anchors into all module pages
-│   └── wrap_lang_blocks.js     # One-shot: wrap section bodies in lang-block divs
+│   ├── split_modules.js              # One-shot: extract sections from index.legacy.html into modules/
+│   ├── add_knowledge_checks.js       # One-shot: insert kc-NN anchors into all module pages
+│   ├── wrap_lang_blocks.js           # One-shot: wrap section bodies in lang-block divs
+│   └── rebalance_quiz_answers.js     # One-shot: rebalance correct-answer positions across all quizzes (used in v2.2.3)
 ├── CHANGELOG.md
 ├── README.md
-└── index.legacy.html           # v1 monolithic backup (will be removed in 2.3)
+└── index.legacy.html                 # v1 monolithic backup (will be removed in a future major)
 ```
 
 ### Architectural highlights
