@@ -2,6 +2,27 @@
 
 All notable changes to this course are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.3.8] — 2026-05-08
+
+### Changed — pre-training and post-training now show distinct diagrams
+
+Both entries previously rendered the identical timeline because both
+registered the same diagram function. They share the same timeline by
+design (you can't have post-training without pre-training), but the
+visual didn't tell the reader which entry was in focus.
+
+`trainingTimelineDiagram(lang, highlight)` now accepts a second
+argument; the registry passes `'pre'` for the pre-training entry and
+`'post'` for post-training. The view adds:
+
+- A focus title above the timeline: "Viewing: Pre-training" /
+  "Viewing: Post-training" (or Spanish equivalent).
+- A brighter `glow` fill on the box of the in-focus phase (the
+  amber-bright fill that other diagrams use to mark the active node),
+  with the other phase staying at the normal accent-soft fill.
+
+Cache buster bumped v=21 → v=22.
+
 ## [2.3.7] — 2026-05-08
 
 ### Fixed — training-timeline subs overflowed; added a defensive guard

@@ -1197,7 +1197,7 @@
   // ====================================================================
   // 23. Training timeline — pre-training + post-training side by side
   // ====================================================================
-  function trainingTimelineDiagram(lang) {
+  function trainingTimelineDiagram(lang, highlight) {
     const L = lang === 'en' ? {
       init: 'Random init',
       pre: 'Pre-training', preSub: 'next-token prediction',
@@ -1206,6 +1206,8 @@
       instruct: 'Instruct model', instructSub: 'follows instructions',
       preCost: '$10M – $500M+ · months',
       postCost: '~$10K – $1M · days',
+      viewPre:  'Viewing: Pre-training',
+      viewPost: 'Viewing: Post-training',
       foot: 'Pre-training teaches the model language. Post-training (alignment) makes it a useful assistant.'
     } : {
       init: 'Init aleatoria',
@@ -1215,16 +1217,24 @@
       instruct: 'Instruct model', instructSub: 'sigue instrucciones',
       preCost: '$10M – $500M+ · meses',
       postCost: '~$10K – $1M · días',
+      viewPre:  'Viendo: Pre-training',
+      viewPost: 'Viendo: Post-training',
       foot: 'Pre-training enseña el lenguaje. Post-training (alignment) lo convierte en asistente útil.'
     };
     let out = '';
+    // Optional focus title — distinguishes the pre-training view from the post-training view
+    if (highlight) {
+      const title = highlight === 'pre' ? L.viewPre : L.viewPost;
+      out += '<text x="360" y="30" text-anchor="middle" class="rd-label" fill="' + P.accent + '">' + title + '</text>';
+    }
+
     // Two stages stacked: Pre-training (top) → Base, then Post-training → Instruct
     // Compact horizontal flow: init → Pre → Base → Post → Instruct
     const items = [
       { label: L.init,     sub: null,             variant: 'dim',   w: 100 },
-      { label: L.pre,      sub: L.preSub,         variant: null,    w: 170, cost: L.preCost },
+      { label: L.pre,      sub: L.preSub,         variant: null,    w: 170, cost: L.preCost, glow: highlight === 'pre' },
       { label: L.base,     sub: L.baseSub,        variant: null,    w: 110 },
-      { label: L.post,     sub: L.postSub,        variant: null,    w: 170, cost: L.postCost },
+      { label: L.post,     sub: L.postSub,        variant: null,    w: 170, cost: L.postCost, glow: highlight === 'post' },
       { label: L.instruct, sub: L.instructSub,    variant: 'final', w: 130 }
     ];
     const gap = 8;
@@ -1235,7 +1245,7 @@
 
     for (let i = 0; i < items.length; i++) {
       const it = items[i];
-      out += box(x, y, it.w, h, it.label, it.sub, { variant: it.variant });
+      out += box(x, y, it.w, h, it.label, it.sub, { variant: it.variant, glow: it.glow });
       // Cost annotation under phase boxes (idx 1 and 3)
       if (it.cost) {
         out += '<text x="' + (x + it.w / 2) + '" y="' + (y + h + 22) + '" text-anchor="middle" class="rd-sub" fill="' + P.accent + '">' + it.cost + '</text>';
@@ -1457,8 +1467,8 @@
     streaming: streamingDiagram,
     'self-consistency': selfConsistencyDiagram,
     'structured-outputs': structuredOutputsDiagram,
-    'pre-training': trainingTimelineDiagram,
-    'post-training': trainingTimelineDiagram,   // both phases shown in the same timeline
+    'pre-training': (lang) => trainingTimelineDiagram(lang, 'pre'),
+    'post-training': (lang) => trainingTimelineDiagram(lang, 'post'),
     mcp: mcpDiagram,
     distillation: distillationDiagram,
     multimodal: multimodalDiagram,
