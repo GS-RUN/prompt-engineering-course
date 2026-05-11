@@ -793,13 +793,25 @@ html[data-i18n-lang="en"] section[data-untranslated="1"] .lang-block[data-lang="
   display: block;
   width: 100%;
   height: auto;
-  max-width: 960px;
-  min-width: 620px;   /* horizontal scroll on narrow screens, never squashed */
   margin: 0 auto;
 }
-/* SVG <text> styles for the RAG diagram (and future diagrams reuse the rd-* family). */
+/* Per-diagram size constraints (horizontal scroll on narrow screens, never squashed). */
+.glossary-diagram svg.rag-diagram,
+.glossary-diagram svg.attn-diagram,
+.glossary-diagram svg.kvcache-diagram,
+.glossary-diagram svg.chunking-diagram,
+.glossary-diagram svg.autoreg-diagram         { max-width: 960px; min-width: 620px; }
+.glossary-diagram svg.moe-diagram             { max-width: 760px; min-width: 540px; }
+.glossary-diagram svg.lora-diagram,
+.glossary-diagram svg.cot-diagram             { max-width: 720px; min-width: 520px; }
+.glossary-diagram svg.agent-diagram           { max-width: 600px; min-width: 420px; }
+.glossary-diagram svg.transformer-diagram     { max-width: 480px; min-width: 360px; }
+
+/* SVG <text> styles for diagrams (rd-* family is shared across all). */
 .rd-label { fill: var(--text); font-family: inherit; font-size: 13px; font-weight: 600; }
 .rd-label-final { fill: #6EBE7F; }
+.rd-label-dim { fill: var(--text-dim); font-weight: 500; }
+.rd-label-red { fill: #E05F5F; }
 .rd-sub { fill: var(--text-dim); font-family: inherit; font-size: 11px; }
 .rd-foot { fill: var(--text-muted); font-family: inherit; font-size: 11px; font-style: italic; }
 .glossary-term-highlight {

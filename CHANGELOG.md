@@ -2,6 +2,60 @@
 
 All notable changes to this course are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.3.2] — 2026-05-08
+
+### Added — 9 more glossary diagrams (10 total)
+
+After the RAG sample passed review, this release ships the rest of
+the visually high-impact diagrams as a coherent set: same palette
+(amber / green for "output" / dim grey for "frozen or non-selected"),
+same SVG grammar (rounded boxes + labelled connectors + footer note),
+all bilingual ES + EN, all responsive with sane min-widths so they
+never squash.
+
+New diagrams:
+
+- **`attention`** — six tokens in a row; the last token "mat" attends
+  to all previous with line thickness ∝ attention weight.
+- **`agent`** (and `react` reuses it) — Thought → Action → Observation
+  triangle with curved cycle arrows, plus a green branch to "Done"
+  showing the loop's exit condition.
+- **`kv-cache`** — 7 cached tokens (dim) + 1 new token (amber glow)
+  with bracket labels marking each region and the O(N) → O(1) caption.
+- **`moe`** — Input → Router → 8 expert grid; 2 experts are
+  highlighted with bright connectors, the other 6 dimmed.
+- **`lora`** — top: full fine-tuning shows W. Bottom: LoRA shows W
+  frozen + small A · B decomposition with explicit `+` and `×`.
+- **`transformer`** — vertical block stack: Input → Embedding+pos →
+  N×{Attention + FFN} (dashed group box) → Final norm → Output logits.
+- **`chunking`** — long document bar at top with dashed connectors
+  down to 5 chunks, overlap regions painted in brighter amber + small
+  legend.
+- **`autoregressive`** — 7 token slots: 5 generated (dim), 1 just
+  generated (glow), 1 empty next (dashed); bracket spans the prefix.
+- **`cot`** — side-by-side: "Without CoT" (Q → A in red) vs "With CoT"
+  (Q → step1 → step2 → step3 → A in green).
+
+Infrastructure:
+
+- **`js/glossary-diagrams.js`** refactored with shared helpers
+  (`box`, `line`, `curve`, `defs`, `svgOpen`, `foot`) so each diagram
+  is a short builder; palette centralised; per-diagram marker prefixes
+  to avoid SVG `<defs>` collisions across multiple diagrams on the
+  same page.
+- **CSS** `style.css`: per-class `max-width`/`min-width` for each
+  diagram so vertical-heavy ones (transformer, agent, lora, cot)
+  don't get stretched to 960px wide.
+- **CSS** new `.rd-label-dim` and `.rd-label-red` classes for the
+  greyed-out (non-selected) and "wrong-answer" states.
+- Cache buster bumped v=15 → v=16.
+
+### Held for v2.3.3 if requested
+
+Lower-impact candidates that text describes well: `embedding`,
+`tool-use`/`function-calling`, `prompt-injection`, `hallucination`,
+`top-p`/`temperature`, `quantization`. Will add on demand.
+
 ## [2.3.1] — 2026-05-08
 
 ### Added — first per-term diagram: RAG flow
