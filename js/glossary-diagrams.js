@@ -2243,6 +2243,163 @@
     return svgOpen('agi-diagram', '0 0 720 260') + defs('agi') + out + '</svg>';
   }
 
+  // ====================================================================
+  // 45. Sampling parameters — how greedy / top-k / top-p reshape the dist
+  // ====================================================================
+  function samplingDiagram(lang) {
+    const L = lang === 'en' ? {
+      raw: 'Raw',          rawSub: 'all tokens',
+      greedy: 'Greedy',    greedySub: 'temp = 0',
+      topk: 'top_k = 5',   topkSub: 'cap at top k',
+      topp: 'top_p = 0.9', toppSub: 'cumulative cutoff',
+      foot: 'Each parameter trims the long tail differently. Combine top_p with temperature 0.7 for most use cases.'
+    } : {
+      raw: 'Raw',          rawSub: 'todos los tokens',
+      greedy: 'Greedy',    greedySub: 'temp = 0',
+      topk: 'top_k = 5',   topkSub: 'tope a los k',
+      topp: 'top_p = 0.9', toppSub: 'corte acumulado',
+      foot: 'Cada parámetro recorta la cola larga distinto. Combina top_p con temperature 0.7 para la mayoría de casos.'
+    };
+    const probs = [0.35, 0.20, 0.12, 0.10, 0.08, 0.05, 0.04, 0.03, 0.02, 0.01];
+    const panels = [
+      { title: L.raw,    sub: L.rawSub,    filter: 'raw' },
+      { title: L.greedy, sub: L.greedySub, filter: 'greedy' },
+      { title: L.topk,   sub: L.topkSub,   filter: 'topk' },
+      { title: L.topp,   sub: L.toppSub,   filter: 'topp' }
+    ];
+    let out = '';
+    const panelW = 165, panelGap = 7;
+    const total = panels.length * panelW + (panels.length - 1) * panelGap;
+    const startX = (720 - total) / 2;
+    const barW = 12, barGap = 2;
+    const baseY = 250, maxH = 130;
+
+    for (let p = 0; p < panels.length; p++) {
+      const pan = panels[p];
+      const px = startX + p * (panelW + panelGap);
+      // Panel frame
+      out += '<rect x="' + px + '" y="55" width="' + panelW + '" height="220" rx="8" fill="rgba(245,165,36,0.03)" stroke="' + P.dim + '" stroke-width="1"/>';
+      // Title + sub
+      out += '<text x="' + (px + panelW / 2) + '" y="78" text-anchor="middle" class="rd-label" fill="' + P.accent + '">' + pan.title + '</text>';
+      out += '<text x="' + (px + panelW / 2) + '" y="94" text-anchor="middle" class="rd-sub" fill="' + P.textDim + '">' + pan.sub + '</text>';
+
+      // Decide which tokens are kept
+      let kept = new Array(probs.length).fill(true);
+      if (pan.filter === 'greedy') kept = kept.map((_, i) => i === 0);
+      else if (pan.filter === 'topk') kept = kept.map((_, i) => i < 5);
+      else if (pan.filter === 'topp') {
+        let cum = 0;
+        kept = kept.map((_, i) => { const before = cum < 0.9; cum += probs[i]; return before; });
+      }
+
+      // Bars
+      const barsW = probs.length * barW + (probs.length - 1) * barGap;
+      const barsStart = px + (panelW - barsW) / 2;
+      for (let i = 0; i < probs.length; i++) {
+        const bx = barsStart + i * (barW + barGap);
+        const h = Math.max(3, probs[i] * maxH * 2.5);
+        out += '<rect x="' + bx + '" y="' + (baseY - h) + '" width="' + barW + '" height="' + h + '" rx="2" fill="' + (kept[i] ? P.accent : P.dim) + '" opacity="' + (kept[i] ? 0.85 : 0.2) + '"/>';
+      }
+      // Axis line under bars
+      out += '<line x1="' + (barsStart - 4) + '" y1="' + baseY + '" x2="' + (barsStart + barsW + 4) + '" y2="' + baseY + '" stroke="' + P.dim + '" stroke-width="1"/>';
+    }
+    out += foot(L.foot, 360, 300);
+    return svgOpen('sampling-diagram', '0 0 720 320') + defs('samp') + out + '</svg>';
+  }
+
+  // ====================================================================
+  // 46. System prompt / role prompting — message hierarchy
+  // ====================================================================
+  function systemPromptDiagram(lang) {
+    const L = lang === 'en' ? {
+      system: 'system',       systemSub: 'rules · role · stable context',
+      user: 'user',           userSub: 'untrusted input · query',
+      assistant: 'assistant', assistantSub: 'past turns · current output',
+      priority: '↑ priority',
+      foot: 'Keep user data out of the system prompt. Treat user content as untrusted.'
+    } : {
+      system: 'system',       systemSub: 'reglas · rol · contexto estable',
+      user: 'user',           userSub: 'input no confiable · query',
+      assistant: 'assistant', assistantSub: 'turnos anteriores · output actual',
+      priority: '↑ prioridad',
+      foot: 'No pongas datos de usuario en el system prompt. Trátalo como no confiable.'
+    };
+    let out = '';
+    const rows = [
+      { name: L.system,    sub: L.systemSub,    color: P.accent,   bg: P.accentBright, sw: 2 },
+      { name: L.user,      sub: L.userSub,      color: '#C77D0B',  bg: 'rgba(199,125,11,0.08)', sw: 1.5 },
+      { name: L.assistant, sub: L.assistantSub, color: P.green,    bg: P.greenSoft,    sw: 1.5 }
+    ];
+    const startY = 60, rowH = 56, gap = 14;
+    // Priority pointer (left side)
+    out += '<text x="40" y="' + (startY - 6) + '" text-anchor="middle" class="rd-sub" fill="' + P.accent + '">' + L.priority + '</text>';
+    out += '<line x1="40" y1="' + startY + '" x2="40" y2="' + (startY + 3 * rowH + 2 * gap) + '" stroke="' + P.dim + '" stroke-width="1.5"/>';
+
+    for (let i = 0; i < rows.length; i++) {
+      const r = rows[i];
+      const y = startY + i * (rowH + gap);
+      // Role badge
+      out += '<rect x="80" y="' + y + '" width="120" height="' + rowH + '" rx="8" fill="' + r.bg + '" stroke="' + r.color + '" stroke-width="' + r.sw + '"/>';
+      out += '<text x="140" y="' + (y + rowH / 2 + 5) + '" text-anchor="middle" class="rd-label" font-family="monospace" fill="' + r.color + '">' + r.name + '</text>';
+      // Content row
+      out += '<rect x="220" y="' + y + '" width="440" height="' + rowH + '" rx="8" fill="rgba(255,255,255,0.02)" stroke="' + r.color + '" stroke-width="1" stroke-dasharray="3 3"/>';
+      out += '<text x="440" y="' + (y + rowH / 2 + 5) + '" text-anchor="middle" class="rd-sub" fill="' + r.color + '">' + r.sub + '</text>';
+    }
+    out += foot(L.foot, 360, 290);
+    return svgOpen('system-prompt-diagram', '0 0 720 310') + defs('sp') + out + '</svg>';
+  }
+
+  // ====================================================================
+  // 47. Artifacts — project files = authoritative state
+  // ====================================================================
+  function artifactsDiagram(lang) {
+    const L = lang === 'en' ? {
+      title: 'Project files = authoritative state',
+      project: 'my-project/',
+      files: [
+        { name: 'CLAUDE.md',       sub: 'rules read by Claude Code',   color: P.accent, indent: 2 },
+        { name: 'AGENTS.md',       sub: 'rules read by OpenCode',      color: P.accent, indent: 2 },
+        { name: '.claude/skills/', sub: 'reusable capabilities',       color: P.accent, indent: 2, folder: true },
+        { name: 'deploy/SKILL.md', sub: '',                            color: P.dim,    indent: 4 },
+        { name: 'tests/SKILL.md',  sub: '',                            color: P.dim,    indent: 4 },
+        { name: 'docs/ADR-001.md', sub: 'architectural decision',      color: P.green,  indent: 2 },
+        { name: 'src/',            sub: 'code',                        color: P.dim,    indent: 2, folder: true }
+      ],
+      foot: 'Authority lives in files (versioned, reviewable). Conversation is not binding.'
+    } : {
+      title: 'Archivos del proyecto = estado autoritativo',
+      project: 'mi-proyecto/',
+      files: [
+        { name: 'CLAUDE.md',       sub: 'reglas leídas por Claude Code', color: P.accent, indent: 2 },
+        { name: 'AGENTS.md',       sub: 'reglas leídas por OpenCode',    color: P.accent, indent: 2 },
+        { name: '.claude/skills/', sub: 'capacidades reutilizables',     color: P.accent, indent: 2, folder: true },
+        { name: 'deploy/SKILL.md', sub: '',                              color: P.dim,    indent: 4 },
+        { name: 'tests/SKILL.md',  sub: '',                              color: P.dim,    indent: 4 },
+        { name: 'docs/ADR-001.md', sub: 'decisión arquitectónica',       color: P.green,  indent: 2 },
+        { name: 'src/',            sub: 'código',                        color: P.dim,    indent: 2, folder: true }
+      ],
+      foot: 'La autoridad vive en archivos (versionados, revisables). La conversación no es vinculante.'
+    };
+    let out = '';
+    out += '<text x="80" y="38" class="rd-sub" fill="' + P.textDim + '">' + L.title + '</text>';
+    out += '<rect x="60" y="48" width="600" height="240" rx="10" fill="rgba(0,0,0,0.3)" stroke="' + P.dim + '" stroke-width="1"/>';
+    // Root
+    out += '<text x="80" y="76" font-family="monospace" font-size="14" fill="' + P.accent + '">📁 ' + L.project + '</text>';
+    // Files
+    for (let i = 0; i < L.files.length; i++) {
+      const f = L.files[i];
+      const y = 102 + i * 24;
+      const xName = 80 + f.indent * 14;
+      const icon = f.folder ? '📁' : '📄';
+      out += '<text x="' + xName + '" y="' + y + '" font-family="monospace" font-size="13" fill="' + f.color + '">' + icon + ' ' + f.name + '</text>';
+      if (f.sub) {
+        out += '<text x="380" y="' + y + '" font-family="monospace" font-size="11" fill="' + P.textDim + '"># ' + f.sub + '</text>';
+      }
+    }
+    out += foot(L.foot, 360, 308);
+    return svgOpen('artifacts-diagram', '0 0 720 325') + defs('art') + out + '</svg>';
+  }
+
   // ----- Public registry -------------------------------------------------
   window.GLOSSARY_DIAGRAMS = {
     rag: ragDiagram,
@@ -2305,6 +2462,17 @@
     'swe-bench': benchmarkDiagram,
     drift: driftDiagram,
     asl: aslDiagram,
-    agi: agiDiagram
+    agi: agiDiagram,
+    sampling: samplingDiagram,
+    'top-p': samplingDiagram,
+    'top-k': samplingDiagram,
+    'greedy-decoding': samplingDiagram,
+    'system-prompt': systemPromptDiagram,
+    'role-prompting': systemPromptDiagram,
+    artifacts: artifactsDiagram,
+    'authority-in-files': artifactsDiagram,
+    'claude-md': artifactsDiagram,
+    'agents-md': artifactsDiagram,
+    inference: autoregressiveDiagram   // reuse the token-by-token timeline
   };
 })();

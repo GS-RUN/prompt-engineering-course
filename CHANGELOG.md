@@ -2,6 +2,30 @@
 
 All notable changes to this course are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.3.13] — 2026-05-08
+
+### Added — 3 new diagrams covering 11 more glossary entries (68 total)
+
+- **`sampling`** (and `top-p`, `top-k`, `greedy-decoding` reuse) —
+  4 mini distribution panels (Raw / Greedy / top_k=5 / top_p=0.9)
+  showing how each method filters the same probability distribution.
+  Kept tokens in amber, filtered-out in dim grey at reduced opacity.
+- **`system-prompt`** (and `role-prompting` reuse) — 3 stacked rows
+  (system / user / assistant) with a priority arrow on the left.
+  System role in glow amber, user in deep-amber, assistant in green.
+- **`artifacts`** (and `authority-in-files`, `claude-md`, `agents-md`
+  reuse) — file-tree visualisation of a project: CLAUDE.md, AGENTS.md,
+  `.claude/skills/` with nested deploy/SKILL.md and tests/SKILL.md,
+  docs/ADR-001.md, src/. Each authoritative artifact in amber, code
+  in dim. Annotations to the right of each file.
+
+### Reused
+
+- **`inference`** now points to the existing `autoregressive` diagram
+  — the token-by-token forward-pass timeline IS the inference visual.
+
+Cache buster bumped v=26 → v=27.
+
 ## [2.3.12] — 2026-05-08
 
 ### Added — 4 more diagrams + alignment refactor with focus (57 entries)
