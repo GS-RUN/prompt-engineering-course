@@ -59,7 +59,13 @@
     let labels = '';
     if (sub) {
       labels += '<text x="' + cx + '" y="' + (cy - 2) + '" text-anchor="middle" class="' + lblClass + '">' + label + '</text>';
-      labels += '<text x="' + cx + '" y="' + (cy + 16) + '" text-anchor="middle" class="rd-sub">' + sub + '</text>';
+      // Defensive: if the sub would overflow the box at 11px, clamp via textLength.
+      // 11px sub renders at ~5.5px per char. Reserve 10px padding (5 each side).
+      const safeChars = Math.floor((w - 10) / 5.5);
+      const subAttr = (sub.length > safeChars)
+        ? ' textLength="' + (w - 10) + '" lengthAdjust="spacingAndGlyphs"'
+        : '';
+      labels += '<text x="' + cx + '" y="' + (cy + 16) + '" text-anchor="middle" class="rd-sub"' + subAttr + '>' + sub + '</text>';
     } else {
       labels += '<text x="' + cx + '" y="' + (cy + 5) + '" text-anchor="middle" class="' + lblClass + '">' + label + '</text>';
     }
@@ -1194,21 +1200,21 @@
   function trainingTimelineDiagram(lang) {
     const L = lang === 'en' ? {
       init: 'Random init',
-      pre: 'Pre-training', preSub: 'next-token prediction · trillions of tokens',
+      pre: 'Pre-training', preSub: 'next-token prediction',
       base: 'Base model', baseSub: 'completes text',
-      post: 'Post-training', postSub: 'SFT + RLHF/DPO + Constitutional AI',
+      post: 'Post-training', postSub: 'SFT + RLHF/DPO',
       instruct: 'Instruct model', instructSub: 'follows instructions',
-      preCost: '$10M – $500M+  ·  months',
-      postCost: '~$10K – $1M  ·  days/weeks',
+      preCost: '$10M – $500M+ · months',
+      postCost: '~$10K – $1M · days',
       foot: 'Pre-training teaches the model language. Post-training (alignment) makes it a useful assistant.'
     } : {
       init: 'Init aleatoria',
-      pre: 'Pre-training', preSub: 'predicción siguiente token · trillones de tokens',
+      pre: 'Pre-training', preSub: 'predicción de tokens',
       base: 'Base model', baseSub: 'completa texto',
-      post: 'Post-training', postSub: 'SFT + RLHF/DPO + Constitutional AI',
+      post: 'Post-training', postSub: 'SFT + RLHF/DPO',
       instruct: 'Instruct model', instructSub: 'sigue instrucciones',
-      preCost: '$10M – $500M+  ·  meses',
-      postCost: '~$10K – $1M  ·  días/semanas',
+      preCost: '$10M – $500M+ · meses',
+      postCost: '~$10K – $1M · días',
       foot: 'Pre-training enseña el lenguaje. Post-training (alignment) lo convierte en asistente útil.'
     };
     let out = '';
@@ -1247,6 +1253,183 @@
     return svgOpen('training-diagram', '0 0 720 232') + defs('train') + out + '</svg>';
   }
 
+  // ====================================================================
+  // 24. MCP — hub-and-spoke topology, client → many servers
+  // ====================================================================
+  function mcpDiagram(lang) {
+    const L = lang === 'en' ? {
+      client: 'MCP Client', clientSub: 'Claude Code / OpenCode',
+      protocol: 'MCP protocol (JSON-RPC)',
+      foot: 'One protocol, many servers. The client speaks MCP and reaches any compatible tool.'
+    } : {
+      client: 'Cliente MCP', clientSub: 'Claude Code / OpenCode',
+      protocol: 'Protocolo MCP (JSON-RPC)',
+      foot: 'Un protocolo, muchos servidores. El cliente habla MCP y alcanza cualquier herramienta compatible.'
+    };
+    let out = '';
+    // Client at top centre
+    out += box(270, 40, 180, 64, L.client, L.clientSub);
+    // Protocol label
+    out += '<text x="360" y="128" text-anchor="middle" class="rd-sub" fill="' + P.accent + '">' + L.protocol + '</text>';
+    // Vertical trunk from client bottom to junction
+    out += '<line x1="360" y1="106" x2="360" y2="170" stroke="' + P.accent + '" stroke-width="1.5"/>';
+    // 4 servers in a row
+    const servers = ['📁 Drive', '🎫 Jira', '💬 Slack', '🗄 Postgres'];
+    const sW = 130, sGap = 22, sH = 56;
+    const sTotal = 4 * sW + 3 * sGap;
+    const sStartX = (720 - sTotal) / 2;
+    const sY = 220;
+    // Horizontal trunk spanning first to last server centre
+    const firstCx = sStartX + sW / 2;
+    const lastCx = sStartX + 3 * (sW + sGap) + sW / 2;
+    out += '<line x1="' + firstCx + '" y1="170" x2="' + lastCx + '" y2="170" stroke="' + P.accent + '" stroke-width="1.5"/>';
+    // Arrows down to each server
+    for (let i = 0; i < 4; i++) {
+      const x = sStartX + i * (sW + sGap);
+      const cx = x + sW / 2;
+      out += '<line x1="' + cx + '" y1="172" x2="' + cx + '" y2="' + (sY - 4) + '" stroke="' + P.accent + '" stroke-width="1.5" marker-end="url(#mcp-arr)"/>';
+      out += box(x, sY, sW, sH, servers[i], null, { variant: 'final' });
+    }
+    out += foot(L.foot, 360, 305);
+    return svgOpen('mcp-diagram', '0 0 720 320') + defs('mcp') + out + '</svg>';
+  }
+
+  // ====================================================================
+  // 25. Distillation — teacher (big) trains student (small) to imitate
+  // ====================================================================
+  function distillationDiagram(lang) {
+    const L = lang === 'en' ? {
+      teacher: 'Teacher', teacherSub: 'Large LLM, e.g. 70B',
+      student: 'Student', studentSub: 'Small LLM, e.g. 7B',
+      flow: 'outputs (logits, labels)',
+      foot: 'Student is trained to imitate Teacher. Quality is capped at Teacher level, cost is far lower.'
+    } : {
+      teacher: 'Teacher', teacherSub: 'LLM grande, p.ej. 70B',
+      student: 'Student', studentSub: 'LLM pequeño, p.ej. 7B',
+      flow: 'outputs (logits, etiquetas)',
+      foot: 'El Student se entrena para imitar al Teacher. La calidad tope es la del Teacher; el coste es mucho menor.'
+    };
+    let out = '';
+    // Teacher box (large, left)
+    out += '<rect x="60" y="60" width="240" height="160" rx="10" fill="' + P.accentSoft + '" stroke="' + P.accent + '" stroke-width="2"/>';
+    out += '<text x="180" y="125" text-anchor="middle" class="rd-label" font-size="20">' + L.teacher + '</text>';
+    out += '<text x="180" y="155" text-anchor="middle" class="rd-sub">' + L.teacherSub + '</text>';
+    // Flow label above arrow
+    out += '<text x="360" y="125" text-anchor="middle" class="rd-sub" fill="' + P.accent + '">' + L.flow + '</text>';
+    // Arrow Teacher -> Student
+    out += '<line x1="302" y1="140" x2="426" y2="140" stroke="' + P.accent + '" stroke-width="2" marker-end="url(#distil-arr)"/>';
+    // Student box (smaller, right)
+    out += '<rect x="430" y="105" width="200" height="100" rx="8" fill="' + P.greenSoft + '" stroke="' + P.green + '" stroke-width="1.5"/>';
+    out += '<text x="530" y="148" text-anchor="middle" class="rd-label rd-label-final" font-size="16">' + L.student + '</text>';
+    out += '<text x="530" y="174" text-anchor="middle" class="rd-sub">' + L.studentSub + '</text>';
+
+    out += foot(L.foot, 360, 290);
+    return svgOpen('distillation-diagram', '0 0 720 310') + defs('distil') + out + '</svg>';
+  }
+
+  // ====================================================================
+  // 26. Multimodal — text + image enter the SAME transformer as tokens
+  // ====================================================================
+  function multimodalDiagram(lang) {
+    const L = lang === 'en' ? {
+      text: 'Text input', textBody: '"What’s in this image?"',
+      image: 'Image input', imageSub: 'image encoder',
+      fuse: 'Fused tokens', fuseSub: 'text + image tokens',
+      llm: 'Same transformer',
+      foot: 'The image becomes "visual tokens" that flow through the same network as text tokens.'
+    } : {
+      text: 'Texto de entrada', textBody: '"¿Qué hay en esta imagen?"',
+      image: 'Imagen de entrada', imageSub: 'encoder de imagen',
+      fuse: 'Tokens fusionados', fuseSub: 'tokens combinados',
+      llm: 'Mismo transformer',
+      foot: 'La imagen se convierte en "tokens visuales" que fluyen por la misma red que los tokens de texto.'
+    };
+    let out = '';
+    // Text input (top-left)
+    out += box(40, 50, 180, 56, L.text, null);
+    out += '<text x="130" y="128" text-anchor="middle" class="rd-sub">' + L.textBody + '</text>';
+
+    // Image input (bottom-left)
+    out += box(40, 170, 180, 56, L.image, L.imageSub);
+    // Small image-frame icon inside the image box
+    out += '<rect x="55" y="184" width="28" height="20" rx="2" fill="' + P.accent + '" opacity="0.25"/>';
+    out += '<circle cx="63" cy="192" r="3" fill="' + P.accent + '" opacity="0.6"/>';
+    out += '<path d="M 60 198 L 70 188 L 78 198 Z" fill="' + P.accent + '" opacity="0.6"/>';
+
+    // Arrows from each input → fuse
+    out += line(222, 78, 296, 130, 'mm');
+    out += line(222, 198, 296, 142, 'mm');
+
+    // Fuse box (middle)
+    out += box(300, 110, 160, 56, L.fuse, L.fuseSub);
+
+    // Arrow → transformer
+    out += line(462, 138, 498, 138, 'mm');
+
+    // Transformer (right)
+    out += box(500, 110, 180, 56, L.llm, null, { variant: 'final' });
+
+    out += foot(L.foot, 360, 290);
+    return svgOpen('multimodal-diagram', '0 0 720 310') + defs('mm') + out + '</svg>';
+  }
+
+  // ====================================================================
+  // 27. Latency — TTFT + per-token TPOT on a single timeline
+  // ====================================================================
+  function latencyDiagram(lang) {
+    const L = lang === 'en' ? {
+      reqSent: 'request sent', firstTok: '1st token',
+      ttft: 'TTFT', tpot: 'TPOT',
+      ttftSub: 'prompt processing',
+      tpotSub: 'per output token',
+      foot: 'TTFT dominates UX feedback; TPOT × output_tokens dominates total wall time.'
+    } : {
+      reqSent: 'petición enviada', firstTok: '1er token',
+      ttft: 'TTFT', tpot: 'TPOT',
+      ttftSub: 'procesado del prompt',
+      tpotSub: 'por token de salida',
+      foot: 'El TTFT domina el feedback de UX; el TPOT × tokens_salida domina el tiempo total.'
+    };
+    let out = '';
+    const x0 = 80, x1 = 660;
+    const ftX = x0 + 0.30 * (x1 - x0);   // first-token marker at 30% of width
+    const endX = x0 + 0.85 * (x1 - x0);  // end of generation at 85%
+    const bandY = 100, bandH = 40;
+
+    // TTFT region (amber)
+    out += '<rect x="' + x0 + '" y="' + bandY + '" width="' + (ftX - x0) + '" height="' + bandH +
+           '" fill="' + P.accentSoft + '" stroke="' + P.accent + '" stroke-width="1.5"/>';
+    out += '<text x="' + ((x0 + ftX) / 2) + '" y="' + (bandY + 19) + '" text-anchor="middle" class="rd-label" fill="' + P.accent + '">' + L.ttft + '</text>';
+    out += '<text x="' + ((x0 + ftX) / 2) + '" y="' + (bandY + 35) + '" text-anchor="middle" class="rd-sub">' + L.ttftSub + '</text>';
+
+    // TPOT region (green dashed)
+    out += '<rect x="' + ftX + '" y="' + bandY + '" width="' + (endX - ftX) + '" height="' + bandH +
+           '" fill="rgba(110,190,127,0.05)" stroke="' + P.green + '" stroke-width="1.5" stroke-dasharray="4 3"/>';
+    out += '<text x="' + ((ftX + endX) / 2) + '" y="' + (bandY + 19) + '" text-anchor="middle" class="rd-label rd-label-final">' + L.tpot + '</text>';
+    out += '<text x="' + ((ftX + endX) / 2) + '" y="' + (bandY + 35) + '" text-anchor="middle" class="rd-sub" fill="' + P.green + '">' + L.tpotSub + '</text>';
+
+    // Per-token tick marks inside the TPOT band
+    const tickGap = (endX - ftX) / 11;
+    for (let i = 1; i <= 10; i++) {
+      const tx = ftX + i * tickGap;
+      out += '<line x1="' + tx + '" y1="' + (bandY + 4) + '" x2="' + tx + '" y2="' + (bandY + bandH - 4) + '" stroke="' + P.green + '" stroke-width="1" opacity="0.5"/>';
+    }
+
+    // Request-sent marker (left edge)
+    out += '<line x1="' + x0 + '" y1="' + (bandY - 18) + '" x2="' + x0 + '" y2="' + (bandY + bandH + 4) + '" stroke="' + P.dim + '" stroke-width="1.5"/>';
+    out += '<text x="' + x0 + '" y="' + (bandY - 24) + '" text-anchor="middle" class="rd-sub" fill="' + P.dim + '">' + L.reqSent + '</text>';
+    // First-token marker
+    out += '<line x1="' + ftX + '" y1="' + (bandY - 18) + '" x2="' + ftX + '" y2="' + (bandY + bandH + 4) + '" stroke="' + P.green + '" stroke-width="2"/>';
+    out += '<text x="' + ftX + '" y="' + (bandY - 24) + '" text-anchor="middle" class="rd-sub" fill="' + P.green + '">' + L.firstTok + '</text>';
+
+    // Time axis arrow
+    out += '<line x1="' + x0 + '" y1="' + (bandY + bandH + 28) + '" x2="' + (x1) + '" y2="' + (bandY + bandH + 28) + '" stroke="' + P.dim + '" stroke-width="1" marker-end="url(#lat-arr-dim)"/>';
+    out += '<text x="' + ((x0 + x1) / 2) + '" y="' + (bandY + bandH + 50) + '" text-anchor="middle" class="rd-sub" fill="' + P.textDim + '">' + (lang === 'en' ? 'time →' : 'tiempo →') + '</text>';
+
+    out += foot(L.foot, 360, 250);
+    return svgOpen('latency-diagram', '0 0 720 270') + defs('lat') + out + '</svg>';
+  }
+
   // ----- Public registry -------------------------------------------------
   window.GLOSSARY_DIAGRAMS = {
     rag: ragDiagram,
@@ -1275,6 +1458,11 @@
     'self-consistency': selfConsistencyDiagram,
     'structured-outputs': structuredOutputsDiagram,
     'pre-training': trainingTimelineDiagram,
-    'post-training': trainingTimelineDiagram   // both phases shown in the same timeline
+    'post-training': trainingTimelineDiagram,   // both phases shown in the same timeline
+    mcp: mcpDiagram,
+    distillation: distillationDiagram,
+    multimodal: multimodalDiagram,
+    vlm: multimodalDiagram,                     // VLM is the text+image subset
+    latency: latencyDiagram
   };
 })();

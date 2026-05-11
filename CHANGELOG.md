@@ -2,6 +2,42 @@
 
 All notable changes to this course are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.3.7] — 2026-05-08
+
+### Fixed — training-timeline subs overflowed; added a defensive guard
+
+The `Pre-training` and `Post-training` sub-labels in the training
+timeline diagram ("next-token prediction · trillions of tokens",
+"SFT + RLHF/DPO + Constitutional AI") were ~45 chars long and
+overflowed their 170px boxes at the 11px sub-label font size.
+
+- **Sub-labels shortened** to fit: "next-token prediction" (21ch)
+  and "SFT + RLHF/DPO" (14ch). Both render cleanly inside the box.
+- **Cost annotations also tightened** (`· days/weeks` → `· days`)
+  for visual balance.
+- **`box()` helper now has a defensive guard**: if a sub label is
+  wider than the box at 11px (`box_width / 5.5` chars), it gets a
+  `textLength` + `lengthAdjust="spacingAndGlyphs"` attribute that
+  compresses the glyphs to fit. Stops future overflow from
+  shipping silently.
+
+### Added — 4 more glossary diagrams (28 entries with diagrams)
+
+- **`mcp`** — hub-and-spoke topology. MCP Client at top → protocol
+  trunk → 4 servers below (Drive 📁, Jira 🎫, Slack 💬, Postgres 🗄).
+  Clean, no line crossings.
+- **`distillation`** — Teacher (large amber box) → "outputs (logits,
+  labels)" arrow → Student (smaller green box). Visually conveys the
+  size/cost gap.
+- **`multimodal`** (and `vlm` reuses) — Text input + Image input
+  (with a small picture-frame icon) → "Fused tokens" → Same
+  transformer. Shows that both modalities flow through one network.
+- **`latency`** — single timeline split into TTFT (amber band) and
+  TPOT (green dashed band) with per-token tick marks. Request-sent
+  and first-token markers labelled. Time axis underneath.
+
+Cache buster bumped v=20 → v=21.
+
 ## [2.3.6] — 2026-05-08
 
 ### Fixed — text overflow in 3 v2.3.5 diagrams + 5 new diagrams added
