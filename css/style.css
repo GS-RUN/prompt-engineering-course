@@ -829,7 +829,11 @@ html[data-i18n-lang="en"] section[data-untranslated="1"] .lang-block[data-lang="
 .glossary-diagram svg.frontier-diagram,
 .glossary-diagram svg.subagent-diagram,
 .glossary-diagram svg.context-window-diagram,
-.glossary-diagram svg.layers-diagram          { max-width: 720px; min-width: 520px; }
+.glossary-diagram svg.layers-diagram,
+.glossary-diagram svg.effort-diagram,
+.glossary-diagram svg.alignment-diagram,
+.glossary-diagram svg.ftrag-diagram,
+.glossary-diagram svg.cai-diagram             { max-width: 720px; min-width: 520px; }
 .glossary-diagram svg.agent-diagram           { max-width: 600px; min-width: 420px; }
 .glossary-diagram svg.transformer-diagram     { max-width: 480px; min-width: 360px; }
 

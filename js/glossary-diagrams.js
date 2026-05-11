@@ -1676,55 +1676,71 @@
   function frontierModelDiagram(lang) {
     const L = lang === 'en' ? {
       yAxis: 'capability ↑',
-      xAxis: 'cost / 1M output tokens →',
+      xAxis: 'cost / 1M output tokens  (log scale) →',
       frontier: 'frontier',
       open: 'open-weights',
       foot: 'Frontier (top-right) buys the last 5pp of quality at ~30× the cost of open-weights.'
     } : {
       yAxis: 'capacidad ↑',
-      xAxis: 'coste / 1M tokens output →',
+      xAxis: 'coste / 1M tokens output  (escala log) →',
       frontier: 'frontier',
       open: 'open-weights',
       foot: 'Frontier (arriba-derecha) compra los últimos 5pp de calidad a ~30× el coste de open-weights.'
     };
     let out = '';
-    // Chart area
-    const x0 = 80, x1 = 660, y0 = 60, y1 = 270;
+    const x0 = 80, x1 = 660, y0 = 70, y1 = 270;
 
-    // Soft cluster backgrounds
-    out += '<rect x="' + (x0 + 8) + '" y="' + y0 + '" width="100" height="' + (y1 - y0) + '" rx="6" fill="rgba(110,190,127,0.05)"/>';
-    out += '<rect x="' + (x1 - 200) + '" y="' + y0 + '" width="190" height="100" rx="6" fill="rgba(245,165,36,0.06)"/>';
+    // Log x-axis so cheap models (cost < 1) don't squash into the y-axis.
+    const logMin = Math.log10(0.1);
+    const logMax = Math.log10(40);
+    const logRange = logMax - logMin;
+    const px = (c) => x0 + ((Math.log10(c) - logMin) / logRange) * (x1 - x0);
+    const yMin = 75, yMax = 100;
+    const py = (s) => y1 - ((s - yMin) / (yMax - yMin)) * (y1 - y0);
 
-    // Cluster labels
-    out += '<text x="' + (x0 + 58) + '" y="' + (y0 + 24) + '" text-anchor="middle" class="rd-sub" fill="' + P.green + '">' + L.open + '</text>';
-    out += '<text x="' + (x1 - 105) + '" y="' + (y0 + 24) + '" text-anchor="middle" class="rd-sub" fill="' + P.accent + '">' + L.frontier + '</text>';
+    const models = [
+      { name: 'Claude Opus 4.7', cost: 15,  score: 96, color: P.accent, dx: 12, dy: 4 },
+      { name: 'GPT-5.5',         cost: 22,  score: 94, color: P.accent, dx: 12, dy: 4 },
+      { name: 'Gemini 2.5 Pro',  cost: 8,   score: 92, color: P.accent, dx: 12, dy: 4 },
+      { name: 'DeepSeek V4',     cost: 1,   score: 89, color: P.green,  dx: 12, dy: 4 },
+      { name: 'Llama 4 70B',     cost: 0.4, score: 84, color: P.green,  dx: 12, dy: 4 },
+      { name: 'Qwen 3 32B',      cost: 0.2, score: 81, color: P.green,  dx: 12, dy: 4 }
+    ];
 
-    // Axes (with arrow ends)
+    // Cluster backgrounds aligned to actual dot positions
+    const openXs = models.filter(m => m.color === P.green).map(m => px(m.cost));
+    const frontXs = models.filter(m => m.color === P.accent).map(m => px(m.cost));
+    const greenL = Math.min(...openXs) - 26;
+    const greenR = Math.max(...openXs) + 100;   // room for labels
+    const amberL = Math.min(...frontXs) - 26;
+    const amberR = Math.min(x1, Math.max(...frontXs) + 100);
+    out += '<rect x="' + greenL + '" y="' + y0 + '" width="' + (greenR - greenL) + '" height="' + (y1 - y0) + '" rx="6" fill="rgba(110,190,127,0.04)"/>';
+    out += '<rect x="' + amberL + '" y="' + y0 + '" width="' + (amberR - amberL) + '" height="105" rx="6" fill="rgba(245,165,36,0.06)"/>';
+    out += '<text x="' + ((greenL + greenR) / 2) + '" y="' + (y0 + 22) + '" text-anchor="middle" class="rd-sub" fill="' + P.green + '">' + L.open + '</text>';
+    out += '<text x="' + ((amberL + amberR) / 2) + '" y="' + (y0 + 22) + '" text-anchor="middle" class="rd-sub" fill="' + P.accent + '">' + L.frontier + '</text>';
+
+    // Axes
     out += '<line x1="' + x0 + '" y1="' + y1 + '" x2="' + x0 + '" y2="' + (y0 - 6) + '" stroke="' + P.dim + '" stroke-width="1" marker-end="url(#fr-arr-dim)"/>';
     out += '<line x1="' + x0 + '" y1="' + y1 + '" x2="' + (x1 + 6) + '" y2="' + y1 + '" stroke="' + P.dim + '" stroke-width="1" marker-end="url(#fr-arr-dim)"/>';
-    out += '<text x="' + (x0 - 6) + '" y="50" text-anchor="end" class="rd-sub" fill="' + P.textDim + '">' + L.yAxis + '</text>';
+    out += '<text x="' + (x0 - 6) + '" y="60" text-anchor="end" class="rd-sub" fill="' + P.textDim + '">' + L.yAxis + '</text>';
     out += '<text x="' + (x1 + 4) + '" y="' + (y1 + 22) + '" text-anchor="end" class="rd-sub" fill="' + P.textDim + '">' + L.xAxis + '</text>';
 
-    // Models with positions and label placement
-    const xMax = 35, yMin = 55, yMax = 100;
-    const px = (c) => x0 + (c / xMax) * (x1 - x0);
-    const py = (s) => y1 - ((s - yMin) / (yMax - yMin)) * (y1 - y0);
-    const models = [
-      { name: 'Claude Opus 4.7', cost: 15,  score: 96, color: P.accent, dx: 12,  dy: 4  },
-      { name: 'GPT-5.5',         cost: 22,  score: 94, color: P.accent, dx: 12,  dy: 4  },
-      { name: 'Gemini 2.5 Pro',  cost: 8,   score: 92, color: P.accent, dx: 12,  dy: 4  },
-      { name: 'DeepSeek V4',     cost: 1,   score: 89, color: P.green,  dx: 12,  dy: -2 },
-      { name: 'Llama 4 70B',     cost: 0.4, score: 84, color: P.green,  dx: 12,  dy: 4  },
-      { name: 'Qwen 3 32B',      cost: 0.2, score: 81, color: P.green,  dx: 12,  dy: 16 }
-    ];
+    // Reference cost ticks ($0.1, $1, $10) for context on the log axis
+    [0.1, 1, 10].forEach(c => {
+      const x = px(c);
+      out += '<line x1="' + x + '" y1="' + y1 + '" x2="' + x + '" y2="' + (y1 + 5) + '" stroke="' + P.dim + '" stroke-width="1"/>';
+      out += '<text x="' + x + '" y="' + (y1 + 18) + '" text-anchor="middle" class="rd-sub" fill="' + P.textDim + '">$' + c + '</text>';
+    });
+
+    // Dots + inline labels
     for (const m of models) {
       const x = px(m.cost), y = py(m.score);
       out += '<circle cx="' + x + '" cy="' + y + '" r="6" fill="' + m.color + '"/>';
       out += '<text x="' + (x + m.dx) + '" y="' + (y + m.dy) + '" class="rd-sub" fill="' + P.text + '">' + m.name + '</text>';
     }
 
-    out += foot(L.foot, 360, 308);
-    return svgOpen('frontier-diagram', '0 0 720 325') + defs('fr') + out + '</svg>';
+    out += foot(L.foot, 360, 320);
+    return svgOpen('frontier-diagram', '0 0 720 340') + defs('fr') + out + '</svg>';
   }
 
   // ====================================================================
@@ -1867,6 +1883,159 @@
     return svgOpen('layers-diagram', '0 0 720 365') + defs('lay') + out + '</svg>';
   }
 
+  // ====================================================================
+  // 37. Effort levels — thinking-token consumption per level
+  // ====================================================================
+  function effortLevelsDiagram(lang) {
+    const L = lang === 'en' ? {
+      levels: ['low', 'medium', 'high', 'xhigh', 'max'],
+      cost: 'cost & latency',
+      foot: 'Use low for classification/extraction; high+ for math, debugging, deep reasoning.'
+    } : {
+      levels: ['low', 'medium', 'high', 'xhigh', 'max'],
+      cost: 'coste y latencia',
+      foot: 'Usa low para clasificación/extracción; high+ para matemáticas, debugging, razonamiento profundo.'
+    };
+    let out = '';
+    const heights = [25, 70, 140, 220, 300];   // proportional thinking-token cost
+    const tokenAmounts = ['~200', '~800', '~2 400', '~8 000', '~24 000'];
+    const startX = 80, barW = 100, gap = 20;
+    const baseY = 230, maxH = 170;
+    const maxHeight = Math.max(...heights);
+
+    // X-axis line
+    out += '<line x1="' + (startX - 14) + '" y1="' + baseY + '" x2="' + (startX + 5 * (barW + gap) - gap + 14) + '" y2="' + baseY + '" stroke="' + P.dim + '" stroke-width="1"/>';
+
+    for (let i = 0; i < 5; i++) {
+      const x = startX + i * (barW + gap);
+      const h = (heights[i] / maxHeight) * maxH;
+      const isMax = i === 4;
+      out += '<rect x="' + x + '" y="' + (baseY - h) + '" width="' + barW + '" height="' + h + '" rx="6" fill="' + (isMax ? 'rgba(245,165,36,0.18)' : P.accentSoft) + '" stroke="' + P.accent + '" stroke-width="' + (isMax ? 2 : 1.5) + '"/>';
+      out += '<text x="' + (x + barW / 2) + '" y="' + (baseY - h - 8) + '" text-anchor="middle" class="rd-sub" fill="' + P.accent + '">' + tokenAmounts[i] + ' tok</text>';
+      out += '<text x="' + (x + barW / 2) + '" y="' + (baseY + 20) + '" text-anchor="middle" class="rd-label">' + L.levels[i] + '</text>';
+    }
+
+    // Cost-axis hint arrow at the bottom
+    const arrowY = baseY + 50;
+    out += '<line x1="' + startX + '" y1="' + arrowY + '" x2="' + (startX + 5 * (barW + gap) - gap) + '" y2="' + arrowY + '" stroke="' + P.textDim + '" stroke-width="1" marker-end="url(#eff-arr-dim)"/>';
+    out += '<text x="' + (startX + (5 * (barW + gap) - gap) / 2) + '" y="' + (arrowY - 6) + '" text-anchor="middle" class="rd-sub" fill="' + P.textDim + '">' + L.cost + '</text>';
+
+    out += foot(L.foot, 360, 315);
+    return svgOpen('effort-diagram', '0 0 720 335') + defs('eff') + out + '</svg>';
+  }
+
+  // ====================================================================
+  // 38. Alignment — base → SFT → RLHF/DPO → CAI → instruct
+  // ====================================================================
+  function alignmentDiagram(lang) {
+    const L = lang === 'en' ? {
+      base: 'Base model',      baseSub: 'predicts next token',
+      sft: 'SFT',               sftSub: '(input, ideal output)',
+      rlhf: 'RLHF / DPO',       rlhfSub: 'human preferences',
+      cai: 'Constitutional AI', caiSub: 'principle-guided',
+      instruct: 'Instruct',     instructSub: 'follows instructions',
+      foot: 'Alignment turns a base model into a helpful, safe assistant. Each step adds preference signal.'
+    } : {
+      base: 'Base model',      baseSub: 'predice token siguiente',
+      sft: 'SFT',               sftSub: '(input, output ideal)',
+      rlhf: 'RLHF / DPO',       rlhfSub: 'preferencias humanas',
+      cai: 'Constitutional AI', caiSub: 'guiado por principios',
+      instruct: 'Instruct',     instructSub: 'sigue instrucciones',
+      foot: 'Alignment convierte un base model en un asistente útil y seguro. Cada paso añade señal de preferencia.'
+    };
+    let out = '';
+    const items = [
+      { label: L.base,     sub: L.baseSub,     variant: 'dim',   w: 110 },
+      { label: L.sft,      sub: L.sftSub,      variant: null,    w: 120 },
+      { label: L.rlhf,     sub: L.rlhfSub,     variant: null,    w: 120 },
+      { label: L.cai,      sub: L.caiSub,      variant: null,    w: 130 },
+      { label: L.instruct, sub: L.instructSub, variant: 'final', w: 130 }
+    ];
+    const gap = 10;
+    const total = items.reduce((s, it) => s + it.w, 0) + (items.length - 1) * gap;
+    let x = (720 - total) / 2;
+    const y = 90, h = 80;
+    for (let i = 0; i < items.length; i++) {
+      const it = items[i];
+      out += box(x, y, it.w, h, it.label, it.sub, { variant: it.variant });
+      if (i < items.length - 1) {
+        out += line(x + it.w + 1, y + h / 2, x + it.w + gap - 1, y + h / 2, 'align');
+      }
+      x += it.w + gap;
+    }
+    out += foot(L.foot, 360, 220);
+    return svgOpen('alignment-diagram', '0 0 720 240') + defs('align') + out + '</svg>';
+  }
+
+  // ====================================================================
+  // 39. Fine-tuning vs RAG — same goal? different tools
+  // ====================================================================
+  function fineTuningVsRagDiagram(lang) {
+    const L = lang === 'en' ? {
+      ft: 'Fine-tuning', ftDesc: 'internalises behavior, style, format',
+      ftGood: 'consistent style + format', ftBad: 'expensive, no new facts',
+      rag: 'RAG', ragDesc: 'augments with retrieved documents',
+      ragGood: 'fresh facts, traceable', ragBad: 'retrieval is the bottleneck',
+      foot: 'Different tools. Use RAG for knowledge; fine-tuning for behavior.'
+    } : {
+      ft: 'Fine-tuning', ftDesc: 'internaliza comportamiento, estilo, formato',
+      ftGood: 'estilo y formato consistentes', ftBad: 'caro, no añade hechos',
+      rag: 'RAG', ragDesc: 'aumenta con documentos recuperados',
+      ragGood: 'hechos frescos, trazable', ragBad: 'retrieval es el cuello de botella',
+      foot: 'Distintas herramientas. RAG para conocimiento; fine-tuning para comportamiento.'
+    };
+    let out = '';
+    out += '<text x="180" y="38" text-anchor="middle" class="rd-label" font-size="16">' + L.ft + '</text>';
+    out += '<text x="540" y="38" text-anchor="middle" class="rd-label" font-size="16">' + L.rag + '</text>';
+    out += '<line x1="360" y1="56" x2="360" y2="300" stroke="' + P.dim + '" stroke-width="1" stroke-dasharray="3 4"/>';
+    // Fine-tuning column
+    out += '<text x="180" y="78" text-anchor="middle" class="rd-sub">' + L.ftDesc + '</text>';
+    out += '<rect x="50" y="100" width="260" height="60" rx="8" fill="' + P.greenSoft + '" stroke="' + P.green + '" stroke-width="1.5"/>';
+    out += '<text x="180" y="135" text-anchor="middle" class="rd-sub" fill="' + P.green + '">✓ ' + L.ftGood + '</text>';
+    out += '<rect x="50" y="180" width="260" height="60" rx="8" fill="' + P.redSoft + '" stroke="' + P.red + '" stroke-width="1.5"/>';
+    out += '<text x="180" y="215" text-anchor="middle" class="rd-sub" fill="' + P.red + '">✗ ' + L.ftBad + '</text>';
+    // RAG column
+    out += '<text x="540" y="78" text-anchor="middle" class="rd-sub">' + L.ragDesc + '</text>';
+    out += '<rect x="410" y="100" width="260" height="60" rx="8" fill="' + P.greenSoft + '" stroke="' + P.green + '" stroke-width="1.5"/>';
+    out += '<text x="540" y="135" text-anchor="middle" class="rd-sub" fill="' + P.green + '">✓ ' + L.ragGood + '</text>';
+    out += '<rect x="410" y="180" width="260" height="60" rx="8" fill="' + P.redSoft + '" stroke="' + P.red + '" stroke-width="1.5"/>';
+    out += '<text x="540" y="215" text-anchor="middle" class="rd-sub" fill="' + P.red + '">✗ ' + L.ragBad + '</text>';
+
+    out += foot(L.foot, 360, 320);
+    return svgOpen('ftrag-diagram', '0 0 720 340') + defs('ftrag') + out + '</svg>';
+  }
+
+  // ====================================================================
+  // 40. Constitutional AI — model output critiqued vs written principles
+  // ====================================================================
+  function constitutionalAiDiagram(lang) {
+    const L = lang === 'en' ? {
+      output: 'Model output', critic: 'Self-critic',
+      constitution: 'Constitution', constitutionSub: '(written principles)',
+      revised: 'Revised output',
+      foot: 'Self-critique guided by written principles replaces some human feedback. Scales without N annotators.'
+    } : {
+      output: 'Output del modelo', critic: 'Auto-crítico',
+      constitution: 'Constitución', constitutionSub: '(principios escritos)',
+      revised: 'Output revisado',
+      foot: 'Auto-crítica guiada por principios escritos sustituye parte del feedback humano. Escala sin N anotadores.'
+    };
+    let out = '';
+    // Constitution at top centre, feeding down into Critic
+    out += box(280, 30, 160, 60, L.constitution, L.constitutionSub, { variant: 'dim' });
+    // Output (left) → Critic (centre) → Revised output (right)
+    out += box(40, 170, 180, 60, L.output, null);
+    out += box(270, 170, 180, 60, L.critic, null, { glow: true });
+    out += box(500, 170, 180, 60, L.revised, null, { variant: 'final' });
+    // Arrows
+    out += line(222, 200, 268, 200, 'cai');            // output → critic
+    out += line(452, 200, 498, 200, 'cai', { color: P.green }); // critic → revised
+    out += line(360, 92, 360, 168, 'cai');             // constitution → critic
+
+    out += foot(L.foot, 360, 270);
+    return svgOpen('cai-diagram', '0 0 720 290') + defs('cai') + out + '</svg>';
+  }
+
   // ----- Public registry -------------------------------------------------
   window.GLOSSARY_DIAGRAMS = {
     rag: ragDiagram,
@@ -1913,6 +2082,11 @@
     'context-window': contextWindowDiagram,
     'prompt-engineering': (lang) => layersDiagram(lang, 'prompt'),
     'context-engineering': (lang) => layersDiagram(lang, 'ctx'),
-    governance: (lang) => layersDiagram(lang, 'gov')
+    governance: (lang) => layersDiagram(lang, 'gov'),
+    'effort-levels': effortLevelsDiagram,
+    'reasoning-effort': effortLevelsDiagram,
+    alignment: alignmentDiagram,
+    'fine-tuning': fineTuningVsRagDiagram,
+    'constitutional-ai': constitutionalAiDiagram
   };
 })();

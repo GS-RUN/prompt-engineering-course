@@ -2,6 +2,41 @@
 
 All notable changes to this course are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.3.11] — 2026-05-08
+
+### Fixed — frontier-model labels were floating away from their dots
+
+The chart used a linear x-axis from 0 to 35 ($/1M output tokens). The
+three cheap open-weights models (Qwen 0.2, Llama 0.4, DeepSeek 1)
+all collapsed into the leftmost ~3% of the chart while their labels
+sat ~12px to the right — visually disconnected from the dots and far
+from the "open-weights" cluster background.
+
+- **Switched the x-axis to a log10 scale** (range 0.1 → 40). The 6
+  models now spread evenly across the chart (147, 214, 303, 504,
+  565, 602 in viewBox x), each label sits right next to its dot.
+- **Reference cost ticks** at $0.1, $1, $10 below the axis to keep
+  the log scale legible.
+- **Cluster backgrounds recomputed** to the actual dot positions so
+  they no longer drift away from the data.
+
+### Added — 4 more diagrams (45 entries with diagrams)
+
+- **`effort-levels`** (and `reasoning-effort` reuses) — 5 bars with
+  thinking-token counts (~200, ~800, ~2 400, ~8 000, ~24 000). "max"
+  highlighted in brighter amber. Arrow below labelled "cost &
+  latency" pointing right.
+- **`alignment`** — horizontal flow Base model → SFT → RLHF/DPO →
+  Constitutional AI → Instruct (green output). Each step adds a
+  preference signal.
+- **`fine-tuning`** — side-by-side comparison vs RAG. Green boxes
+  with pros, red boxes with cons, for each tool.
+- **`constitutional-ai`** — Output → Self-critic (glow) → Revised
+  output, with the Constitution box at top feeding down into the
+  critic. Models the self-critique loop.
+
+Cache buster bumped v=24 → v=25.
+
 ## [2.3.10] — 2026-05-08
 
 ### Added — 4 more diagrams + a 3-way shared layout (41 entries total)
