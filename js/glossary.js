@@ -55,6 +55,11 @@ const Glossary = {
         if (p.closest('.module-references')) return NodeFilter.FILTER_REJECT;
         if (p.closest('.module-front-matter .module-meta')) return NodeFilter.FILTER_REJECT;
         if (p.closest('.gloss-link')) return NodeFilter.FILTER_REJECT;
+        // Quiz panels: never wrap glossary links inside quiz questions or options.
+        // Reading a quiz with every keyword underlined and tooltips popping up
+        // pulls attention away from the question.
+        if (p.closest('.quiz-panel')) return NodeFilter.FILTER_REJECT;
+        if (p.closest('.knowledge-check')) return NodeFilter.FILTER_REJECT;
         if (!n.textContent.trim()) return NodeFilter.FILTER_REJECT;
         return NodeFilter.FILTER_ACCEPT;
       }

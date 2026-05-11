@@ -840,7 +840,8 @@ html[data-i18n-lang="en"] section[data-untranslated="1"] .lang-block[data-lang="
 .glossary-diagram svg.agi-diagram,
 .glossary-diagram svg.sampling-diagram,
 .glossary-diagram svg.system-prompt-diagram,
-.glossary-diagram svg.artifacts-diagram       { max-width: 720px; min-width: 520px; }
+.glossary-diagram svg.artifacts-diagram,
+.glossary-diagram svg.quant-methods-diagram   { max-width: 720px; min-width: 520px; }
 .glossary-diagram svg.agent-diagram           { max-width: 600px; min-width: 420px; }
 .glossary-diagram svg.transformer-diagram     { max-width: 480px; min-width: 360px; }
 

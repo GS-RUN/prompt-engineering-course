@@ -2400,6 +2400,58 @@
     return svgOpen('artifacts-diagram', '0 0 720 325') + defs('art') + out + '</svg>';
   }
 
+  // ====================================================================
+  // 48. Quantization methods — GPTQ vs AWQ vs GGUF vs QLoRA, with focus
+  // ====================================================================
+  function quantMethodsDiagram(lang, focus) {
+    const L = lang === 'en' ? {
+      methods: [
+        { id: 'gptq',  name: 'GPTQ',  attrs: ['post-training',   'GPU only',           '4–8 bit',                  'needs calibration data'] },
+        { id: 'awq',   name: 'AWQ',   attrs: ['post-training',   'GPU only',           '4-bit, activation-aware',  'better than GPTQ at 4-bit'] },
+        { id: 'gguf',  name: 'GGUF',  attrs: ['file format',     'CPU + GPU',          'K-quants per layer',       'llama.cpp / Ollama'] },
+        { id: 'qlora', name: 'QLoRA', attrs: ['fine-tuning',     'base frozen at 4-bit', 'LoRA adapters trained',   '70B on consumer GPU'] }
+      ],
+      titles: { gptq: 'Viewing: GPTQ', awq: 'Viewing: AWQ', gguf: 'Viewing: GGUF', qlora: 'Viewing: QLoRA' },
+      foot: 'GPTQ / AWQ / GGUF serve inference; QLoRA enables fine-tuning on top of a quantized base.'
+    } : {
+      methods: [
+        { id: 'gptq',  name: 'GPTQ',  attrs: ['post-training',   'sólo GPU',           '4–8 bit',                  'requiere calibración'] },
+        { id: 'awq',   name: 'AWQ',   attrs: ['post-training',   'sólo GPU',           '4-bit, activation-aware',  'mejor que GPTQ a 4-bit'] },
+        { id: 'gguf',  name: 'GGUF',  attrs: ['formato archivo', 'CPU + GPU',          'K-quants por capa',        'llama.cpp / Ollama'] },
+        { id: 'qlora', name: 'QLoRA', attrs: ['fine-tuning',     'base congelada 4-bit', 'adapters LoRA entrenados', '70B en GPU consumer'] }
+      ],
+      titles: { gptq: 'Viendo: GPTQ', awq: 'Viendo: AWQ', gguf: 'Viendo: GGUF', qlora: 'Viendo: QLoRA' },
+      foot: 'GPTQ / AWQ / GGUF sirven para inferencia; QLoRA permite fine-tuning sobre una base cuantizada.'
+    };
+    let out = '';
+    if (focus && L.titles[focus]) {
+      out += '<text x="360" y="28" text-anchor="middle" class="rd-label" fill="' + P.accent + '">' + L.titles[focus] + '</text>';
+    }
+    const startY = focus ? 50 : 40;
+    const cardW = 165, cardGap = 7, cardH = 220;
+    const total = 4 * cardW + 3 * cardGap;
+    const startX = (720 - total) / 2;
+    const focusedIdx = focus ? L.methods.findIndex(m => m.id === focus) : -1;
+
+    for (let i = 0; i < L.methods.length; i++) {
+      const m = L.methods[i];
+      const x = startX + i * (cardW + cardGap);
+      const isQLora = m.id === 'qlora';
+      const baseColor = isQLora ? P.green : P.accent;
+      const isFocused = i === focusedIdx;
+      const bg = isFocused ? (isQLora ? 'rgba(110,190,127,0.18)' : P.accentBright)
+                           : (isQLora ? P.greenSoft : P.accentSoft);
+      const sw = isFocused ? 2.5 : 1.5;
+      out += '<rect x="' + x + '" y="' + startY + '" width="' + cardW + '" height="' + cardH + '" rx="10" fill="' + bg + '" stroke="' + baseColor + '" stroke-width="' + sw + '"/>';
+      out += '<text x="' + (x + cardW / 2) + '" y="' + (startY + 30) + '" text-anchor="middle" class="rd-label" font-size="18" fill="' + baseColor + '">' + m.name + '</text>';
+      for (let j = 0; j < m.attrs.length; j++) {
+        out += '<text x="' + (x + 12) + '" y="' + (startY + 65 + j * 36) + '" class="rd-sub">· ' + m.attrs[j] + '</text>';
+      }
+    }
+    out += foot(L.foot, 360, startY + cardH + 30);
+    return svgOpen('quant-methods-diagram', '0 0 720 ' + (startY + cardH + 50)) + defs('qm') + out + '</svg>';
+  }
+
   // ----- Public registry -------------------------------------------------
   window.GLOSSARY_DIAGRAMS = {
     rag: ragDiagram,
@@ -2473,6 +2525,10 @@
     'authority-in-files': artifactsDiagram,
     'claude-md': artifactsDiagram,
     'agents-md': artifactsDiagram,
-    inference: autoregressiveDiagram   // reuse the token-by-token timeline
+    inference: autoregressiveDiagram,   // reuse the token-by-token timeline
+    gptq:  (lang) => quantMethodsDiagram(lang, 'gptq'),
+    awq:   (lang) => quantMethodsDiagram(lang, 'awq'),
+    gguf:  (lang) => quantMethodsDiagram(lang, 'gguf'),
+    qlora: (lang) => quantMethodsDiagram(lang, 'qlora')
   };
 })();

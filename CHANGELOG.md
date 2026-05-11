@@ -2,6 +2,33 @@
 
 All notable changes to this course are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.3.14] — 2026-05-08
+
+### Added — quantization-methods diagram (72 entries) + skip glossary in quizzes
+
+**Diagram** — `quantMethodsDiagram(lang, focus)` registered with focus
+for each of the four quantization methods:
+
+- `gptq` highlights the GPTQ card
+- `awq` highlights the AWQ card
+- `gguf` highlights the GGUF card
+- `qlora` highlights the QLoRA card (rendered in green to signal it's
+  the only one used for fine-tuning, not just inference)
+
+Each card carries 4 attribute bullets (training stage, hardware, bit
+precision, distinctive trait). The focused card gets a glow fill and
+a thicker stroke; the others render at the default amber/green soft
+fill. A "Viewing: ..." title sits above the cards. Same focus pattern
+as alignment and pre/post-training.
+
+**Glossary-in-quizzes fix** — `js/glossary.js` now skips text nodes
+whose ancestor is `.quiz-panel` or `.knowledge-check`. Quiz questions
+and options were getting every keyword underlined and showing tooltip
+popovers on hover, which pulled attention away from the question. The
+walker still wraps everywhere else in the module.
+
+Cache buster bumped v=27 → v=28.
+
 ## [2.3.13] — 2026-05-08
 
 ### Added — 3 new diagrams covering 11 more glossary entries (68 total)
