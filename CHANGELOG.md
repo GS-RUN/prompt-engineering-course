@@ -2,6 +2,31 @@
 
 All notable changes to this course are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.3.4] — 2026-05-08
+
+### Changed — MoE diagram redesigned (vertical column instead of 2×4 grid)
+
+The 2×4 expert grid in the MoE diagram had an unfixable issue: any
+arrow from Router to a "back row" expert (e.g. bottom-row Expert 6)
+had to pass through the boxes between them (e.g. bottom-row Expert
+5). Even removing arrows to non-selected experts didn't help — the
+arrow to Expert 6 still crossed Expert 5 because they share a row.
+
+Replaced the 2×4 grid with a single **vertical column of 8 experts**
+on the right, with a vertical "bus" line between Router and the
+column. Now:
+
+- **Selected experts** get a clean horizontal arrow off the bus into
+  the box (no crossings possible).
+- **Non-selected experts** get a short tick mark on the bus,
+  signalling "the router could route here but didn't this time".
+- The whole picture reads top-to-bottom like a routing manifest —
+  much closer to how MoE is described in papers.
+
+viewBox went from 760×255 → 760×380. Other diagrams unchanged.
+
+Cache buster bumped v=17 → v=18.
+
 ## [2.3.3] — 2026-05-08
 
 ### Fixed — visual issues in 4 of the v2.3.2 diagrams

@@ -280,47 +280,56 @@
       foot: 'Sólo 2 de 8 expertos se activan por token. Salida = suma ponderada de los 2.'
     };
     let out = '';
-    // Input box (left)
-    out += box(20, 130, 110, 60, L.input, null);
-    // Router box (middle)
-    out += box(170, 130, 100, 60, L.router, null, { glow: true });
-    // 8 expert boxes in 2 rows × 4 cols on the right
-    const startX = 320, EW = 90, EGAP_X = 12, EGAP_Y = 18, EH = 58;
-    const selected = new Set([0, 5]); // experts 1 and 6 are picked
-    for (let r = 0; r < 2; r++) {
-      for (let c = 0; c < 4; c++) {
-        const idx = r * 4 + c;
-        const x = startX + c * (EW + EGAP_X);
-        const y = 60 + r * (EH + EGAP_Y);
-        const variant = selected.has(idx) ? null : 'dim';
-        out += box(x, y, EW, EH, L.expert + ' ' + (idx + 1), null, { variant: variant });
-      }
-    }
-    // Arrows: input → router (always)
-    out += line(132, 160, 168, 160, 'moe');
+    // Layout rethought: 2x4 grid forced any "Router → bottom-right expert" arrow
+    // through other expert boxes. Switched to a SINGLE vertical column of 8
+    // experts on the right, with a vertical "bus" between Router and the column.
+    // Selected experts get a clean horizontal arrow off the bus; non-selected
+    // get a short tick mark, signalling "router could route here but didn't".
 
-    // Router → only the SELECTED experts (drawing 8 arrows from one point
-    // crossed too many boxes — non-selected experts stay dimmed without arrow,
-    // their colour already signals they're not routed to).
-    // Use small curves so the arrows look intentional, not accidental.
-    const routerOutX = 272, routerOutY = 160;
-    for (let r = 0; r < 2; r++) {
-      for (let c = 0; c < 4; c++) {
-        const idx = r * 4 + c;
-        if (!selected.has(idx)) continue;
-        const ex = startX + c * (EW + EGAP_X);
-        const ey = 60 + r * (EH + EGAP_Y) + EH / 2;
-        // Cubic bezier: start out horizontally from router, then bend to the expert
-        const midX = routerOutX + (ex - routerOutX) * 0.55;
-        const d = 'M ' + routerOutX + ' ' + routerOutY +
-                  ' C ' + midX + ' ' + routerOutY + ', ' +
-                          midX + ' ' + ey + ', ' +
-                          (ex - 4) + ' ' + ey;
-        out += curve(d, P.accent, 1.8, { marker: 'moe-arr' });
-      }
+    // Input + Router on the left, vertically centred against the expert column.
+    out += box(20, 175, 110, 50, L.input, null);
+    out += line(132, 200, 158, 200, 'moe');                  // input -> router
+    out += box(160, 175, 110, 50, L.router, null, { glow: true });
+    // Connector router -> bus (dim, just a hand-off line)
+    out += '<line x1="272" y1="200" x2="308" y2="200" stroke="' + P.dim + '" stroke-width="1.5"/>';
+
+    // 8 expert boxes in a vertical column.
+    const eX = 340, eW = 220, eH = 32, eGap = 6;
+    const totalH = 8 * eH + 7 * eGap;     // 298
+    const startY = 41;                     // centred in viewBox height 380
+    const selected = new Set([0, 5]);      // experts 1 and 6 are routed
+    const centers = [];
+    for (let i = 0; i < 8; i++) {
+      const y = startY + i * (eH + eGap);
+      const cy = y + eH / 2;
+      centers.push(cy);
+      out += box(eX, y, eW, eH, L.expert + ' ' + (i + 1), null,
+                 { variant: selected.has(i) ? null : 'dim' });
     }
-    out += foot(L.foot, 380, 235);
-    return svgOpen('moe-diagram', '0 0 760 255') + defs('moe') + out + '</svg>';
+
+    // Vertical bus at x=310, spanning the topmost to bottommost expert centre.
+    const busX = 310;
+    out += '<line x1="' + busX + '" y1="' + centers[0] + '" x2="' + busX +
+           '" y2="' + centers[centers.length - 1] +
+           '" stroke="' + P.dim + '" stroke-width="1.5"/>';
+
+    // Tick marks on the bus for non-selected experts (potential routes, not taken).
+    for (let i = 0; i < 8; i++) {
+      if (selected.has(i)) continue;
+      out += '<line x1="' + busX + '" y1="' + centers[i] +
+             '" x2="' + (busX + 10) + '" y2="' + centers[i] +
+             '" stroke="' + P.dim + '" stroke-width="1"/>';
+    }
+
+    // Bright arrows for the selected experts.
+    for (const idx of selected) {
+      out += '<line x1="' + busX + '" y1="' + centers[idx] +
+             '" x2="' + (eX - 4) + '" y2="' + centers[idx] +
+             '" stroke="' + P.accent + '" stroke-width="2" marker-end="url(#moe-arr)"/>';
+    }
+
+    out += foot(L.foot, 380, 366);
+    return svgOpen('moe-diagram', '0 0 760 380') + defs('moe') + out + '</svg>';
   }
 
   // ====================================================================

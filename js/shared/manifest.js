@@ -9,7 +9,7 @@
    ============================================================ */
 
 window.COURSE_MANIFEST = {
-  version: '2.3.3',
+  version: '2.3.4',
   lastUpdated: '2026-05-08',
   blocks: [
     {
