@@ -78,7 +78,8 @@
     opts = opts || {};
     const op = opts.opacity != null ? ' stroke-opacity="' + opts.opacity + '"' : '';
     const sd = opts.dash ? ' stroke-dasharray="' + opts.dash + '"' : '';
-    return '<path d="' + d + '" fill="none" stroke="' + color + '" stroke-width="' + width + '"' + op + sd + '/>';
+    const marker = opts.marker ? ' marker-end="url(#' + opts.marker + ')"' : '';
+    return '<path d="' + d + '" fill="none" stroke="' + color + '" stroke-width="' + width + '"' + op + sd + marker + '/>';
   }
 
   function foot(text, x, y) {
@@ -162,8 +163,8 @@
       const tx = startX + i * (W + GAP) + W / 2;
       const ty = Y + H;
       const w = weights[i];
-      const sw = 1 + w * 9; // 1.5 to 10px
-      const op = 0.25 + w * 1.5;
+      const sw = 1.2 + w * 5; // 0.05->1.45, 0.40->3.2 (less jarring)
+      const op = 0.35 + w * 1.4;
       // Curved cubic from (lastX, lastY) down to belt then up to (tx, ty)
       const d = 'M ' + lastX + ' ' + lastY +
                 ' C ' + lastX + ' ' + beltY + ', ' + tx + ' ' + beltY + ', ' + tx + ' ' + ty;
@@ -195,26 +196,27 @@
       foot: 'El agente itera hasta resolver la tarea o disparar una condición de parada.'
     };
     // Triangle layout. viewBox 600x340.
-    // Thought top: (240, 30), Action bottom-right: (420, 200), Observation bottom-left: (60, 200)
+    // Thought top: (240, 30, 120, 70). Bottom edge y=100, right edge x=360.
+    // Action bottom-right: (420, 200, 120, 70). Top edge y=200, left edge x=420.
+    // Observation bottom-left: (60, 200, 120, 70). Top edge y=200, right edge x=180.
+    // Done top-right: (440, 30, 120, 70). Left edge x=440.
     let out = '';
     out += box(240, 30, 120, 70, L.thought, L.thoughtSub);
     out += box(420, 200, 120, 70, L.action, L.actionSub);
     out += box(60, 200, 120, 70, L.obs, L.obsSub);
-    // Done branch off Thought (right side)
     out += box(440, 30, 120, 70, L.done, L.doneSub, { variant: 'final' });
-    // Curved arrows along the cycle
-    // Thought -> Action: curve right-down
-    out += curve('M 360 80 C 430 100, 470 130, 480 200', P.accent, 1.5);
-    out += '<polygon points="475,193 485,200 478,207" fill="' + P.accent + '"/>';
-    // Action -> Observation: curve along bottom
-    out += curve('M 420 235 C 350 290, 250 290, 180 235', P.accent, 1.5);
-    out += '<polygon points="186,228 178,235 186,242" fill="' + P.accent + '"/>';
-    // Observation -> Thought: curve up-right
-    out += curve('M 180 200 C 170 130, 210 100, 240 80', P.accent, 1.5);
-    out += '<polygon points="246,86 240,80 233,87" fill="' + P.accent + '"/>';
-    // Thought -> Done: short arrow right
+
+    // Cycle arrows clockwise — marker-end auto-orients the arrowhead at the path's end.
+    // Thought (right side) → Action (top side)
+    out += curve('M 360 80 C 430 95, 472 135, 478 196', P.accent, 1.5, { marker: 'agent-arr' });
+    // Action (bottom) → Observation (bottom): curve under the triangle
+    out += curve('M 420 250 C 360 320, 240 320, 184 250', P.accent, 1.5, { marker: 'agent-arr' });
+    // Observation (top) → Thought (left side)
+    out += curve('M 120 198 C 110 130, 180 95, 238 78', P.accent, 1.5, { marker: 'agent-arr' });
+    // Thought → Done: short straight green arrow on top
     out += line(363, 60, 437, 60, 'agent', { color: P.green });
-    // Loop label centre
+
+    // Loop label in the middle of the triangle
     out += '<text x="300" y="160" text-anchor="middle" class="rd-sub" fill="' + P.textDim + '" font-style="italic">loop</text>';
     out += foot(L.foot, 300, 320);
     return svgOpen('agent-diagram', '0 0 600 340') + defs('agent') + out + '</svg>';
@@ -296,17 +298,25 @@
     }
     // Arrows: input → router (always)
     out += line(132, 160, 168, 160, 'moe');
-    // Router → all 8 experts (selected: bright; else: dim)
+
+    // Router → only the SELECTED experts (drawing 8 arrows from one point
+    // crossed too many boxes — non-selected experts stay dimmed without arrow,
+    // their colour already signals they're not routed to).
+    // Use small curves so the arrows look intentional, not accidental.
+    const routerOutX = 272, routerOutY = 160;
     for (let r = 0; r < 2; r++) {
       for (let c = 0; c < 4; c++) {
         const idx = r * 4 + c;
+        if (!selected.has(idx)) continue;
         const ex = startX + c * (EW + EGAP_X);
         const ey = 60 + r * (EH + EGAP_Y) + EH / 2;
-        const isSel = selected.has(idx);
-        out += line(272, 160, ex - 4, ey, 'moe', {
-          color: isSel ? P.accent : P.dim,
-          width: isSel ? 1.6 : 1
-        });
+        // Cubic bezier: start out horizontally from router, then bend to the expert
+        const midX = routerOutX + (ex - routerOutX) * 0.55;
+        const d = 'M ' + routerOutX + ' ' + routerOutY +
+                  ' C ' + midX + ' ' + routerOutY + ', ' +
+                          midX + ' ' + ey + ', ' +
+                          (ex - 4) + ' ' + ey;
+        out += curve(d, P.accent, 1.8, { marker: 'moe-arr' });
       }
     }
     out += foot(L.foot, 380, 235);
@@ -331,24 +341,59 @@
       foot: 'LoRA sólo entrena A y B (~1% de los params). En inferencia: W + A·B (misma forma que W).'
     };
     let out = '';
-    // Top row: Full FT — one big W square
-    out += '<text x="50" y="50" text-anchor="start" class="rd-label" fill="' + P.text + '">' + L.full + '</text>';
-    out += box(50, 60, 110, 90, 'W', L.fullW.replace(' (', '\n('), null);
-    // simple alt: inline subscript text below
-    // Bottom row: LoRA — W (gray) + A (tall thin) × B (wide flat)
-    out += '<text x="50" y="190" text-anchor="start" class="rd-label" fill="' + P.text + '">' + L.lora + '</text>';
-    out += box(50, 200, 110, 90, 'W', L.W, { variant: 'dim' });
-    out += '<text x="180" y="252" text-anchor="middle" class="rd-label" fill="' + P.accent + '" font-size="22">' + L.add + '</text>';
-    // A: tall thin
-    out += box(200, 200, 30, 90, 'A', null);
-    out += '<text x="245" y="252" text-anchor="middle" class="rd-label" fill="' + P.accent + '" font-size="22">' + L.mul + '</text>';
-    // B: wide flat
-    out += box(265, 230, 110, 30, 'B', null);
-    // Sub-labels below A and B
-    out += '<text x="215" y="306" text-anchor="middle" class="rd-sub">' + L.a + '</text>';
-    out += '<text x="320" y="280" text-anchor="middle" class="rd-sub">' + L.b + '</text>';
-    out += foot(L.foot, 360, 348);
-    return svgOpen('lora-diagram', '0 0 720 360') + defs('lora') + out + '</svg>';
+    const cx = 360; // viewBox horizontal centre
+
+    // ----- Top row: Full fine-tuning -----
+    // Section label, left-aligned at the section's x-start
+    out += '<text x="295" y="36" text-anchor="start" class="rd-label">' + L.full + '</text>';
+    // Single W box, centred
+    out += box(305, 46, 110, 86, 'W', null);
+    // Sub-label below the box
+    out += '<text x="' + (305 + 55) + '" y="155" text-anchor="middle" class="rd-sub">' + L.fullW + '</text>';
+
+    // Divider between rows
+    out += '<line x1="40" y1="186" x2="680" y2="186" stroke="' + P.dim + '" stroke-width="1" stroke-dasharray="3 4"/>';
+
+    // ----- Bottom row: LoRA -----
+    // Equation: W(frozen) + A × B  (centred horizontally on cx)
+    // Widths: W=110, +sign=20, A=30, ×sign=20, B=110 → total inner width = 290
+    // Plus gaps of 8 between elements: 110 + 8 + 20 + 8 + 30 + 8 + 20 + 8 + 110 = 322
+    // So start x = cx - 161 = 199
+    const eqStart = 199;
+    const yEq = 220;        // top of W box
+    const wH = 90;
+    const eqMidY = yEq + wH / 2;   // 265
+
+    // Section label
+    out += '<text x="' + eqStart + '" y="210" text-anchor="start" class="rd-label">' + L.lora + '</text>';
+
+    // W (frozen) box
+    let xCursor = eqStart;
+    out += box(xCursor, yEq, 110, wH, 'W', null, { variant: 'dim' });
+    out += '<text x="' + (xCursor + 55) + '" y="' + (yEq + wH + 22) + '" text-anchor="middle" class="rd-sub">' + L.W + '</text>';
+    xCursor += 110 + 8;
+
+    // + sign
+    out += '<text x="' + (xCursor + 10) + '" y="' + (eqMidY + 8) + '" text-anchor="middle" font-size="22" fill="' + P.accent + '">' + L.add + '</text>';
+    xCursor += 20 + 8;
+
+    // A (tall thin)
+    out += box(xCursor, yEq, 30, wH, 'A', null);
+    out += '<text x="' + (xCursor + 15) + '" y="' + (yEq + wH + 22) + '" text-anchor="middle" class="rd-sub">' + L.a + '</text>';
+    xCursor += 30 + 8;
+
+    // × sign
+    out += '<text x="' + (xCursor + 10) + '" y="' + (eqMidY + 8) + '" text-anchor="middle" font-size="22" fill="' + P.accent + '">' + L.mul + '</text>';
+    xCursor += 20 + 8;
+
+    // B (wide flat) — vertically centered against the others (y so its mid = eqMidY)
+    const bH = 30;
+    const bY = eqMidY - bH / 2;
+    out += box(xCursor, bY, 110, bH, 'B', null);
+    out += '<text x="' + (xCursor + 55) + '" y="' + (yEq + wH + 22) + '" text-anchor="middle" class="rd-sub">' + L.b + '</text>';
+
+    out += foot(L.foot, cx, 376);
+    return svgOpen('lora-diagram', '0 0 720 390') + defs('lora') + out + '</svg>';
   }
 
   // ====================================================================

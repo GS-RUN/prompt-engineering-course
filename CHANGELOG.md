@@ -2,6 +2,34 @@
 
 All notable changes to this course are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.3.3] — 2026-05-08
+
+### Fixed — visual issues in 4 of the v2.3.2 diagrams
+
+User review of the v2.3.2 batch flagged four problems, all fixed:
+
+- **`agent` / `react`** — manual `<polygon>` arrowheads on the cycle
+  curves were misaligned with the curve direction. Replaced with
+  `marker-end` on the path so SVG auto-orients the arrowhead at the
+  endpoint. The `curve()` helper in `glossary-diagrams.js` now
+  accepts an `opts.marker` parameter.
+- **`attention`** — the line for weight 0.40 ("mat" → "cat") was
+  4.6px while neighbours were ~1.5–2.8px, making the contrast jarring.
+  Stroke width formula softened from `1 + w * 9` to `1.2 + w * 5`
+  (max 3.2px). Opacity floor lifted from 0.25 to 0.35.
+- **`lora`** — the "W (1B params, todos actualizados)" sub-label
+  overflowed the 110px box because SVG `<text>` doesn't render `\n`.
+  Refactored: all sub-labels now sit OUTSIDE/BELOW their boxes,
+  layout centred horizontally, viewBox bumped to 720×390 to fit the
+  divider line and breathing room.
+- **`moe`** — drawing 8 arrows from the Router to a 2×4 expert grid
+  produced messy line crossings over non-target boxes. Now only the
+  2 SELECTED experts get arrows (small bezier curves). The 6
+  non-selected experts stay dimmed without arrows — the muted colour
+  already conveys "not routed to".
+
+Cache buster bumped v=16 → v=17.
+
 ## [2.3.2] — 2026-05-08
 
 ### Added — 9 more glossary diagrams (10 total)
