@@ -2,6 +2,30 @@
 
 All notable changes to this course are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.3.10] — 2026-05-08
+
+### Added — 4 more diagrams + a 3-way shared layout (41 entries total)
+
+- **`frontier-model`** — capability vs cost scatter. Soft cluster
+  backgrounds mark the "open-weights" zone (bottom-left, green) and
+  the "frontier" zone (top-right, amber). 6 plotted models: Claude
+  Opus 4.7, GPT-5.5, Gemini 2.5 Pro (amber) + DeepSeek V4, Llama 4
+  70B, Qwen 3 32B (green).
+- **`sub-agent`** — Parent agent at top (glow) branching down to
+  three specialised sub-agents: Explore (read-only), Plan
+  (read + write doc), General-purpose (all tools). Curved arrows.
+- **`context-window`** — horizontal bar chart of 2026 context-window
+  sizes per model, normalised against 2M. Kimi K2 (2M) and Gemini 2.5
+  Pro (1M) coloured green to mark the long-context tier.
+- **Shared `layers` diagram** for `prompt-engineering`,
+  `context-engineering` and `governance` — three concentric
+  rectangles with the active term's ring highlighted (brighter fill +
+  thicker stroke) and a "Viewing: ..." title at top. Applies the same
+  per-view focus pattern introduced in v2.3.8 for the training
+  timeline.
+
+Cache buster bumped v=23 → v=24.
+
 ## [2.3.9] — 2026-05-08
 
 ### Fixed — multimodal diagram had a decorative icon overlapping the label

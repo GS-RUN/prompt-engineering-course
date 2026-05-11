@@ -1670,6 +1670,203 @@
     return svgOpen('flash-attn-diagram', '0 0 720 310') + defs('fa') + out + '</svg>';
   }
 
+  // ====================================================================
+  // 33. Frontier model — capability vs cost scatter (top-right vs bottom-left)
+  // ====================================================================
+  function frontierModelDiagram(lang) {
+    const L = lang === 'en' ? {
+      yAxis: 'capability ↑',
+      xAxis: 'cost / 1M output tokens →',
+      frontier: 'frontier',
+      open: 'open-weights',
+      foot: 'Frontier (top-right) buys the last 5pp of quality at ~30× the cost of open-weights.'
+    } : {
+      yAxis: 'capacidad ↑',
+      xAxis: 'coste / 1M tokens output →',
+      frontier: 'frontier',
+      open: 'open-weights',
+      foot: 'Frontier (arriba-derecha) compra los últimos 5pp de calidad a ~30× el coste de open-weights.'
+    };
+    let out = '';
+    // Chart area
+    const x0 = 80, x1 = 660, y0 = 60, y1 = 270;
+
+    // Soft cluster backgrounds
+    out += '<rect x="' + (x0 + 8) + '" y="' + y0 + '" width="100" height="' + (y1 - y0) + '" rx="6" fill="rgba(110,190,127,0.05)"/>';
+    out += '<rect x="' + (x1 - 200) + '" y="' + y0 + '" width="190" height="100" rx="6" fill="rgba(245,165,36,0.06)"/>';
+
+    // Cluster labels
+    out += '<text x="' + (x0 + 58) + '" y="' + (y0 + 24) + '" text-anchor="middle" class="rd-sub" fill="' + P.green + '">' + L.open + '</text>';
+    out += '<text x="' + (x1 - 105) + '" y="' + (y0 + 24) + '" text-anchor="middle" class="rd-sub" fill="' + P.accent + '">' + L.frontier + '</text>';
+
+    // Axes (with arrow ends)
+    out += '<line x1="' + x0 + '" y1="' + y1 + '" x2="' + x0 + '" y2="' + (y0 - 6) + '" stroke="' + P.dim + '" stroke-width="1" marker-end="url(#fr-arr-dim)"/>';
+    out += '<line x1="' + x0 + '" y1="' + y1 + '" x2="' + (x1 + 6) + '" y2="' + y1 + '" stroke="' + P.dim + '" stroke-width="1" marker-end="url(#fr-arr-dim)"/>';
+    out += '<text x="' + (x0 - 6) + '" y="50" text-anchor="end" class="rd-sub" fill="' + P.textDim + '">' + L.yAxis + '</text>';
+    out += '<text x="' + (x1 + 4) + '" y="' + (y1 + 22) + '" text-anchor="end" class="rd-sub" fill="' + P.textDim + '">' + L.xAxis + '</text>';
+
+    // Models with positions and label placement
+    const xMax = 35, yMin = 55, yMax = 100;
+    const px = (c) => x0 + (c / xMax) * (x1 - x0);
+    const py = (s) => y1 - ((s - yMin) / (yMax - yMin)) * (y1 - y0);
+    const models = [
+      { name: 'Claude Opus 4.7', cost: 15,  score: 96, color: P.accent, dx: 12,  dy: 4  },
+      { name: 'GPT-5.5',         cost: 22,  score: 94, color: P.accent, dx: 12,  dy: 4  },
+      { name: 'Gemini 2.5 Pro',  cost: 8,   score: 92, color: P.accent, dx: 12,  dy: 4  },
+      { name: 'DeepSeek V4',     cost: 1,   score: 89, color: P.green,  dx: 12,  dy: -2 },
+      { name: 'Llama 4 70B',     cost: 0.4, score: 84, color: P.green,  dx: 12,  dy: 4  },
+      { name: 'Qwen 3 32B',      cost: 0.2, score: 81, color: P.green,  dx: 12,  dy: 16 }
+    ];
+    for (const m of models) {
+      const x = px(m.cost), y = py(m.score);
+      out += '<circle cx="' + x + '" cy="' + y + '" r="6" fill="' + m.color + '"/>';
+      out += '<text x="' + (x + m.dx) + '" y="' + (y + m.dy) + '" class="rd-sub" fill="' + P.text + '">' + m.name + '</text>';
+    }
+
+    out += foot(L.foot, 360, 308);
+    return svgOpen('frontier-diagram', '0 0 720 325') + defs('fr') + out + '</svg>';
+  }
+
+  // ====================================================================
+  // 34. Sub-agent — parent agent spawns specialised sub-agents
+  // ====================================================================
+  function subAgentDiagram(lang) {
+    const L = lang === 'en' ? {
+      parent: 'Parent agent', parentSub: 'orchestrates the task',
+      explore: 'Explore', exploreSub: 'read-only',
+      plan: 'Plan', planSub: 'reads + writes doc',
+      gen: 'General-purpose', genSub: 'all tools',
+      foot: 'Each sub-agent runs in an isolated context with its own tool permissions.'
+    } : {
+      parent: 'Agente padre', parentSub: 'orquesta la tarea',
+      explore: 'Explore', exploreSub: 'sólo lectura',
+      plan: 'Plan', planSub: 'lee + escribe doc',
+      gen: 'General-purpose', genSub: 'todas las tools',
+      foot: 'Cada sub-agente corre en un contexto aislado con sus propios permisos de tools.'
+    };
+    let out = '';
+    // Parent at top, centred
+    out += box(270, 40, 180, 64, L.parent, L.parentSub, { glow: true });
+    // Sub-agents at bottom
+    const subs = [
+      { x: 40,  label: L.explore, sub: L.exploreSub },
+      { x: 270, label: L.plan,    sub: L.planSub },
+      { x: 500, label: L.gen,     sub: L.genSub }
+    ];
+    for (const s of subs) {
+      out += box(s.x, 220, 180, 64, s.label, s.sub);
+      // Curved arrow from parent bottom to sub top
+      const childCx = s.x + 90;
+      out += '<path d="M 360 106 C 360 150, ' + childCx + ' 170, ' + childCx + ' 216" fill="none" stroke="' + P.accent + '" stroke-width="1.5" marker-end="url(#sub-arr)"/>';
+    }
+    out += foot(L.foot, 360, 318);
+    return svgOpen('subagent-diagram', '0 0 720 335') + defs('sub') + out + '</svg>';
+  }
+
+  // ====================================================================
+  // 35. Context window — sizes across 2026 models, log-ish bar chart
+  // ====================================================================
+  function contextWindowDiagram(lang) {
+    const L = lang === 'en' ? {
+      title: 'Context window size in 2026 (tokens)',
+      foot: 'Bigger windows fit more docs/code; attention cost scales O(n²) — long context is expensive.'
+    } : {
+      title: 'Tamaño de ventana de contexto en 2026 (tokens)',
+      foot: 'Ventanas más grandes caben más docs/código; el coste de atención escala O(n²) — el contexto largo es caro.'
+    };
+    let out = '';
+    out += '<text x="360" y="38" text-anchor="middle" class="rd-sub" fill="' + P.textDim + '">' + L.title + '</text>';
+
+    const models = [
+      { name: 'DeepSeek V4',     size: 128,  sizeText: '128K' },
+      { name: 'Claude Opus 4.7', size: 200,  sizeText: '200K' },
+      { name: 'GPT-5.5',         size: 256,  sizeText: '256K' },
+      { name: 'Gemini 2.5 Pro',  size: 1000, sizeText: '1M',  highlight: true },
+      { name: 'Kimi K2',         size: 2000, sizeText: '2M',  highlight: true }
+    ];
+    const maxSize = 2000;
+    const barH = 32;
+    const barGap = 14;
+    const startY = 60;
+    const maxBarW = 460;
+    const labelColW = 170;
+
+    for (let i = 0; i < models.length; i++) {
+      const m = models[i];
+      const y = startY + i * (barH + barGap);
+      const w = (m.size / maxSize) * maxBarW;
+      const stroke = m.highlight ? P.green : P.accent;
+      const fill = m.highlight ? P.greenSoft : P.accentSoft;
+      // Name label on the left
+      out += '<text x="' + labelColW + '" y="' + (y + 21) + '" text-anchor="end" class="rd-label">' + m.name + '</text>';
+      // Bar
+      out += '<rect x="' + (labelColW + 10) + '" y="' + y + '" width="' + w + '" height="' + barH + '" rx="5" fill="' + fill + '" stroke="' + stroke + '" stroke-width="1.5"/>';
+      // Size label after bar
+      out += '<text x="' + (labelColW + 10 + w + 10) + '" y="' + (y + 21) + '" class="rd-label" fill="' + stroke + '">' + m.sizeText + '</text>';
+    }
+
+    out += foot(L.foot, 360, 295);
+    return svgOpen('context-window-diagram', '0 0 720 315') + defs('cw') + out + '</svg>';
+  }
+
+  // ====================================================================
+  // 36. Layered concepts — prompt / context engineering / governance
+  // ====================================================================
+  function layersDiagram(lang, focus) {
+    const L = lang === 'en' ? {
+      prompt: 'Prompt engineering',
+      promptSub: 'per call · structure, examples, role, format',
+      context: 'Context engineering',
+      contextSub: 'what enters context · RAG, memory, history',
+      governance: 'Governance',
+      governanceSub: 'project-level · artifacts, drift, authority',
+      viewPrompt: 'Viewing: Prompt engineering',
+      viewContext: 'Viewing: Context engineering',
+      viewGov: 'Viewing: Governance',
+      foot: 'Each outer layer constrains the inner. Real systems need all three at once.'
+    } : {
+      prompt: 'Prompt engineering',
+      promptSub: 'por llamada · estructura, ejemplos, rol, formato',
+      context: 'Context engineering',
+      contextSub: 'qué entra al contexto · RAG, memoria, historial',
+      governance: 'Governance',
+      governanceSub: 'a nivel proyecto · artifacts, drift, autoridad',
+      viewPrompt: 'Viendo: Prompt engineering',
+      viewContext: 'Viendo: Context engineering',
+      viewGov: 'Viendo: Governance',
+      foot: 'Cada capa exterior restringe la interior. Los sistemas reales necesitan las tres a la vez.'
+    };
+    // Fill strength per ring depends on which one is in focus
+    const ringFill = (which) => focus === which ? 'rgba(245,165,36,0.18)'
+                   : which === 'gov' ? 'rgba(245,165,36,0.04)'
+                   : which === 'ctx' ? 'rgba(245,165,36,0.06)'
+                   :                   'rgba(245,165,36,0.10)';
+    const ringStroke = (which) => focus === which ? P.accent : P.accent;
+    const ringStrokeW = (which) => focus === which ? '2.5' : (which === 'gov' ? '2' : '1.5');
+
+    let out = '';
+    // Optional focus title above the diagram
+    if (focus) {
+      const title = focus === 'prompt' ? L.viewPrompt : focus === 'ctx' ? L.viewContext : L.viewGov;
+      out += '<text x="360" y="28" text-anchor="middle" class="rd-label" fill="' + P.accent + '">' + title + '</text>';
+    }
+    // Outer: governance
+    out += '<rect x="40" y="48" width="640" height="270" rx="20" fill="' + ringFill('gov') + '" stroke="' + ringStroke('gov') + '" stroke-width="' + ringStrokeW('gov') + '"/>';
+    out += '<text x="60" y="72" class="rd-label" fill="' + P.accent + '">' + L.governance + '</text>';
+    out += '<text x="60" y="90" class="rd-sub">' + L.governanceSub + '</text>';
+    // Middle: context engineering
+    out += '<rect x="90" y="116" width="540" height="186" rx="16" fill="' + ringFill('ctx') + '" stroke="' + ringStroke('ctx') + '" stroke-width="' + ringStrokeW('ctx') + '"/>';
+    out += '<text x="110" y="140" class="rd-label" fill="' + P.accent + '">' + L.context + '</text>';
+    out += '<text x="110" y="158" class="rd-sub">' + L.contextSub + '</text>';
+    // Inner: prompt engineering
+    out += '<rect x="150" y="186" width="420" height="98" rx="12" fill="' + ringFill('prompt') + '" stroke="' + ringStroke('prompt') + '" stroke-width="' + ringStrokeW('prompt') + '"/>';
+    out += '<text x="170" y="212" class="rd-label" fill="' + P.accent + '">' + L.prompt + '</text>';
+    out += '<text x="170" y="230" class="rd-sub">' + L.promptSub + '</text>';
+
+    out += foot(L.foot, 360, 345);
+    return svgOpen('layers-diagram', '0 0 720 365') + defs('lay') + out + '</svg>';
+  }
+
   // ----- Public registry -------------------------------------------------
   window.GLOSSARY_DIAGRAMS = {
     rag: ragDiagram,
@@ -1710,6 +1907,12 @@
     token: tokenizerDiagram,                    // token entry too
     'vector-db': vectorDbDiagram,
     eval: evalDiagram,
-    'flash-attention': flashAttentionDiagram
+    'flash-attention': flashAttentionDiagram,
+    'frontier-model': frontierModelDiagram,
+    'sub-agent': subAgentDiagram,
+    'context-window': contextWindowDiagram,
+    'prompt-engineering': (lang) => layersDiagram(lang, 'prompt'),
+    'context-engineering': (lang) => layersDiagram(lang, 'ctx'),
+    governance: (lang) => layersDiagram(lang, 'gov')
   };
 })();

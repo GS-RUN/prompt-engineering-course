@@ -825,7 +825,11 @@ html[data-i18n-lang="en"] section[data-untranslated="1"] .lang-block[data-lang="
 .glossary-diagram svg.tokenizer-diagram,
 .glossary-diagram svg.vectordb-diagram,
 .glossary-diagram svg.eval-diagram,
-.glossary-diagram svg.flash-attn-diagram      { max-width: 720px; min-width: 520px; }
+.glossary-diagram svg.flash-attn-diagram,
+.glossary-diagram svg.frontier-diagram,
+.glossary-diagram svg.subagent-diagram,
+.glossary-diagram svg.context-window-diagram,
+.glossary-diagram svg.layers-diagram          { max-width: 720px; min-width: 520px; }
 .glossary-diagram svg.agent-diagram           { max-width: 600px; min-width: 420px; }
 .glossary-diagram svg.transformer-diagram     { max-width: 480px; min-width: 360px; }
 
