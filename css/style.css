@@ -811,7 +811,12 @@ html[data-i18n-lang="en"] section[data-untranslated="1"] .lang-block[data-lang="
 .glossary-diagram svg.temperature-diagram,
 .glossary-diagram svg.spec-diagram,
 .glossary-diagram svg.caching-diagram,
-.glossary-diagram svg.fewshot-diagram         { max-width: 720px; min-width: 520px; }
+.glossary-diagram svg.fewshot-diagram,
+.glossary-diagram svg.quantization-diagram,
+.glossary-diagram svg.streaming-diagram,
+.glossary-diagram svg.selfcons-diagram,
+.glossary-diagram svg.structured-diagram,
+.glossary-diagram svg.training-diagram        { max-width: 720px; min-width: 520px; }
 .glossary-diagram svg.agent-diagram           { max-width: 600px; min-width: 420px; }
 .glossary-diagram svg.transformer-diagram     { max-width: 480px; min-width: 360px; }
 
