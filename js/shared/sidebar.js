@@ -58,7 +58,6 @@
       ${moduleListHtml}
     </div>
     <div class="sb-foot">
-      <a href="${baseHref}glossary.html" data-i18n="sb-glossary">📚 Glosario</a>
       <a href="${pageBlock === 'home' ? 'CHANGELOG.md' : '../CHANGELOG.md'}" data-i18n="sb-changelog">📝 Changelog</a>
       <span class="sb-version">v${M.version} · ${M.lastUpdated}</span>
     </div>

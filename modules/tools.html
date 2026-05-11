@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Herramientas — Prompt Engineering Master Course</title>
-<link rel="stylesheet" href="../css/style.css?v=28">
-<link rel="stylesheet" href="../css/bando-b.css?v=28">
+<link rel="stylesheet" href="../css/style.css?v=29">
+<link rel="stylesheet" href="../css/bando-b.css?v=29">
 <script>
   (function() {
     try {
@@ -46,6 +46,8 @@
       <ul>
         <li>Estimar tokens y coste por modelo.</li>
         <li>Comparar dos prompts con scoring multi-criterio.</li>
+        <li>Componer un archivo SKILL.md válido para Claude Code / OpenCode.</li>
+        <li>Estructurar un prompt de agente con rol, objetivo, restricciones y criterios de éxito.</li>
       </ul>
     </div>
     <div class="lang-block" data-lang="en">
@@ -53,6 +55,8 @@
       <ul>
         <li>Estimate tokens and cost per model.</li>
         <li>Compare two prompts with multi-criteria scoring.</li>
+        <li>Compose a valid SKILL.md file for Claude Code / OpenCode.</li>
+        <li>Structure an agent prompt with role, goal, constraints and success criteria.</li>
       </ul>
     </div>
   </div>
@@ -194,6 +198,112 @@ Use TypeScript, React Hook Form, and Zod for validation.</textarea>
 
 
 
+<section id="s55">
+<h2>🪄 SKILL.md Builder</h2>
+<p class="subtitle">Compón un archivo SKILL.md (Claude Code / OpenCode) en segundos</p>
+<div class="lang-block" data-lang="es">
+
+<div class="exercise-panel">
+<div class="sim-controls">
+  <div class="sim-control">
+    <label>name</label>
+    <input type="text" id="skb-name" value="deploy">
+  </div>
+  <div class="sim-control">
+    <label>context</label>
+    <select id="skb-context">
+      <option value="default">default (hereda el contexto del padre)</option>
+      <option value="fork" selected>fork (sub-agente aislado)</option>
+    </select>
+  </div>
+</div>
+<div class="sim-control" style="margin-top:10px;">
+  <label>description (cuándo cargarla)</label>
+  <input type="text" id="skb-desc" value="Deploy to production with health check">
+</div>
+<div class="sim-control" style="margin-top:10px;">
+  <label>allowed-tools</label>
+  <input type="text" id="skb-tools" value="Bash(git push *) Bash(npm run deploy) Bash(curl *)">
+</div>
+<label style="margin-top:10px;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-dim);">
+  <input type="checkbox" id="skb-disable" checked>
+  disable-model-invocation (sólo el usuario puede invocarla — útil para deploy/commit)
+</label>
+<div class="sim-control" style="margin-top:10px;">
+  <label>body (markdown)</label>
+  <textarea class="ex-editor" id="skb-body" style="min-height:140px;font-family:monospace;">## Deploy Procedure
+
+1. Ejecuta los tests: `npm test`
+2. Build: `npm run build`
+3. Deploy a producción: `npm run deploy`
+4. Verifica health check: `curl https://api.example.com/health`
+5. Notifica al equipo en Slack</textarea>
+</div>
+<button class="btn btn-primary" id="skb-generate" style="margin-top:12px;">🪄 Generar SKILL.md</button>
+<div class="ex-output" id="skb-output" style="margin-top:16px;"></div>
+<div style="margin-top:12px;font-size:11px;color:var(--text-muted);">
+  Pega el resultado en <code>~/.claude/skills/&lt;name&gt;/SKILL.md</code> (personal) o <code>.claude/skills/&lt;name&gt;/SKILL.md</code> (proyecto).
+</div>
+</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="exercise-panel">
+<div class="tip">The SKILL.md Builder runs in <strong>Spanish mode</strong>. Switch to ES to compose your skill file.</div>
+</div>
+
+</div>
+</section>
+
+
+<section id="s56">
+<h2>🎯 Agent Goal Composer</h2>
+<p class="subtitle">Estructura un prompt de agente con rol, objetivo, restricciones y criterios de éxito</p>
+<div class="lang-block" data-lang="es">
+
+<div class="exercise-panel">
+<div class="sim-control">
+  <label>rol</label>
+  <input type="text" id="agc-role" value="principal engineer revisando un PR de TypeScript">
+</div>
+<div class="sim-control" style="margin-top:10px;">
+  <label>objetivo (qué hay que hacer)</label>
+  <textarea class="ex-editor" id="agc-goal" style="min-height:60px;">Revisa este pull request e identifica bugs, problemas de seguridad y problemas arquitectónicos.</textarea>
+</div>
+<div class="sim-control" style="margin-top:10px;">
+  <label>restricciones (qué NO hacer)</label>
+  <textarea class="ex-editor" id="agc-constraints" style="min-height:60px;">- No sugerencias cosméticas (formato, espacios)
+- Cita números de línea explícitos
+- Si una categoría no tiene problemas, di "ninguno" — no inventes</textarea>
+</div>
+<div class="sim-control" style="margin-top:10px;">
+  <label>criterios de éxito (definition of done)</label>
+  <textarea class="ex-editor" id="agc-success" style="min-height:60px;">Output estructurado: bugs &gt; security &gt; architecture &gt; minor.
+Cada item con archivo:línea y reproducción breve.</textarea>
+</div>
+<div class="sim-control" style="margin-top:10px;">
+  <label>formato de salida</label>
+  <input type="text" id="agc-format" value="Markdown con H2 por categoría y bullets">
+</div>
+<button class="btn btn-primary" id="agc-generate" style="margin-top:12px;">🎯 Componer prompt</button>
+<div class="ex-output" id="agc-output" style="margin-top:16px;"></div>
+<div style="margin-top:12px;font-size:11px;color:var(--text-muted);">
+  El prompt sale envuelto en tags XML (Claude / Anthropic-friendly). Para modelos pequeños abiertos puedes simplificar a Markdown plano.
+</div>
+</div>
+
+</div>
+<div class="lang-block" data-lang="en">
+
+<div class="exercise-panel">
+<div class="tip">The Agent Goal Composer runs in <strong>Spanish mode</strong>. Switch to ES to compose a well-structured agent prompt.</div>
+</div>
+
+</div>
+</section>
+
+
 <section class="module-references">
   <h3 data-i18n="ref-header">Referencias</h3>
   <p style="font-size:13px;color:var(--text-dim);" data-i18n="ref-intro">
@@ -205,15 +315,16 @@ Use TypeScript, React Hook Form, and Zod for validation.</textarea>
 </main>
 </div>
 
-<script src="../js/shared/manifest.js?v=28"></script>
-<script src="../js/shared/sidebar.js?v=28"></script>
-<script src="../js/shared/references.js?v=28"></script>
-<script src="../js/i18n.js?v=28"></script>
-<script src="../js/token-tools.js?v=28"></script>
-<script src="../js/prompt-diff.js?v=28"></script>
-<script src="../js/quiz.js?v=28"></script>
-<script src="../js/shared/glossary-data.js?v=28"></script>
-<script src="../js/glossary.js?v=28"></script>
-<script src="../js/app.js?v=28"></script>
+<script src="../js/shared/manifest.js?v=29"></script>
+<script src="../js/shared/sidebar.js?v=29"></script>
+<script src="../js/shared/references.js?v=29"></script>
+<script src="../js/i18n.js?v=29"></script>
+<script src="../js/token-tools.js?v=29"></script>
+<script src="../js/prompt-diff.js?v=29"></script>
+<script src="../js/tools-extra.js?v=29"></script>
+<script src="../js/quiz.js?v=29"></script>
+<script src="../js/shared/glossary-data.js?v=29"></script>
+<script src="../js/glossary.js?v=29"></script>
+<script src="../js/app.js?v=29"></script>
 </body>
 </html>

@@ -842,6 +842,35 @@ html[data-i18n-lang="en"] section[data-untranslated="1"] .lang-block[data-lang="
 .glossary-diagram svg.system-prompt-diagram,
 .glossary-diagram svg.artifacts-diagram,
 .glossary-diagram svg.quant-methods-diagram   { max-width: 720px; min-width: 520px; }
+
+/* Generated-result cards (SKILL.md Builder, Agent Goal Composer) */
+.generated-result {
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  background: var(--bg-code);
+  overflow: hidden;
+  margin-top: 4px;
+}
+.generated-head {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 8px 14px;
+  background: rgba(245,165,36,0.07);
+  border-bottom: 1px solid var(--glass-border);
+}
+.generated-title {
+  font-size: 12px; color: var(--accent); font-weight: 600; font-family: monospace;
+}
+.btn-copy {
+  background: var(--glass); border: 1px solid var(--glass-border);
+  color: var(--text-dim); font-size: 11px; padding: 4px 10px;
+  border-radius: 6px; cursor: pointer; transition: all 0.15s;
+}
+.btn-copy:hover { color: var(--accent); border-color: var(--accent); }
+.generated-result pre {
+  margin: 0; padding: 14px; font-size: 12.5px; line-height: 1.5;
+  color: var(--text); white-space: pre-wrap; word-wrap: break-word;
+  font-family: monospace;
+}
 .glossary-diagram svg.agent-diagram           { max-width: 600px; min-width: 420px; }
 .glossary-diagram svg.transformer-diagram     { max-width: 480px; min-width: 360px; }
 

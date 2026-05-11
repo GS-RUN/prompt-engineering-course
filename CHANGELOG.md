@@ -2,6 +2,38 @@
 
 All notable changes to this course are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.3.15] — 2026-05-08
+
+### Added — two new tools: SKILL.md Builder + Agent Goal Composer
+
+- **🪄 SKILL.md Builder** (`#s55` in `modules/tools.html`) — form with
+  name, description, allowed-tools, context (default/fork), disable-
+  model-invocation toggle and a Markdown body. Generates the full
+  SKILL.md (frontmatter + body) into a code block with a one-click
+  "📋 Copiar" button. Pre-filled with a `deploy` example covering
+  tests → build → deploy → health check.
+- **🎯 Agent Goal Composer** (`#s56`) — form with role, goal,
+  constraints, success criteria and output format. Generates a
+  prompt wrapped in `<role>`, `<task>`, `<constraints>`,
+  `<success-criteria>` and `<output-format>` XML tags
+  (Anthropic-style). Pre-filled with a "principal engineer reviewing
+  a TypeScript PR" example.
+- `js/tools-extra.js` (new) — both tools' logic + shared copy-to-
+  clipboard handler.
+- CSS `.generated-result` / `.generated-head` / `.btn-copy` /
+  `.generated-result pre` for the output card styling.
+- Front-matter learning objectives updated to mention the two new
+  tools.
+
+### Removed — duplicate "Glosario" link in the sidebar footer
+
+The glossary already appears in the module list (with the 📚 icon)
+because it's registered as a block in `manifest.js`. The extra link
+in `sb-foot` was redundant. Removed from `js/shared/sidebar.js`.
+The footer now only carries the Changelog link and the version.
+
+Cache buster bumped v=28 → v=29.
+
 ## [2.3.14] — 2026-05-08
 
 ### Added — quantization-methods diagram (72 entries) + skip glossary in quizzes
