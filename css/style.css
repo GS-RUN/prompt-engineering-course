@@ -747,6 +747,9 @@ html[data-i18n-lang="en"] section[data-untranslated="1"] .lang-block[data-lang="
   display: inline-block; min-width: 40px; height: 40px; line-height: 40px; text-align: center;
   background: var(--accent); color: #000; font-weight: 900; border-radius: 8px;
   font-size: 18px; margin-bottom: 10px;
+  /* Override the global h2 gradient-text rule that paints letters transparent */
+  -webkit-background-clip: border-box; background-clip: border-box;
+  -webkit-text-fill-color: #000;
 }
 /* Glossary term card (v2.3.0 — long-form schema) */
 .glossary-term {
