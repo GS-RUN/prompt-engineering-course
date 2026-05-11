@@ -2,6 +2,55 @@
 
 All notable changes to this course are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.3.5] — 2026-05-08
+
+### Added — 8 more glossary diagrams (19 total)
+
+Second batch of per-term diagrams covering the high-traffic terms
+where text alone underexplains the concept. Same SVG grammar as
+v2.3.2: rounded boxes, amber accent, green for "correct/output",
+red for "wrong/hijacked/no source", bilingual ES + EN, responsive
+with sane min-widths.
+
+New diagrams:
+
+- **`embedding`** — 2D projection of the vector space with two
+  semantic clusters (cat + feline / dog + bark), faint grid, dashed
+  ellipses marking each cluster.
+- **`tool-use`** (and `function-calling` reuses) — Model and
+  External tool side by side; top amber arrow with "tool_call (JSON,
+  schema-validated)" label, bottom green arrow with "tool_result".
+- **`prompt-injection`** — vertical attack flow: System prompt →
+  User message containing legitimate text + a red dashed block with
+  the injected instruction → LLM → red "PWNED" output.
+- **`hallucination`** — side-by-side: "Without grounding" (Q → LLM →
+  wrong invented answer in red) vs "With RAG + grounding" (Q +
+  retrieved sources → LLM → answer with `[src]` citation in green).
+- **`temperature`** — three sampling-distribution bar charts (temp =
+  0.0 / 0.7 / 1.5) showing the same logits sharpened, balanced and
+  nearly uniform.
+- **`speculative-decoding`** — Draft model proposes 4 tokens, the
+  Big model verifies them in parallel with ✓/✗ marks under each,
+  accepted prefix concatenated into the green output box.
+- **`prompt-caching`** — bar chart of cost per call (1.25× write,
+  then 0.10× reads four times) with axis line, write call in amber,
+  reads in green, "8% per call after the first" caption.
+- **`few-shot`** (and `zero-shot` reuses) — side-by-side: left
+  zero-shot (Q → verbose drifting answer in red) vs right few-shot
+  (3 example pairs + glow on the test Q → tight answer in the
+  pattern, green).
+
+Infrastructure:
+
+- `defs()` helper now also creates an `*-arr-red` marker so the
+  red arrows used by injection and hallucination get a proper red
+  arrowhead.
+- `line()` helper picks `-arr-red` when the line colour is `P.red`.
+- 8 new per-class entries in `style.css` so every new diagram
+  inherits the same max-width 720 / min-width 520 (consistent with
+  the other 720-wide diagrams).
+- Cache buster bumped v=18 → v=19.
+
 ## [2.3.4] — 2026-05-08
 
 ### Changed — MoE diagram redesigned (vertical column instead of 2×4 grid)

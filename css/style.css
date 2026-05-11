@@ -803,7 +803,15 @@ html[data-i18n-lang="en"] section[data-untranslated="1"] .lang-block[data-lang="
 .glossary-diagram svg.autoreg-diagram         { max-width: 960px; min-width: 620px; }
 .glossary-diagram svg.moe-diagram             { max-width: 760px; min-width: 540px; }
 .glossary-diagram svg.lora-diagram,
-.glossary-diagram svg.cot-diagram             { max-width: 720px; min-width: 520px; }
+.glossary-diagram svg.cot-diagram,
+.glossary-diagram svg.embedding-diagram,
+.glossary-diagram svg.tooluse-diagram,
+.glossary-diagram svg.injection-diagram,
+.glossary-diagram svg.hallucination-diagram,
+.glossary-diagram svg.temperature-diagram,
+.glossary-diagram svg.spec-diagram,
+.glossary-diagram svg.caching-diagram,
+.glossary-diagram svg.fewshot-diagram         { max-width: 720px; min-width: 520px; }
 .glossary-diagram svg.agent-diagram           { max-width: 600px; min-width: 420px; }
 .glossary-diagram svg.transformer-diagram     { max-width: 480px; min-width: 360px; }
 
