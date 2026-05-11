@@ -779,6 +779,29 @@ html[data-i18n-lang="en"] section[data-untranslated="1"] .lang-block[data-lang="
   color: var(--text-dim); text-decoration: none; font-size: 11.5px;
 }
 .glossary-related-link:hover { color: var(--accent); border-color: var(--accent); background: rgba(180,160,120,0.08); }
+
+/* Glossary inline diagrams (v2.3.1) */
+.glossary-diagram {
+  margin: 14px 0 4px;
+  padding: 16px 14px 10px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  overflow-x: auto;
+}
+.glossary-diagram svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: 960px;
+  min-width: 620px;   /* horizontal scroll on narrow screens, never squashed */
+  margin: 0 auto;
+}
+/* SVG <text> styles for the RAG diagram (and future diagrams reuse the rd-* family). */
+.rd-label { fill: var(--text); font-family: inherit; font-size: 13px; font-weight: 600; }
+.rd-label-final { fill: #6EBE7F; }
+.rd-sub { fill: var(--text-dim); font-family: inherit; font-size: 11px; }
+.rd-foot { fill: var(--text-muted); font-family: inherit; font-size: 11px; font-style: italic; }
 .glossary-term-highlight {
   background: rgba(180,160,120,0.10);
   border-color: var(--accent);

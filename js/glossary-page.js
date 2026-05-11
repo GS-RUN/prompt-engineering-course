@@ -62,6 +62,13 @@
           const blockLink = blockHref
             ? `<a class="glossary-block-link" href="${blockHref}">→ Bloque ${t.block}</a>`
             : '';
+          const dFn = window.GLOSSARY_DIAGRAMS && window.GLOSSARY_DIAGRAMS[t.id];
+          const diagram = (typeof dFn === 'function') ? `
+            <div class="glossary-diagram">
+              <div class="lang-block" data-lang="es">${dFn('es')}</div>
+              <div class="lang-block" data-lang="en">${dFn('en')}</div>
+            </div>
+          ` : '';
           const example = t.example ? `
             <div class="glossary-example">
               <div class="glossary-example-label">
@@ -95,6 +102,7 @@
                 <div class="lang-block" data-lang="es">${md(t.long.es)}</div>
                 <div class="lang-block" data-lang="en">${md(t.long.en)}</div>
               </div>
+              ${diagram}
               ${example}
               ${related}
             </article>

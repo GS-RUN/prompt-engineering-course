@@ -2,6 +2,41 @@
 
 All notable changes to this course are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.3.1] — 2026-05-08
+
+### Added — first per-term diagram: RAG flow
+
+Sample diagram for the **RAG** glossary entry: 6-step horizontal flow
+(Query → Embed → Vector DB → Top-k chunks → LLM + prompt →
+Answer + citations) with the final box coloured green to mark the
+output. Bilingual ES + EN, hand-tuned inline SVG (no external assets,
+no JS animation), responsive with horizontal scroll on narrow screens.
+
+The point of this release is to land **one** diagram and let the
+visual quality be reviewed before producing the next four
+(transformer attention, agent ReAct loop, KV cache, MoE routing).
+The infrastructure to add more is in place.
+
+- **`js/glossary-diagrams.js` (new)** — registers `window.GLOSSARY_DIAGRAMS`
+  with a `(lang) => svgString` builder per term. Avoids duplicating
+  markup across languages and keeps the SVGs small.
+- **`js/glossary-page.js`** — renders the diagram between the long
+  definition and the example, wrapped in two `lang-block` divs so the
+  ES/EN toggle hides the right one.
+- **CSS** — `.glossary-diagram` container with subtle border,
+  responsive `<svg>` with `min-width: 620px` so the diagram never
+  squashes (scrolls horizontally on narrow screens instead).
+- **`modules/glossary.html`** loads `glossary-diagrams.js` after
+  `glossary-data.js` and before `glossary-page.js`.
+- Cache buster bumped v=14 → v=15.
+
+### Held for next iteration
+
+If this RAG diagram passes review, the next batch will add:
+transformer attention (token → context vector), agent loop
+(thought → action → observation cycle), KV cache (skipped recompute),
+MoE (router → experts), and a fine-tuning vs. RAG side-by-side.
+
 ## [2.3.0] — 2026-05-08
 
 ### Changed — glossary refactor: long-form schema + in-text auto-links
