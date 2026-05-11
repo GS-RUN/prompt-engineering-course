@@ -2,6 +2,59 @@
 
 All notable changes to this course are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.3.0] — 2026-05-08
+
+### Changed — glossary refactor: long-form schema + in-text auto-links
+
+The glossary used to live in two parallel files (`js/shared/glossary-data.js`
+for the dedicated page, `js/glossary.js` for in-text tooltips) with their
+own copies of definitions. The two had drifted: 64 entries in one, ~70
+in the other, several with subtly different wording. In-text behavior
+was a hover tooltip only — no way to open the full entry in a tab.
+
+This release rebuilds the whole stack on a single source of truth.
+
+- **`js/shared/glossary-data.js` rewritten** with a richer per-entry
+  schema: `id`, `term`, `aliases[]`, `block`, `short {es,en}` (one
+  sentence for tooltip), `long {es,en}` (1-3 paragraphs for the
+  glossary page), optional `example {es,en}`, `related[]` ids, and a
+  reserved `diagram` field (held empty for v2.3.1). 89 entries
+  bilingual, including the previously missing high-traffic terms
+  flagged by users: **inference**, **scaffolding**, **artifacts**,
+  **drift**, **governance**, **authority-in-files**, **agentic**,
+  **agent runtime**, **context engineering**, **alignment**,
+  **distillation**, **chunking**, **overlap**, **sampling**,
+  **streaming**, **grounding**, **flash attention**, **base model**,
+  **inference**, **latency** (+ TTFT/TPOT), **speculative decoding**,
+  and more.
+- **In-text auto-link** (`js/glossary.js` rewritten): walks the page,
+  wraps every detected term/alias in a real `<a class="gloss-link">`
+  pointing to `glossary.html#term-<id>` with `target="_blank"`.
+  Hovering still shows a floating tooltip with the short definition;
+  clicking now opens the full long-form entry in a new tab. Skips
+  `<pre>`, `<code>`, `<a>`, references and any element marked
+  `.no-gloss`. Caps at 2 wraps per term per `<section>` so paragraphs
+  don't turn into a wall of underlines.
+- **`js/glossary-page.js` (new)**: dedicated renderer for the
+  glossary page consuming the new schema. Anchored entries (`id="term-<id>"`)
+  with smooth-scroll + brief amber pulse on hash navigation, search
+  filter still searches across short + long + aliases, "see also"
+  related-term chips, and per-entry block deep links.
+- **CSS additions** in `style.css` for `.gloss-link` (subtle dotted
+  underline + ↗ glyph), `#glossary-tooltip` (floating card), and the
+  new card layout for `.glossary-term`, `.glossary-example`,
+  `.glossary-related-link`, `.glossary-term-highlight`.
+- **Cache buster bumped v=12 → v=13** across the 19 HTML files.
+  `glossary-data.js` is now loaded by every module page (it was only
+  loaded by `glossary.html` before).
+
+### Held for v2.3.1
+
+Per-term diagrams (transformer attention, RAG flow, agent loop, MoE,
+KV cache). Schema reserves a `diagram` field but no entry uses it
+yet — the next release will add 4-5 hand-tuned SVGs after design
+sign-off.
+
 ## [2.2.5] — 2026-05-08
 
 ### Fixed — quiz options containing < / > were eaten by the HTML parser
