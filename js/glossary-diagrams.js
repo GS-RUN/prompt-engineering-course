@@ -1361,10 +1361,6 @@
 
     // Image input (bottom-left)
     out += box(40, 170, 180, 56, L.image, L.imageSub);
-    // Small image-frame icon inside the image box
-    out += '<rect x="55" y="184" width="28" height="20" rx="2" fill="' + P.accent + '" opacity="0.25"/>';
-    out += '<circle cx="63" cy="192" r="3" fill="' + P.accent + '" opacity="0.6"/>';
-    out += '<path d="M 60 198 L 70 188 L 78 198 Z" fill="' + P.accent + '" opacity="0.6"/>';
 
     // Arrows from each input → fuse
     out += line(222, 78, 296, 130, 'mm');
@@ -1440,6 +1436,240 @@
     return svgOpen('latency-diagram', '0 0 720 270') + defs('lat') + out + '</svg>';
   }
 
+  // ====================================================================
+  // 28. XML tags — Anthropic-style structured prompt rendered as code
+  // ====================================================================
+  function xmlTagsDiagram(lang) {
+    const L = lang === 'en' ? {
+      title: 'Structured prompt (Anthropic style)',
+      foot: 'Claude is fine-tuned to parse XML tags unambiguously, so structure becomes meaningful content.'
+    } : {
+      title: 'Prompt estructurado (estilo Anthropic)',
+      foot: 'Claude está afinado para parsear tags XML sin ambigüedad, así la estructura se vuelve contenido para el modelo.'
+    };
+    let out = '';
+    // Title above code block
+    out += '<text x="60" y="32" class="rd-sub" fill="' + P.textDim + '">' + L.title + '</text>';
+    // Code block
+    out += '<rect x="60" y="44" width="600" height="248" rx="8" fill="rgba(0,0,0,0.3)" stroke="' + P.dim + '" stroke-width="1"/>';
+    const lines = [
+      { t: '&lt;instructions&gt;',                       c: P.accent },
+      { t: '  Summarize the documents below.',           c: P.text },
+      { t: '&lt;/instructions&gt;',                      c: P.accent },
+      { t: '',                                           c: P.text },
+      { t: '&lt;documents&gt;',                          c: P.green },
+      { t: '  &lt;document id="1"&gt;…&lt;/document&gt;', c: P.text },
+      { t: '  &lt;document id="2"&gt;…&lt;/document&gt;', c: P.text },
+      { t: '&lt;/documents&gt;',                         c: P.green },
+      { t: '',                                           c: P.text },
+      { t: 'Output JSON with title and key points.',     c: P.text }
+    ];
+    const lineY0 = 74, lineH = 22;
+    for (let i = 0; i < lines.length; i++) {
+      if (!lines[i].t) continue;
+      out += '<text x="80" y="' + (lineY0 + i * lineH) + '" font-family="monospace" font-size="13" fill="' + lines[i].c + '">' + lines[i].t + '</text>';
+    }
+    out += foot(L.foot, 360, 325);
+    return svgOpen('xml-diagram', '0 0 720 342') + defs('xml') + out + '</svg>';
+  }
+
+  // ====================================================================
+  // 29. Tokenizer / BPE — string → ordered token boxes with IDs
+  // ====================================================================
+  function tokenizerDiagram(lang) {
+    const L = lang === 'en' ? {
+      input: 'Input text',
+      tokens: 'Tokens (with ids)',
+      foot: 'Tokens ≠ words. The English word "incredible" is ~3 tokens; the Spanish "increíble" is ~4-5.'
+    } : {
+      input: 'Texto de entrada',
+      tokens: 'Tokens (con ids)',
+      foot: 'Tokens ≠ palabras. "increíble" son ~4-5 tokens; en inglés "incredible" son ~3.'
+    };
+    let out = '';
+    // Input text
+    out += '<text x="40" y="48" class="rd-sub" fill="' + P.accent + '">' + L.input + '</text>';
+    out += '<rect x="40" y="58" width="640" height="44" rx="8" fill="' + P.accentSoft + '" stroke="' + P.accent + '" stroke-width="1.5"/>';
+    out += '<text x="360" y="87" text-anchor="middle" class="rd-label" font-family="monospace" font-size="15">"Hello, world! ¿Qué tal?"</text>';
+    // Down arrow
+    out += line(360, 104, 360, 128, 'tok');
+    // Tokens label
+    out += '<text x="40" y="150" class="rd-sub" fill="' + P.accent + '">' + L.tokens + '</text>';
+    // Token boxes
+    const tokens = ['"Hello"', '","', '" world"', '"!"', '" ¿"', '"Qué"', '" tal"', '"?"'];
+    const ids    = [9906,     11,    1051,        0,    6877,    12399,  2466,     30];
+    const tW = 78, tGap = 4;
+    const tTotal = tokens.length * tW + (tokens.length - 1) * tGap;
+    let tx = (720 - tTotal) / 2;
+    for (let i = 0; i < tokens.length; i++) {
+      out += '<rect x="' + tx + '" y="160" width="' + tW + '" height="42" rx="5" fill="' + P.accentSoft + '" stroke="' + P.accent + '" stroke-width="1"/>';
+      out += '<text x="' + (tx + tW / 2) + '" y="180" text-anchor="middle" class="rd-label" font-family="monospace" font-size="12">' + tokens[i] + '</text>';
+      out += '<text x="' + (tx + tW / 2) + '" y="195" text-anchor="middle" class="rd-sub" font-family="monospace" font-size="9" fill="' + P.textDim + '">' + ids[i] + '</text>';
+      tx += tW + tGap;
+    }
+    out += foot(L.foot, 360, 252);
+    return svgOpen('tokenizer-diagram', '0 0 720 270') + defs('tok') + out + '</svg>';
+  }
+
+  // ====================================================================
+  // 30. Vector DB — query vector → top-k nearest by cosine similarity
+  // ====================================================================
+  function vectorDbDiagram(lang) {
+    const L = lang === 'en' ? {
+      query: 'query vector',
+      db: 'Vector DB (indexed embeddings)',
+      results: 'Top-k by cosine similarity',
+      foot: 'Each chunk\'s vector is compared to the query vector; the k closest are returned.'
+    } : {
+      query: 'vector de la query',
+      db: 'Vector DB (embeddings indexados)',
+      results: 'Top-k por similitud coseno',
+      foot: 'El vector de cada chunk se compara con el de la query; se devuelven los k más cercanos.'
+    };
+    let out = '';
+    // Query "pill" at top-left
+    out += '<text x="40" y="40" class="rd-sub" fill="' + P.accent + '">' + L.query + '</text>';
+    out += '<rect x="40" y="50" width="170" height="26" rx="13" fill="' + P.accent + '" opacity="0.85"/>';
+    out += '<text x="125" y="68" text-anchor="middle" font-family="monospace" font-size="10" fill="#0F1115">[0.21, -0.85, 0.43, …]</text>';
+
+    // Vector DB region
+    out += '<text x="350" y="40" text-anchor="middle" class="rd-sub" fill="' + P.textDim + '">' + L.db + '</text>';
+    out += '<rect x="230" y="50" width="240" height="220" rx="10" fill="rgba(245,165,36,0.03)" stroke="' + P.dim + '" stroke-width="1.5" stroke-dasharray="4 4"/>';
+
+    // 3 close dots (vertically separated for clean arrows) + several far dots
+    const close = [{ cx: 320, cy: 100 }, { cx: 350, cy: 160 }, { cx: 320, cy: 220 }];
+    const far = [
+      { cx: 260, cy: 80 }, { cx: 280, cy: 140 }, { cx: 260, cy: 200 },
+      { cx: 410, cy: 90 }, { cx: 430, cy: 130 }, { cx: 400, cy: 180 },
+      { cx: 430, cy: 240 }, { cx: 260, cy: 250 }, { cx: 380, cy: 240 },
+      { cx: 405, cy: 230 }, { cx: 280, cy: 95 }
+    ];
+    for (const d of far) {
+      out += '<circle cx="' + d.cx + '" cy="' + d.cy + '" r="4" fill="' + P.dim + '" opacity="0.5"/>';
+    }
+    for (const d of close) {
+      out += '<circle cx="' + d.cx + '" cy="' + d.cy + '" r="7" fill="' + P.accent + '"/>';
+    }
+    // Soft halo around the close cluster
+    out += '<ellipse cx="330" cy="160" rx="40" ry="75" fill="none" stroke="' + P.accent + '" stroke-width="1" stroke-dasharray="3 3" opacity="0.5"/>';
+
+    // Arrow from query pill into DB
+    out += '<path d="M 212 63 C 222 80, 228 100, 232 120" fill="none" stroke="' + P.accent + '" stroke-width="1.5" marker-end="url(#vdb-arr)"/>';
+
+    // Results column (right)
+    out += '<text x="585" y="40" text-anchor="middle" class="rd-sub" fill="' + P.accent + '">' + L.results + '</text>';
+    const results = [
+      { y: 80,  label: 'chunk #42', sim: '0.91' },
+      { y: 145, label: 'chunk #87', sim: '0.88' },
+      { y: 210, label: 'chunk #14', sim: '0.85' }
+    ];
+    for (let i = 0; i < 3; i++) {
+      const r = results[i];
+      out += '<rect x="490" y="' + r.y + '" width="190" height="50" rx="8" fill="' + P.accentSoft + '" stroke="' + P.accent + '" stroke-width="1.5"/>';
+      out += '<text x="585" y="' + (r.y + 22) + '" text-anchor="middle" class="rd-label" font-size="13">' + r.label + '</text>';
+      out += '<text x="585" y="' + (r.y + 40) + '" text-anchor="middle" class="rd-sub" fill="' + P.textDim + '">sim=' + r.sim + '</text>';
+      // Dashed arrow from corresponding close dot
+      out += '<line x1="' + (close[i].cx + 7) + '" y1="' + close[i].cy + '" x2="487" y2="' + (r.y + 25) + '" stroke="' + P.accent + '" stroke-width="1.2" stroke-dasharray="3 3" opacity="0.75" marker-end="url(#vdb-arr)"/>';
+    }
+    out += foot(L.foot, 360, 305);
+    return svgOpen('vectordb-diagram', '0 0 720 320') + defs('vdb') + out + '</svg>';
+  }
+
+  // ====================================================================
+  // 31. Eval — test cases scored against expected, summarized as a %
+  // ====================================================================
+  function evalDiagram(lang) {
+    const L = lang === 'en' ? {
+      h1: 'case', h2: 'expected', h3: 'actual', h4: 'judge', score: 'Score',
+      foot: 'Build evals BEFORE iterating prompts. Without numbers, "better" is opinion.'
+    } : {
+      h1: 'caso', h2: 'esperado', h3: 'real', h4: 'judge', score: 'Score',
+      foot: 'Construye evals ANTES de iterar prompts. Sin números, "mejor" es opinión.'
+    };
+    let out = '';
+    const rows = [
+      { in: '#1', exp: 'A', act: 'A', ok: true  },
+      { in: '#2', exp: 'B', act: 'B', ok: true  },
+      { in: '#3', exp: 'C', act: 'D', ok: false },
+      { in: '#4', exp: 'A', act: 'A', ok: true  },
+      { in: '#5', exp: 'B', act: 'B', ok: true  }
+    ];
+    // Header row
+    out += '<text x="100" y="50" class="rd-sub" fill="' + P.accent + '">' + L.h1 + '</text>';
+    out += '<text x="220" y="50" class="rd-sub" fill="' + P.accent + '">' + L.h2 + '</text>';
+    out += '<text x="340" y="50" class="rd-sub" fill="' + P.accent + '">' + L.h3 + '</text>';
+    out += '<text x="455" y="50" class="rd-sub" fill="' + P.accent + '">' + L.h4 + '</text>';
+    // Rows
+    for (let i = 0; i < rows.length; i++) {
+      const r = rows[i];
+      const y = 70 + i * 36;
+      out += '<text x="100" y="' + (y + 19) + '" class="rd-label" font-family="monospace">' + r.in + '</text>';
+      // Expected
+      out += '<rect x="195" y="' + y + '" width="58" height="28" rx="5" fill="' + P.dimFill + '" stroke="' + P.dim + '" stroke-width="1"/>';
+      out += '<text x="224" y="' + (y + 19) + '" text-anchor="middle" class="rd-label" font-family="monospace">' + r.exp + '</text>';
+      // Actual
+      const cBg = r.ok ? P.greenSoft : P.redSoft;
+      const cStroke = r.ok ? P.green : P.red;
+      out += '<rect x="315" y="' + y + '" width="58" height="28" rx="5" fill="' + cBg + '" stroke="' + cStroke + '" stroke-width="1.2"/>';
+      out += '<text x="344" y="' + (y + 19) + '" text-anchor="middle" class="rd-label" font-family="monospace" fill="' + cStroke + '">' + r.act + '</text>';
+      // Judge mark
+      const mark = r.ok ? '✓' : '✗';
+      out += '<text x="465" y="' + (y + 22) + '" text-anchor="middle" font-size="20" fill="' + cStroke + '" font-weight="700">' + mark + '</text>';
+    }
+    // Score box on the right
+    out += '<rect x="540" y="90" width="150" height="120" rx="12" fill="' + P.greenSoft + '" stroke="' + P.green + '" stroke-width="2"/>';
+    out += '<text x="615" y="125" text-anchor="middle" class="rd-sub" fill="' + P.green + '">' + L.score + '</text>';
+    out += '<text x="615" y="166" text-anchor="middle" class="rd-label rd-label-final" font-size="30">80%</text>';
+    out += '<text x="615" y="190" text-anchor="middle" class="rd-sub" fill="' + P.textDim + '">4 / 5</text>';
+
+    out += foot(L.foot, 360, 290);
+    return svgOpen('eval-diagram', '0 0 720 310') + defs('eval') + out + '</svg>';
+  }
+
+  // ====================================================================
+  // 32. Flash Attention — fewer HBM <-> SRAM round-trips than classic
+  // ====================================================================
+  function flashAttentionDiagram(lang) {
+    const L = lang === 'en' ? {
+      classic: 'Classic attention', flash: 'Flash attention',
+      hbm: 'HBM (large, slow)', sram: 'SRAM (small, fast)',
+      moves: 'many round-trips', moveTrips: 'fused, few round-trips',
+      foot: 'Same math, ~2-4× faster by keeping intermediate values in SRAM and minimising HBM I/O.'
+    } : {
+      classic: 'Atención clásica', flash: 'Flash attention',
+      hbm: 'HBM (grande, lenta)', sram: 'SRAM (pequeña, rápida)',
+      moves: 'muchos round-trips', moveTrips: 'fusionada, pocos round-trips',
+      foot: 'Misma matemática, ~2-4× más rápida manteniendo valores intermedios en SRAM y minimizando I/O a HBM.'
+    };
+    let out = '';
+    // Divider
+    out += '<line x1="360" y1="40" x2="360" y2="270" stroke="' + P.dim + '" stroke-width="1" stroke-dasharray="3 4"/>';
+    // Headers
+    out += '<text x="180" y="30" text-anchor="middle" class="rd-label">' + L.classic + '</text>';
+    out += '<text x="540" y="30" text-anchor="middle" class="rd-label">' + L.flash + '</text>';
+
+    // LEFT — Classic
+    out += box(70, 60, 220, 40, L.sram, null);
+    out += box(70, 200, 220, 50, L.hbm, null, { variant: 'dim' });
+    // Many red round-trips
+    for (let i = 0; i < 5; i++) {
+      const x = 100 + i * 38;
+      out += '<line x1="' + x + '" y1="104" x2="' + x + '" y2="196" stroke="' + P.red + '" stroke-width="1.4" opacity="0.75"/>';
+    }
+    out += '<text x="180" y="158" text-anchor="middle" class="rd-sub" fill="' + P.red + '">' + L.moves + '</text>';
+
+    // RIGHT — Flash
+    out += box(430, 60, 220, 40, L.sram, null);
+    out += box(430, 200, 220, 50, L.hbm, null, { variant: 'dim' });
+    // Few green round-trips
+    out += '<line x1="500" y1="104" x2="500" y2="196" stroke="' + P.green + '" stroke-width="2.6"/>';
+    out += '<line x1="580" y1="104" x2="580" y2="196" stroke="' + P.green + '" stroke-width="2.6"/>';
+    out += '<text x="540" y="158" text-anchor="middle" class="rd-sub" fill="' + P.green + '">' + L.moveTrips + '</text>';
+
+    out += foot(L.foot, 360, 295);
+    return svgOpen('flash-attn-diagram', '0 0 720 310') + defs('fa') + out + '</svg>';
+  }
+
   // ----- Public registry -------------------------------------------------
   window.GLOSSARY_DIAGRAMS = {
     rag: ragDiagram,
@@ -1473,6 +1703,13 @@
     distillation: distillationDiagram,
     multimodal: multimodalDiagram,
     vlm: multimodalDiagram,                     // VLM is the text+image subset
-    latency: latencyDiagram
+    latency: latencyDiagram,
+    'xml-tags': xmlTagsDiagram,
+    tokenizer: tokenizerDiagram,
+    bpe: tokenizerDiagram,                      // BPE shares the tokenizer visual
+    token: tokenizerDiagram,                    // token entry too
+    'vector-db': vectorDbDiagram,
+    eval: evalDiagram,
+    'flash-attention': flashAttentionDiagram
   };
 })();

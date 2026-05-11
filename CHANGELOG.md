@@ -2,6 +2,38 @@
 
 All notable changes to this course are documented here. Format inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.3.9] — 2026-05-08
+
+### Fixed — multimodal diagram had a decorative icon overlapping the label
+
+The little picture-frame icon I drew inside the "Imagen de entrada"
+box was placed at (55, 184) with size 28×20, which collided with the
+centred label "Imagen de entrada" at the same y-band. Removed the
+three SVG primitives (rect + circle + path) — the textual label
+alone is clearer.
+
+### Added — 5 more glossary diagrams (35 entries with diagrams now)
+
+- **`xml-tags`** — structured prompt rendered as a code block with
+  the XML tags coloured in amber/green and the inner content in
+  normal text. Shows the Anthropic-recommended pattern.
+- **`tokenizer`** (and `bpe`, `token` reuse) — an input string at top
+  → 8 token boxes below, each with its token id underneath. Shows
+  visually that tokens ≠ words and that Spanish + punctuation
+  produce different segmentations than English.
+- **`vector-db`** — query vector pill on the left → big dashed DB
+  region with many dots (3 highlighted close, the rest dim) → top-3
+  results on the right with similarity scores. Dashed arrows from
+  each highlighted dot to its corresponding result.
+- **`eval`** — 5-row table (case · expected · actual · ✓/✗) with a
+  big "80% (4/5)" score box on the right. Wrong row shown in red,
+  correct rows in green.
+- **`flash-attention`** — side-by-side comparison of memory-access
+  patterns: Classic attention (5 red round-trips between SRAM and
+  HBM) vs Flash attention (2 green fused trips).
+
+Cache buster bumped v=22 → v=23.
+
 ## [2.3.8] — 2026-05-08
 
 ### Changed — pre-training and post-training now show distinct diagrams
